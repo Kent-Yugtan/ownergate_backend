@@ -1,0 +1,11 @@
+{
+    "name": "CompanyProperty",
+    "alias": "companyproperty",
+    "description": "",
+    "keywords": [],
+    "priority": 0,
+    "providers": [
+        "Modules\\CompanyProperty\\App\\Providers\\CompanyPropertyServiceProvider"
+    ],
+    "files": []
+}

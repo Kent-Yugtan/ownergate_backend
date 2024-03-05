@@ -1,0 +1,11 @@
+{
+    "name": "CompanyEmployee",
+    "alias": "companyemployee",
+    "description": "",
+    "keywords": [],
+    "priority": 0,
+    "providers": [
+        "Modules\\CompanyEmployee\\App\\Providers\\CompanyEmployeeServiceProvider"
+    ],
+    "files": []
+}
