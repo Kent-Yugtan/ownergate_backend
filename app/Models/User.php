@@ -2,44 +2,145 @@
 
 namespace App\Models;
 
-// use Illuminate\Contracts\Auth\MustVerifyEmail;
+use Carbon\Carbon;
+use Modules\Agent\Entities\Agent;
+use Modules\Owner\Entities\Owner;
+use Laravel\Passport\HasApiTokens;
+use Modules\Vendor\Entities\Vendor;
+use Modules\Company\Entities\Company;
+use Modules\Auth\Entities\UserProfile;
+use Modules\Customer\Entities\Customer;
+use Modules\Customer\Entities\CustomerDocument;
+use Modules\Shortcut\Entities\Shortcut;
+use Illuminate\Notifications\Notifiable;
+use Modules\Inventory\Entities\Inventory;
+use Illuminate\Database\Eloquent\Collection;
+use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
-use Illuminate\Notifications\Notifiable;
-use Laravel\Sanctum\HasApiTokens;
 
+/**
+ * Class User
+ *
+ * @property int $id
+ * @property int $user_type_id
+ * @property string $name
+ * @property string $email
+ * @property Carbon|null $email_verified_at
+ * @property string $password
+ * @property string|null $remember_token
+ * @property Carbon|null $created_at
+ * @property Carbon|null $updated_at
+ *
+ * @property UserType $user_type
+ * @property Collection|Property[] $properties
+ * @property Collection|PropertyDocument[] $property_documents
+ * @property Collection|PropertyPost[] $property_posts
+ *
+ * @package App\Models
+ */
 class User extends Authenticatable
 {
     use HasApiTokens, HasFactory, Notifiable;
 
-    /**
-     * The attributes that are mass assignable.
-     *
-     * @var array<int, string>
-     */
-    protected $fillable = [
-        'name',
-        'email',
-        'password',
-    ];
+    protected $table = 'users';
 
-    /**
-     * The attributes that should be hidden for serialization.
-     *
-     * @var array<int, string>
-     */
-    protected $hidden = [
-        'password',
-        'remember_token',
-    ];
-
-    /**
-     * The attributes that should be cast.
-     *
-     * @var array<string, string>
-     */
     protected $casts = [
         'email_verified_at' => 'datetime',
         'password' => 'hashed',
     ];
+
+    protected $hidden = [
+        'password',
+        'remember_token'
+    ];
+
+    protected $fillable = [
+        'role_id',
+        'username',
+        'email',
+        'name',
+        'email_verified_at',
+        'password',
+        'remember_token',
+        'verification_token',
+        'verification_date',
+        'verification_code',
+    ];
+
+    public function getNameAttribute()
+    {
+        return $this->first_name . ' ' . $this->last_name;
+    }
+
+    public function setPasswordAttribute($value)
+    {
+        $this->attributes['password'] = bcrypt($value);
+    }
+
+    public function properties()
+    {
+        return $this->hasMany(Property::class);
+    }
+
+    public function UserType()
+    {
+        return $this->belongsTo(UserType::class);
+    }
+
+
+    public function Vendors()
+    {
+        return $this->hasMany(Vendor::class);
+    }
+
+    public function agents()
+    {
+        return $this->hasMany(Agent::class, 'owner_id');
+    }
+
+    public function CustomerDocuments()
+    {
+        return $this->hasMany(CustomerDocument::class, 'customer_id');
+    }
+
+    public function customers()
+    {
+        return $this->hasMany(Customer::class, 'user_id');
+    }
+
+    public function customer()
+    {
+        return $this->hasOne(Customer::class, 'customer_id');
+    }
+
+    public function owners()
+    {
+        return $this->hasMany(Owner::class, 'user_id');
+    }
+
+    public function getPropertiesIdsAttribute()
+    {
+        return $this->properties->pluck('id');
+    }
+
+    public function Shortcuts()
+    {
+        return $this->hasMany(Shortcut::class);
+    }
+
+    public function company()
+    {
+        return $this->hasOne(Company::class, 'owner_id', 'id');
+    }
+
+    public function profile()
+    {
+        return $this->hasOne(UserProfile::class);
+    }
+
+    public function userCompanies()
+    {
+        return $this->belongsToMany(Company::class, 'company_users', 'user_id', 'company_id')->withPivot('is_admin');
+    }
 }
