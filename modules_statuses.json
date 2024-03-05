@@ -1,3 +1,10 @@
 {
-    "Auth": true
+    "Auth": true,
+    "Company": true,
+    "CompanyProperty": true,
+    "Inventory": true,
+    "Dashboard": true,
+    "CompanyEmployee": true,
+    "Message": true,
+    "Customer": true
 }
