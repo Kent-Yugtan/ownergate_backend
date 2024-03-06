@@ -14,7 +14,7 @@ class UsersTableSeeder extends Seeder
     {
         $users = [
             [
-                'role_id' => 1,
+                'role_name' => 'Admin',
                 'first_name' => 'Administrator',
                 'last_name' => 'Administrator',
                 'email' => 'admin@test.com',
@@ -22,7 +22,7 @@ class UsersTableSeeder extends Seeder
                 'password' => '12345678',
             ],
             [
-                'role_id' => 2,
+                'role_name' => 'Customer',
                 'first_name' => 'Customer',
                 'last_name' => 'Customer',
                 'email' => 'customer@test.com',
@@ -33,7 +33,6 @@ class UsersTableSeeder extends Seeder
 
         foreach($users as $user) {
             $user_data = User::create([
-                'role_id' => $user['role_id'],
                 'email' => $user['email'],
                 'email_verified_at' => $user['email_verified_at'],
                 'password' => $user['password'],
@@ -43,6 +42,8 @@ class UsersTableSeeder extends Seeder
                 'first_name' => $user['first_name'],
                 'last_name' => $user['last_name'],
             ]);
+
+            $user_data->assignRole($user['role_name']);
         }
     }
 }
