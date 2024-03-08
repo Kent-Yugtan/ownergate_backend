@@ -18,8 +18,8 @@ return new class extends Migration {
             $table->enum('status', ['active', 'inactive'])->default('active');
             $table->string('profile_picture')->nullable();
             $table->string('profile_poster')->nullable();
-            $table->string('about');
-            $table->string('notes');
+            $table->text('about');
+            $table->text('notes');
             $table->string('mission');
             $table->string('vission');
             $table->string('values');
