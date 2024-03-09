@@ -14,6 +14,6 @@ use Modules\CompanyProperty\App\Http\Controllers\CompanyPropertyController;
 |
 */
 
-Route::group([], function () {
-    Route::resource('companyproperty', CompanyPropertyController::class)->names('companyproperty');
-});
+// Route::group([], function () {
+//     Route::resource('companyproperty', CompanyPropertyController::class)->names('companyproperty');
+// });

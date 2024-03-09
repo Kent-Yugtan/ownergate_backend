@@ -28,6 +28,14 @@ class UsersTableSeeder extends Seeder
                 'email' => 'customer@test.com',
                 'email_verified_at' => now(),
                 'password' => '12345678',
+            ],
+            [
+                'role_name' => 'Owner',
+                'first_name' => 'Owner',
+                'last_name' => 'Owner',
+                'email' => 'owner@test.com',
+                'email_verified_at' => now(),
+                'password' => '12345678',
             ]
         ];
 
@@ -37,6 +45,8 @@ class UsersTableSeeder extends Seeder
                 'email_verified_at' => $user['email_verified_at'],
                 'password' => $user['password'],
             ]);
+
+            $user_data->assignRole($user['role_name']);
 
             $user_data->profile()->create([
                 'first_name' => $user['first_name'],

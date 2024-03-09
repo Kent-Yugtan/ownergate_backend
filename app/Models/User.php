@@ -7,14 +7,15 @@ use Modules\Agent\Entities\Agent;
 use Modules\Owner\Entities\Owner;
 use Laravel\Passport\HasApiTokens;
 use Modules\Vendor\Entities\Vendor;
-use Modules\Company\Entities\Company;
 use Modules\Auth\Entities\UserProfile;
+use Spatie\Permission\Traits\HasRoles;
+use Modules\Company\App\Models\Company;
 use Modules\Customer\Entities\Customer;
-use Modules\Customer\Entities\CustomerDocument;
 use Modules\Shortcut\Entities\Shortcut;
 use Illuminate\Notifications\Notifiable;
 use Modules\Inventory\Entities\Inventory;
 use Illuminate\Database\Eloquent\Collection;
+use Modules\Customer\Entities\CustomerDocument;
 use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
@@ -78,6 +79,11 @@ class User extends Authenticatable
         $this->attributes['password'] = bcrypt($value);
     }
 
+    public function company()
+    {
+        return $this->hasOne(Company::class, 'owner_id');
+    }
+
     public function properties()
     {
         return $this->hasMany(Property::class);
@@ -129,10 +135,7 @@ class User extends Authenticatable
         return $this->hasMany(Shortcut::class);
     }
 
-    public function company()
-    {
-        return $this->hasOne(Company::class, 'owner_id', 'id');
-    }
+    
 
     public function profile()
     {

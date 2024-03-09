@@ -15,6 +15,7 @@ return new class extends Migration {
             $table->unsignedBigInteger('company_id');
             $table->unsignedBigInteger('category_id')->nullable();
             $table->unsignedBigInteger('type_id')->nullable();
+            $table->unsignedBigInteger('target_type_id')->nullable();
             $table->unsignedBigInteger('source_property_id')->nullable();
             $table->string('name')->nullable();
             $table->string('logo')->nullable();
@@ -27,13 +28,14 @@ return new class extends Migration {
             $table->string('area_sector_desctrict')->nullable();
             $table->string('latitude')->nullable();
             $table->string('longitude')->nullable();
-            $table->string('description')->nullable();
+            $table->text('description')->nullable();
             $table->string('full_video')->nullable();
             $table->softDeletes();
             $table->timestamps();
 
             $table->foreign('company_id')->references('id')->on('companies')->onUpdate('cascade')->onDelete('cascade');
-            $table->foreign('category_id')->references('id')->on('category_types')->onUpdate('cascade')->onDelete('cascade');
+            $table->foreign('category_id')->references('id')->on('categories')->onUpdate('cascade')->onDelete('cascade');
+            $table->foreign('target_type_id')->references('id')->on('category_target_types')->onUpdate('cascade')->onDelete('cascade');
             $table->foreign('type_id')->references('id')->on('property_types')->onUpdate('cascade')->onDelete('cascade');
             $table->foreign('source_property_id')->references('id')->on('company_properties')->onUpdate('cascade')->onDelete('cascade');
         });
