@@ -15,8 +15,8 @@ class UsersTableSeeder extends Seeder
         $users = [
             [
                 'role_name' => 'Admin',
-                'first_name' => 'Super',
-                'last_name' => 'Admin',
+                'first_name' => 'Administrator',
+                'last_name' => 'Administrator',
                 'email' => 'admin@test.com',
                 'email_verified_at' => now(),
                 'password' => '12345678',
@@ -52,6 +52,8 @@ class UsersTableSeeder extends Seeder
                 'first_name' => $user['first_name'],
                 'last_name' => $user['last_name'],
             ]);
+
+            $user_data->assignRole($user['role_name']);
         }
     }
 }

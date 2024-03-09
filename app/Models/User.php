@@ -19,7 +19,7 @@ use Modules\Customer\Entities\CustomerDocument;
 use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
-
+use Spatie\Permission\Traits\HasRoles;
 /**
  * Class User
  *
