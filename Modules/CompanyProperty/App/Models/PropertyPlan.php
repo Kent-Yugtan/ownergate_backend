@@ -4,14 +4,11 @@ namespace Modules\CompanyProperty\App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 
-class PropertyType extends Model
+class PropertyPlan extends Model
 {
-    /**
-     * The attributes that are mass assignable.
-     */
     protected $fillable = [
-        'name'
+        'property_id',
+        'name',
+        'photo',
     ];
-    
-
 }

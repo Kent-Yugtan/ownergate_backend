@@ -4,13 +4,12 @@ namespace Modules\CompanyProperty\App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 
-class PropertyType extends Model
+class PropertyMediaPath extends Model
 {
-    /**
-     * The attributes that are mass assignable.
-     */
     protected $fillable = [
-        'name'
+        'media_id',
+        'name',
+        'path',
     ];
     
 

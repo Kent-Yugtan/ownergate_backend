@@ -3,20 +3,22 @@
 namespace Modules\Company\App\Models;
 
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\Factories\HasFactory;
-use Modules\Company\Database\factories\CompanyManagementFactory;
 
 class CompanyManagement extends Model
 {
-    use HasFactory;
-
+    protected $table = 'company_managements';
+    
     /**
      * The attributes that are mass assignable.
      */
-    protected $fillable = [];
+    protected $fillable = [
+        'company_id',
+        'name',
+        'position',
+        'image_path',
+    ];
+
+    protected $hidden = ['created_at', 'updated_at'];
     
-    protected static function newFactory(): CompanyManagementFactory
-    {
-        //return CompanyManagementFactory::new();
-    }
+
 }

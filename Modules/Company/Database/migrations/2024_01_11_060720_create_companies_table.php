@@ -13,16 +13,16 @@ return new class extends Migration {
         Schema::create('companies', function (Blueprint $table) {
             $table->id();
             $table->unsignedBigInteger('owner_id');
-            $table->string('addmail');
-            $table->string('company_name');
+            $table->string('addmail')->nullable();
+            $table->string('company_name')->nullable();
             $table->enum('status', ['active', 'inactive'])->default('active');
             $table->string('profile_picture')->nullable();
             $table->string('profile_poster')->nullable();
-            $table->text('about');
-            $table->text('notes');
-            $table->string('mission');
-            $table->string('vission');
-            $table->string('values');
+            $table->text('about')->nullable();
+            $table->text('notes')->nullable();
+            $table->string('mission')->nullable();
+            $table->string('vission')->nullable();
+            $table->string('values')->nullable();
             $table->string('website')->nullable();
             $table->string('whatsapp_url')->nullable();
             $table->string('instagram_url')->nullable();

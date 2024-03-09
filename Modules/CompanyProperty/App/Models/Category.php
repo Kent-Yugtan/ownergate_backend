@@ -3,17 +3,20 @@
 namespace Modules\CompanyProperty\App\Models;
 
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\Factories\HasFactory;
-use Modules\CompanyProperty\Database\factories\CategoryFactory;
+use Modules\CompanyProperty\App\Models\CategoryTargetType;
 
 class Category extends Model
 {
-    use HasFactory;
-
     /**
      * The attributes that are mass assignable.
      */
-    protected $fillable = [];
+    protected $fillable = [
+        'name'
+    ];
     
+    public function targets()
+    {
+        return $this->hasMany(CategoryTargetType::class, "category_id");
+    }
 
 }

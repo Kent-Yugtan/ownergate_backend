@@ -6,10 +6,13 @@ use App\Traits\ApiHelper;
 use App\Traits\ApiResponser;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
+use Illuminate\Support\Facades\DB;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\RedirectResponse;
+use Modules\Company\App\Models\Company;
 use Modules\CompanyProperty\App\Models\Category;
 use Modules\CompanyProperty\App\Models\PropertyType;
+use Modules\CompanyProperty\App\resources\PropertyResource;
 
 class CompanyPropertyController extends Controller
 {

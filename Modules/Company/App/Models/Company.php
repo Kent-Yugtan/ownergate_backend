@@ -3,20 +3,79 @@
 namespace Modules\Company\App\Models;
 
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\Factories\HasFactory;
-use Modules\Company\Database\factories\CompanyFactory;
+use Modules\Company\App\Models\CompanyNews;
+use Modules\Company\App\Models\CompanyService;
+use Modules\Company\App\Models\CompanyLocation;
+use Modules\Company\App\Models\CompanyAttachment;
+use Modules\Company\App\Models\CompanyManagement;
+use Modules\CompanyProperty\App\Models\CompanyProperty;
 
 class Company extends Model
 {
-    use HasFactory;
-
     /**
      * The attributes that are mass assignable.
      */
-    protected $fillable = [];
+    protected $fillable = [
+        'owner_id',
+        'addmail',
+        'company_name',
+        'status',
+        'profile_picture',
+        'profile_poster',
+        'about',
+        'notes',
+        'mission',
+        'vission',
+        'values',
+        'website',
+        'whatsapp_url',
+        'instagram_url',
+        'facebook_url',
+        'twitter_url',
+        'youtube_url',
+        'wechat_url',
+        'telegram_url',
+    ];
     
-    protected static function newFactory(): CompanyFactory
+
+    public function createOrGetProperty($property_id) : CompanyProperty
     {
-        //return CompanyFactory::new();
+        $property = $this->properties()->where('id', $property_id)->first();
+
+        if (! $property) {
+            $property = $this->properties()->create();
+        }
+
+        return $property;
+    }
+
+    public function properties()
+    {
+        return $this->hasMany(CompanyProperty::class);
+    }
+
+    public function managements()
+    {
+        return $this->hasMany(CompanyManagement::class, 'company_id');
+    }
+
+    public function news()
+    {
+        return $this->hasMany(CompanyNews::class);
+    }
+
+    public function services()
+    {
+        return $this->hasMany(CompanyService::class);
+    }
+
+    public function locations()
+    {
+        return $this->hasMany(CompanyLocation::class);
+    }
+
+    public function attachments()
+    {
+        return $this->hasMany(CompanyAttachment::class);
     }
 }
