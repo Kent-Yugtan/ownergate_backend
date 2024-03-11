@@ -11,6 +11,8 @@ class UserProfileResource extends JsonResource
      */
     public function toArray($request): array
     {
-        return parent::toArray($request);
+        return array_merge(parent::toArray($request), [
+            'avatar' => !is_null($this->avatar) && $this->avatar !== 'null' ? route('storage.image', ['file' => $this->avatar]) : null,
+        ]);
     }
 }

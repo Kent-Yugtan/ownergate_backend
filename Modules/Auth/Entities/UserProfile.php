@@ -41,6 +41,7 @@ class UserProfile extends Model
         'social_id',
         'social_type',
         'website',
+        'avatar'
     ];
 
     public function user()

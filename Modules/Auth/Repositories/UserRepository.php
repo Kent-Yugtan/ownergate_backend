@@ -25,11 +25,19 @@ class UserRepository extends BaseRepository implements UserRepositoryInterface
             'user_id' => $user->id
         ], $request->all());
 
-        if ($request->has('avatar')) {
+        if ($request->has('avatar')) 
+        {
             $this->uploadPhoto($user, $request->avatar, 'avatar');
         }
-        if ($request->has('cover_photo')) {
-            $this->uploadPhoto($user, $request->cover_photo, 'cover_photo');
+        
+        if($request->filled('old_password') && $request->filled('password') && $request->filled('password_confirmation'))
+        {
+            if (!Hash::check($request->old_password, $user->password)) {
+                return ['errCode' => 'incorrect-old-password', 'status' => false ]; 
+            }
+
+            $user->password = $request->password;
+            $user->save();  
         }
 
         return $user;
@@ -47,6 +55,6 @@ class UserRepository extends BaseRepository implements UserRepositoryInterface
             $path = $file->store('user/' . $user->id);
         }
 
-        $user->update([$key => $path]);
+        $user->profile->update([$key => $path]);
     }
 }

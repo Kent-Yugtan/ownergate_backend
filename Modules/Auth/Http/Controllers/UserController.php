@@ -28,6 +28,10 @@ class UserController extends Controller
         DB::beginTransaction();
         try {
             $user = $this->userRepository->updateProfile($request);
+
+            if($user['errCode'] == 'incorrect-old-password'){
+                return $this->errorResponse(null, 'Incorrect old password', 401);
+            }
             
             DB::commit();
             return $this->successResponse(new UserResource($user), 'Profile has been saved.');

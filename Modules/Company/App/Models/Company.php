@@ -9,6 +9,7 @@ use Modules\Company\App\Models\CompanyLocation;
 use Modules\Company\App\Models\CompanyAttachment;
 use Modules\Company\App\Models\CompanyManagement;
 use Modules\CompanyProperty\App\Models\CompanyProperty;
+use App\Models\User;
 
 class Company extends Model
 {
@@ -77,5 +78,9 @@ class Company extends Model
     public function attachments()
     {
         return $this->hasMany(CompanyAttachment::class);
+    }
+
+    public function users(){
+        return $this->belongsToMany(User::class, 'company_users', 'company_id', 'user_id')->withPivot('is_admin');
     }
 }
