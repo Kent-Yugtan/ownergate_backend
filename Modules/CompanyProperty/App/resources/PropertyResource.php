@@ -20,8 +20,21 @@ class PropertyResource extends JsonResource
             'download_logo' => $this->logo ? route('storage.download', ['file' => $this->logo]) : null,
             'poster' => $this->poster,
             'download_poster' => $this->poster ? route('storage.download', ['file' => $this->poster]) : null,
-            'overviews' => $this->overviews,
-            'details' => $this->details,
+            'overviews' => $this->overviews->map(function ($overview) {
+                return [
+                    'id' => $overview->id,
+                    'name' => $overview->name,
+                    'quantity' => $overview->pivot->quantity,
+                    'visible' => $overview->pivot->visible,
+                ];
+            }),
+            'details' => $this->details->map(function ($detail) {
+                return [
+                    'id' => $detail->id,
+                    'name' => $detail->name,
+                    'value' => $detail->pivot->value,
+                ];
+            }),
             'features' => $this->features,
             'amenities' => $this->amenities,
             'utilities' => $this->utilities,

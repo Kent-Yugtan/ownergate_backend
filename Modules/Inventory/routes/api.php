@@ -2,6 +2,7 @@
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
+use Modules\Inventory\App\Http\Controllers\InventoryController;
 
 /*
     |--------------------------------------------------------------------------
@@ -14,6 +15,8 @@ use Illuminate\Support\Facades\Route;
     |
 */
 
-Route::middleware(['auth:sanctum'])->prefix('v1')->name('api.')->group(function () {
-    Route::get('inventory', fn (Request $request) => $request->user())->name('inventory');
+Route::prefix('admin')->middleware(['auth:api'])->group(function () {
+    Route::apiResource('/inventories', InventoryController::class)->only([
+        'index', 'store', 'update', 'destroy'
+    ]);
 });

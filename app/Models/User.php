@@ -13,7 +13,7 @@ use Modules\Company\App\Models\Company;
 use Modules\Customer\Entities\Customer;
 use Modules\Shortcut\Entities\Shortcut;
 use Illuminate\Notifications\Notifiable;
-use Modules\Inventory\Entities\Inventory;
+use Modules\Inventory\App\Models\Inventory;
 use Illuminate\Database\Eloquent\Collection;
 use Modules\Customer\Entities\CustomerDocument;
 use Illuminate\Database\Eloquent\Casts\Attribute;
@@ -144,4 +144,10 @@ class User extends Authenticatable
     {
         return $this->belongsToMany(Company::class, 'company_users', 'user_id', 'company_id')->withPivot('is_admin');
     }
+
+    public function inventories()
+    {
+        return $this->hasMany(Inventory::class, 'user_id');
+    }
+
 }

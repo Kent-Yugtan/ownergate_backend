@@ -56,9 +56,8 @@ class CompanyPropertyDatabaseSeeder extends Seeder
                 // 'slug' => Str::slug($name . ' ' . $i, '-')
             ]);
 
-            for ($i = 1; $i <= 3; $i++) {
-                $property->details()->create([
-                    'detail_id' => Detail::inRandomOrder()->first()->id,
+            for ($a = 1; $a <= 3; $a++) {
+                $property->details()->attach(Detail::inRandomOrder()->first()->id, [
                     'value' => $faker->name
                 ]);
             }
