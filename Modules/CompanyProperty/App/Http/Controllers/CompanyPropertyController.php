@@ -23,6 +23,20 @@ class CompanyPropertyController extends Controller
 {
     use ApiResponser, ApiHelper;
 
+    public function index(Request $request, Company $company)
+    {
+        $perPage = $request->perPage ?? 10;
+
+        $properties = $company->properties()->paginate($perPage);
+
+        return PropertyResource::collection($properties);
+    }
+
+    public function show(Request $request, Company $company, CompanyProperty $property)
+    {
+        return new PropertyResource($property);
+    }
+
     public function getOverviews()
     {
         return Overview::get();
@@ -36,20 +50,6 @@ class CompanyPropertyController extends Controller
     public function getDetails()
     {
         return Detail::get();
-    }
-
-    public function index(Request $request, Company $company)
-    {
-        $perPage = $request->perPage ?? 10;
-
-        $properties = $company->properties()->paginate($perPage);
-
-        return PropertyResource::collection($properties);
-    }
-
-    public function show(Request $request, Company $company, CompanyProperty $property)
-    {
-        return new PropertyResource($property);
     }
 
     public function getCategories()
