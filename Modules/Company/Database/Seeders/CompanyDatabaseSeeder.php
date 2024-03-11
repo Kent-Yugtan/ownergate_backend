@@ -14,7 +14,7 @@ class CompanyDatabaseSeeder extends Seeder
     public function run(): void
     {
         $faker = Faker::create();
-        $user = User::find(1);
+        $users = User::all();
         $subuser = User::find(3);
 
         $types = [
@@ -25,10 +25,17 @@ class CompanyDatabaseSeeder extends Seeder
             ['company_type_name' => 'Vendor', 'company_type_enum' => 'vendor', 'description' => $faker->realText(250)],
         ];
 
-        if ($user->hasRole('Admin')) {
+        foreach($users as $user){
+            
+            if($user->hasRole('Customer')){
+                continue;
+            }
+
+            $companyName = $user->hasRole('Admin') ? 'Owner Gate' : $faker->name;
+
             $company = $user->company()->create([
+                'company_name' => $companyName,
                 'addmail' => $faker->name,
-                'company_name' => $faker->name,
                 'status' => 'active',
                 'profile_picture' => $faker->name,
                 'profile_poster' => $faker->name,
@@ -46,6 +53,8 @@ class CompanyDatabaseSeeder extends Seeder
                 'wechat_url' => $faker->name,
                 'telegram_url' => $faker->name,
             ]);
+
+            $company->users()->attach($user->id, ['is_admin' => 1]);
 
             for ($i = 1; $i <= 3; $i++) {
                 $company->managements()->create([
