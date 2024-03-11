@@ -39,6 +39,8 @@ class CompanyProperty extends Model
         'longitude',
         'description',
         'full_video',
+        'status',
+        'notes',
     ];
 
     public function company()

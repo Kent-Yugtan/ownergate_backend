@@ -57,6 +57,31 @@ class CompanyPropertyController extends Controller
         });
     }
 
+    
+    public function saveStatus(Request $request, Company $company)
+    {
+        try {
+            DB::beginTransaction();
+
+            $validatedData = $request->validate([
+                'status' => 'required',
+                'notes' => 'nullable',
+            ]);
+
+            $property = $company->properties()->updateOrCreate(
+                [
+                    'id' => $request->property_id
+                ],
+                $validatedData
+            );
+            
+            return $this->successresponse(new PropertyResource($property), 'Property company logo has been updated.');
+        } catch (\Exception $e) {
+            DB::rollBack();
+            return $this->errorResponse(null, $e->getMessage());
+        }
+    }
+
 
     public function saveLogo(Request $request, Company $company)
     {
