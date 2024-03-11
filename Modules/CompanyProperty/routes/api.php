@@ -23,6 +23,7 @@ use Modules\CompanyProperty\App\Http\Controllers\CompanyPropertyController;
 Route::prefix('admin')->middleware(['auth:api'])->group(function () {
     Route::prefix('company/{company}/properties')->group(function () {
         Route::get('/', [CompanyPropertyController::class, 'index']);
+        Route::get('/{property}', [CompanyPropertyController::class, 'show'])->scopeBindings();
 
         Route::post('/status', [CompanyPropertyController::class, 'saveStatus']);
         Route::post('/logo', [CompanyPropertyController::class, 'saveLogo']);

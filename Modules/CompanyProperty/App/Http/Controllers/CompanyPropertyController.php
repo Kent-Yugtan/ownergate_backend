@@ -13,6 +13,7 @@ use Illuminate\Support\Facades\Storage;
 use Modules\Company\App\Models\Company;
 use Modules\CompanyProperty\App\Models\Category;
 use Modules\CompanyProperty\App\Models\PropertyType;
+use Modules\CompanyProperty\App\Models\CompanyProperty;
 use Modules\CompanyProperty\App\resources\PropertyResource;
 
 class CompanyPropertyController extends Controller
@@ -26,6 +27,11 @@ class CompanyPropertyController extends Controller
         $properties = $company->properties()->paginate($perPage);
 
         return PropertyResource::collection($properties);
+    }
+
+    public function show(Request $request, Company $company, CompanyProperty $property)
+    {
+        return new PropertyResource($property);
     }
 
     public function getCategories()
