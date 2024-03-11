@@ -6,5 +6,6 @@
     "Dashboard": true,
     "CompanyEmployee": true,
     "Message": true,
-    "Customer": true
+    "Customer": true,
+    "Admin": true
 }
