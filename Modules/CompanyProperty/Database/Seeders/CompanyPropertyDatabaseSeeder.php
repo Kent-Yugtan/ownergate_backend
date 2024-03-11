@@ -5,6 +5,7 @@ namespace Modules\CompanyProperty\Database\Seeders;
 use Faker\Factory as Faker;
 use Illuminate\Database\Seeder;
 use Modules\Company\App\Models\Company;
+use Modules\CompanyProperty\App\Models\Detail;
 use Modules\CompanyProperty\App\Models\Category;
 use Modules\CompanyProperty\App\Models\PropertyType;
 use Modules\CompanyProperty\App\Models\CompanyProperty;
@@ -25,7 +26,7 @@ class CompanyPropertyDatabaseSeeder extends Seeder
             $category = Category::inRandomOrder()->where('name', '!=', 'Others')->first();
             $target_type = CategoryTargetType::inRandomOrder()->where('category_id', $category->id)->first();
 
-            CompanyProperty::create([
+            $property = CompanyProperty::create([
                 'company_id' => Company::inRandomOrder()->first()->id,
                 'category_id' => $category->id,
                 'target_type_id' => $target_type->id,
@@ -54,6 +55,12 @@ class CompanyPropertyDatabaseSeeder extends Seeder
                 // 'description'   => $faker->realText(50),
                 // 'slug' => Str::slug($name . ' ' . $i, '-')
             ]);
+
+            for ($a = 1; $a <= 3; $a++) {
+                $property->details()->attach(Detail::inRandomOrder()->first()->id, [
+                    'value' => $faker->name
+                ]);
+            }
         }
     }
 }

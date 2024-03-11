@@ -9,12 +9,14 @@ use Illuminate\Http\Response;
 use Illuminate\Support\Facades\DB;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\RedirectResponse;
+use Illuminate\Support\Facades\Storage;
 use Modules\Company\App\Models\Company;
 use Modules\CompanyProperty\App\Models\Category;
 use Modules\CompanyProperty\App\Models\Detail;
 use Modules\CompanyProperty\App\Models\Feature;
 use Modules\CompanyProperty\App\Models\Overview;
 use Modules\CompanyProperty\App\Models\PropertyType;
+use Modules\CompanyProperty\App\Models\CompanyProperty;
 use Modules\CompanyProperty\App\resources\PropertyResource;
 
 class CompanyPropertyController extends Controller
@@ -34,6 +36,20 @@ class CompanyPropertyController extends Controller
     public function getDetails()
     {
         return Detail::get();
+    }
+
+    public function index(Request $request, Company $company)
+    {
+        $perPage = $request->perPage ?? 10;
+
+        $properties = $company->properties()->paginate($perPage);
+
+        return PropertyResource::collection($properties);
+    }
+
+    public function show(Request $request, Company $company, CompanyProperty $property)
+    {
+        return new PropertyResource($property);
     }
 
     public function getCategories()
@@ -64,6 +80,32 @@ class CompanyPropertyController extends Controller
         });
     }
 
+
+    public function saveStatus(Request $request, Company $company)
+    {
+        try {
+            DB::beginTransaction();
+
+            $validatedData = $request->validate([
+                'status' => 'required',
+                'notes' => 'nullable',
+            ]);
+
+            $property = $company->properties()->updateOrCreate(
+                [
+                    'id' => $request->property_id
+                ],
+                $validatedData
+            );
+
+            return $this->successresponse(new PropertyResource($property), 'Property company logo has been updated.');
+        } catch (\Exception $e) {
+            DB::rollBack();
+            return $this->errorResponse(null, $e->getMessage());
+        }
+    }
+
+
     public function saveLogo(Request $request, Company $company)
     {
         try {
@@ -71,6 +113,10 @@ class CompanyPropertyController extends Controller
 
             if ($request->hasFile('logo')) {
                 $property = $company->createOrGetProperty($request->property_id);
+
+                if ($property && $property->logo) {
+                    Storage::delete($property->logo);
+                }
 
                 $path = $request->file('logo')->store('company/' . $company->id . '/properties/' . $property->id . '/logo');
 
@@ -93,6 +139,10 @@ class CompanyPropertyController extends Controller
 
             if ($request->hasFile('poster')) {
                 $property = $company->createOrGetProperty($request->property_id);
+
+                if ($property && $property->poster) {
+                    Storage::delete($property->poster);
+                }
 
                 $path = $request->file('poster')->store('company/' . $company->id . '/properties/' . $property->id . '/poster');
 
