@@ -39,6 +39,8 @@ class CompanyProperty extends Model
         'longitude',
         'description',
         'full_video',
+        'status',
+        'notes',
     ];
 
     public function company()
@@ -63,12 +65,12 @@ class CompanyProperty extends Model
 
     public function overviews()
     {
-        return $this->belongsToMany(Overview::class, 'property_overviews', 'property_id', 'overview_id')->withTimestamps();
+        return $this->belongsToMany(Overview::class, 'property_overviews', 'property_id', 'overview_id')->withPivot(['quantity', 'visible'])->withTimestamps();
     }
 
     public function details()
     {
-        return $this->belongsToMany(Detail::class, 'property_details', 'property_id', 'detail_id')->withTimestamps();
+        return $this->belongsToMany(Detail::class, 'property_details', 'property_id', 'detail_id')->withPivot('value')->withTimestamps();
     }
 
     public function features()
