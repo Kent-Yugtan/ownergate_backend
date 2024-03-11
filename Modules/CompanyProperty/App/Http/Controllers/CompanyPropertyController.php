@@ -9,6 +9,7 @@ use Illuminate\Http\Response;
 use Illuminate\Support\Facades\DB;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\RedirectResponse;
+use Illuminate\Support\Facades\Storage;
 use Modules\Company\App\Models\Company;
 use Modules\CompanyProperty\App\Models\Category;
 use Modules\CompanyProperty\App\Models\PropertyType;
@@ -18,19 +19,14 @@ class CompanyPropertyController extends Controller
 {
     use ApiResponser, ApiHelper;
 
-    // public function getCategories()
-    // {
-    //     return CategoryType::with('targetTypes')->get()->map(function ($category) {
-    //         return [
-    //             'category' => $category->name,
-    //             'target_types' => $category->targetTypes->map(function ($type) use ($category) {
-    //                 return [
-    //                     'name' => $category->name . ' ' . $type->name
-    //                 ];
-    //             })
-    //         ];
-    //     });
-    // }
+    public function index(Request $request, Company $company)
+    {
+        $perPage = $request->perPage ?? 10;
+
+        $properties = $company->properties()->paginate($perPage);
+
+        return PropertyResource::collection($properties);
+    }
 
     public function getCategories()
     {
@@ -70,6 +66,10 @@ class CompanyPropertyController extends Controller
             if ($request->hasFile('logo')) {
                 $property = $company->createOrGetProperty($request->property_id);
 
+                if ($property && $property->logo) {
+                    Storage::delete($property->logo);
+                }
+
                 $path = $request->file('logo')->store('company/' . $company->id . '/properties/' . $property->id . '/logo');
 
                 $property->update(['logo' => $path]);
@@ -91,6 +91,10 @@ class CompanyPropertyController extends Controller
 
             if ($request->hasFile('poster')) {
                 $property = $company->createOrGetProperty($request->property_id);
+
+                if ($property && $property->poster) {
+                    Storage::delete($property->poster);
+                }
 
                 $path = $request->file('poster')->store('company/' . $company->id . '/properties/' . $property->id . '/poster');
 

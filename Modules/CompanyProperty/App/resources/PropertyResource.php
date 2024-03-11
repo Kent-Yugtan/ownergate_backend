@@ -35,7 +35,13 @@ class PropertyResource extends JsonResource
                     'value' => $detail->pivot->value,
                 ];
             }),
-            'features' => $this->features,
+            'features' => $this->features->map(function ($feature) {
+                return [
+                    'id' => $feature->id,
+                    'property_id' => $feature->pivot->property_id,
+                    'name' => $feature->name,
+                ];
+            }),
             'amenities' => $this->amenities,
             'utilities' => $this->utilities,
             'unitalities' => $this->unitalities,

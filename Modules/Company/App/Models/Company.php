@@ -42,7 +42,7 @@ class Company extends Model
     public function createOrGetProperty($property_id) : CompanyProperty
     {
         $property = $this->properties()->where('id', $property_id)->first();
-
+        
         if (! $property) {
             $property = $this->properties()->create();
         }
@@ -80,7 +80,8 @@ class Company extends Model
         return $this->hasMany(CompanyAttachment::class);
     }
 
-    public function users(){
+    public function users()
+    {
         return $this->belongsToMany(User::class, 'company_users', 'company_id', 'user_id')->withPivot('is_admin');
     }
 }
