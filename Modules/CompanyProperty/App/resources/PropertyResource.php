@@ -38,8 +38,8 @@ class PropertyResource extends JsonResource
             'features' => $this->features->map(function ($feature) {
                 return [
                     'id' => $feature->id,
-                    'property_id' => $feature->pivot->property_id,
                     'name' => $feature->name,
+                    'feature_id' => $feature->pivot->feature_id,
                 ];
             }),
             'amenities' => $this->amenities,

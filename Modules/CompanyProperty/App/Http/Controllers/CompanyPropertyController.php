@@ -12,6 +12,9 @@ use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Facades\Storage;
 use Modules\Company\App\Models\Company;
 use Modules\CompanyProperty\App\Models\Category;
+use Modules\CompanyProperty\App\Models\Detail;
+use Modules\CompanyProperty\App\Models\Feature;
+use Modules\CompanyProperty\App\Models\Overview;
 use Modules\CompanyProperty\App\Models\PropertyType;
 use Modules\CompanyProperty\App\Models\CompanyProperty;
 use Modules\CompanyProperty\App\resources\PropertyResource;
@@ -19,6 +22,21 @@ use Modules\CompanyProperty\App\resources\PropertyResource;
 class CompanyPropertyController extends Controller
 {
     use ApiResponser, ApiHelper;
+
+    public function getOverviews()
+    {
+        return Overview::get();
+    }
+
+    public function getFeatures()
+    {
+        return Feature::get();
+    }
+
+    public function getDetails()
+    {
+        return Detail::get();
+    }
 
     public function index(Request $request, Company $company)
     {
@@ -37,17 +55,16 @@ class CompanyPropertyController extends Controller
     public function getCategories()
     {
         // Fetch CategoryTypes
-        $categoryTypes = Category::with('targetTypes')->get();
+        $categoryTypes = Category::with('targets')->get();
 
         // Fetch PropertyTypes
         $propertyTypes = PropertyType::all();
-
         // Map CategoryType data
         return $categoryTypes->map(function ($category) use ($propertyTypes) {
             return [
                 'category_id'    => $category->id,
                 'category' => $category->name,
-                'target_types' => $category->targetTypes->map(function ($type) use ($category) {
+                'targets' => $category->targets->map(function ($type) use ($category) {
                     return [
                         'target_type_id' => $type->id,
                         'name' => $category->name . ' ' . $type->name
@@ -63,7 +80,7 @@ class CompanyPropertyController extends Controller
         });
     }
 
-    
+
     public function saveStatus(Request $request, Company $company)
     {
         try {
@@ -80,7 +97,7 @@ class CompanyPropertyController extends Controller
                 ],
                 $validatedData
             );
-            
+
             return $this->successresponse(new PropertyResource($property), 'Property company logo has been updated.');
         } catch (\Exception $e) {
             DB::rollBack();

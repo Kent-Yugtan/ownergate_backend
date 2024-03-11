@@ -66,7 +66,6 @@ Route::get('get_countries', function (Request $request) {
     return $countries;
 });
 
-
 Route::get('get_currencies', function (Request $request) {
     $action =  World::currencies($request->filters);
 
@@ -77,7 +76,7 @@ Route::get('get_currencies', function (Request $request) {
     return $currencies;
 });
 
-Route::get('world/cities', function(Request $request) {
+Route::get('world/cities', function (Request $request) {
     $filters = (array) json_decode($request->filters, true);
     $action =  World::cities($filters);
     if ($action->success) {
@@ -86,7 +85,7 @@ Route::get('world/cities', function(Request $request) {
     return $cities;
 });
 
-Route::get('world/states', function(Request $request) {
+Route::get('world/states', function (Request $request) {
     $filters = (array) json_decode($request->filters, true);
     $action =  World::states($filters);
     if ($action->success) {
