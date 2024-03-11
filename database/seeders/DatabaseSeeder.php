@@ -10,6 +10,9 @@ use Modules\Company\Database\Seeders\CategoryTableSeeder;
 use Modules\Company\Database\Seeders\CompanyDatabaseSeeder;
 use Modules\CompanyProperty\Database\Seeders\PropertyTypeTableSeeder;
 use Modules\CompanyProperty\Database\Seeders\CompanyPropertyDatabaseSeeder;
+use Modules\CompanyProperty\Database\Seeders\PropertyOverviewSeeder;
+use Modules\CompanyProperty\Database\Seeders\PropertyDetailsSeeder;
+use Modules\CompanyProperty\Database\Seeders\PropertyFeaturesSeeder;
 
 class DatabaseSeeder extends Seeder
 {
@@ -24,5 +27,8 @@ class DatabaseSeeder extends Seeder
         $this->call([PropertyTypeTableSeeder::class]);
         $this->call(CompanyDatabaseSeeder::class);
         $this->call(CompanyPropertyDatabaseSeeder::class);
+        $this->call(PropertyOverviewSeeder::class);
+        $this->call(PropertyDetailsSeeder::class);
+        $this->call(PropertyFeaturesSeeder::class);
     }
 }

@@ -41,10 +41,16 @@ Route::prefix('admin')->middleware(['auth:api'])->group(function () {
         Route::post('/map-location', [CompanyPropertyController::class, 'saveMapLocation']);
         Route::post('/view-live', [CompanyPropertyController::class, 'saveWhatsNearby']);
         Route::post('/plans', [CompanyPropertyController::class, 'savePlans']);
-    
+
         Route::post('/full-video', [PropertyMediaController::class, 'saveFullVideo']);
         Route::post('/360-virtual-tour', [PropertyMediaController::class, 'saveVirtualTour']);
         Route::post('/virtual-spots', [PropertyMediaController::class, 'saveVirtualSpots']);
         Route::post('/photos', [PropertyMediaController::class, 'savePhotos']);
     });
+
+    Route::get('property/category-types', [CompanyPropertyController::class, 'getCategories']);
+    Route::get('property/get-overviews', [CompanyPropertyController::class, 'getOverviews']);
+    Route::get('property/get-details', [CompanyPropertyController::class, 'getDetails']);
+    Route::get('property/get-features', [CompanyPropertyController::class, 'getFeatures']);
+
 });
