@@ -14,6 +14,7 @@ class PropertyResource extends JsonResource
         return array_merge(parent::toArray($request), [
             'property_id' => $this->id,
             'category' => $this->category,
+            'company_name' => $this->company->company_name,
             'property_type' => $this->propertyType,
             'target_type' => $this->targetType,
             'logo' => $this->logo,
