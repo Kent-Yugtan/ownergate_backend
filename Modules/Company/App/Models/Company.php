@@ -37,6 +37,11 @@ class Company extends Model
         'wechat_url',
         'telegram_url',
     ];
+
+    public function owner()
+    {
+        return $this->belongsTo(User::class);
+    }
     
 
     public function createOrGetProperty($property_id) : CompanyProperty
