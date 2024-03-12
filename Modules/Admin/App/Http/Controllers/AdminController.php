@@ -17,17 +17,18 @@ class AdminController extends Controller
     {
         $perPage = $request->perPage ?? 10;
  
-        $all_propertis = CompanyProperty::when($request->date_from && $request->date_to, function ($query) use ($request) {
-            return $query->whereDate('created_at', '>=', $request->date_from)
-                ->whereDate('created_at', '<=', $request->date_to);
+        $all_propertis = CompanyProperty::when($request->owner_id, function ($query) use ($request) {
+            return $query->whereHas('company', function ($query) use ($request) {
+                $query ->where('owner_id', $request->owner_id);
+            });
         })
-            ->when($request->keywords, function ($query) use ($request) {
-                return $query->where('name', 'like', '%' . $request->keywords . '%')
-                    ->orWhereHas('propertyType', function ($query) use ($request) {
-                        $query->where('name', 'like', '%' . $request->keywords . '%');
-                    });
-            })
-            ->paginate($perPage);
+        ->when($request->keywords, function ($query) use ($request) {
+            return $query->where('name', 'like', '%' . $request->keywords . '%')
+                ->orWhereHas('propertyType', function ($query) use ($request) {
+                    $query->where('name', 'like', '%' . $request->keywords . '%');
+                });
+        })
+        ->paginate($perPage);
  
         return PropertyResource::collection($all_propertis);
     }
