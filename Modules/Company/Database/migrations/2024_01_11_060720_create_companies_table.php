@@ -15,6 +15,7 @@ return new class extends Migration {
             $table->unsignedBigInteger('owner_id');
             $table->string('addmail')->nullable();
             $table->string('company_name')->nullable();
+            $table->string('phone')->nullable();
             $table->enum('status', ['active', 'inactive'])->default('active');
             $table->string('profile_picture')->nullable();
             $table->string('profile_poster')->nullable();
@@ -31,6 +32,8 @@ return new class extends Migration {
             $table->string('youtube_url')->nullable();
             $table->string('wechat_url')->nullable();
             $table->string('telegram_url')->nullable();
+            $table->string('permissions')->nullable();
+            $table->json('privacy')->nullable();
             $table->timestamps();
             $table->softDeletes();
 

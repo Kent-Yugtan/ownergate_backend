@@ -4,6 +4,8 @@ namespace Modules\Customer\App\Providers;
 
 use Illuminate\Support\Facades\Blade;
 use Illuminate\Support\ServiceProvider;
+use Modules\Customer\Repositories\Interfaces\CustomerRepositoryInterface;
+use Modules\Customer\Repositories\CustomerRepository;
 
 class CustomerServiceProvider extends ServiceProvider
 {
@@ -30,6 +32,7 @@ class CustomerServiceProvider extends ServiceProvider
     public function register(): void
     {
         $this->app->register(RouteServiceProvider::class);
+        $this->app->bind(CustomerRepositoryInterface::class, CustomerRepository::class);
     }
 
     /**

@@ -2,6 +2,11 @@
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
+use Modules\Company\App\Http\Controllers\CompanyController;
+use Modules\Company\App\Http\Controllers\CompanyNewsController;
+use Modules\Company\App\Http\Controllers\CompanyServiceController;
+use Modules\Company\App\Http\Controllers\CompanyLocationController;
+use Modules\Company\App\Http\Controllers\CompanyManagementController;
 
 /*
     |--------------------------------------------------------------------------
@@ -14,6 +19,40 @@ use Illuminate\Support\Facades\Route;
     |
 */
 
-Route::middleware(['auth:sanctum'])->prefix('v1')->name('api.')->group(function () {
-    Route::get('company', fn (Request $request) => $request->user())->name('company');
+Route::prefix('admin')->middleware(['auth:api'])->group(function () {
+    Route::prefix('company')->group(function () {
+        Route::apiResource('/{company}/profile', CompanyController::class)->only([
+            'index', 'store'
+        ]);
+
+        Route::apiResource('/{company}/management', CompanyManagementController::class);
+
+        Route::apiResource('/{company}/news', CompanyNewsController::class)->scoped([
+            'companies' => 'company:id',
+        ]);
+        Route::apiResource('/{company}/services', CompanyServiceController::class)->scoped([
+            'companies' => 'company:id',
+        ]);
+        Route::apiResource('/{company}/locations', CompanyLocationController::class)->scoped([
+            'companies' => 'company:id',
+        ]);
+
+        Route::get('{company}/get-properties/', [CompanyController::class, 'getProperties']);
+        Route::get('{company}/get-attachments/', [CompanyController::class, 'getAttachments']);
+        Route::post('{company}/add-attachment/', [CompanyController::class, 'addAttachment']);
+        Route::delete('{company}/remove-attachment/{attachment}', [CompanyController::class, 'removeAttachment']);
+        Route::get('{company}/team/', [CompanyController::class, 'getTeam']);
+        Route::post('{company}/add-member/', [CompanyController::class, 'addMember']);
+        Route::post('{company}/update-member/{member}', [CompanyController::class, 'updateMember']);
+        Route::delete('{company}/remove_member/{member}', [CompanyController::class, 'removeMember']);
+
+        Route::post('{company}/add-property/{property}', [CompanyController::class, 'addProperty']);
+        Route::get('{company}/accounts-list', [CompanyController::class, 'accountsList']);
+        Route::post('{company}/change-status', [CompanyController::class, 'changeStatus']);
+        Route::post('{company}/privacy', [CompanyController::class, 'changePrivacy']);
+    });
+});
+
+Route::prefix('admin')->group(function() {
+    Route::apiResource('company-types', CompanyTypeController::class);
 });

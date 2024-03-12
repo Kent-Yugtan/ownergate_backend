@@ -2,6 +2,7 @@
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
+use Modules\customer\App\Http\Controllers\CustomerController;
 
 /*
     |--------------------------------------------------------------------------
@@ -14,6 +15,11 @@ use Illuminate\Support\Facades\Route;
     |
 */
 
-Route::middleware(['auth:sanctum'])->prefix('v1')->name('api.')->group(function () {
-    Route::get('customer', fn (Request $request) => $request->user())->name('customer');
+Route::prefix('admin')->middleware(['auth:api'])->group(function () {
+    Route::prefix('customer')->group(function () {
+
+        Route::get('/{company}', [CustomerController::class, 'index']);
+        Route::post('/update/{customer}', [CustomerController::class, 'updateProfile']);
+        
+    });
 });
