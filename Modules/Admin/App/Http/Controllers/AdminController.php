@@ -43,6 +43,7 @@ class AdminController extends Controller
                 'id' => $company->id,
                 'company_name' => $company->company_name,
                 'company_email' => $company->owner->email,
+                'properties' => PropertyResource::collection($company->properties)
             ];
         });
 
