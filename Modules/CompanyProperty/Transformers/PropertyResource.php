@@ -19,8 +19,9 @@ class PropertyResource extends JsonResource
             'property_type' => new PropertyTypeResource($this->property_type),
             'addresses'     => new PropertyAddressesResource($this->address()->first()),
             'owner' => new PropertyUserResource($this->owners),
-            'amenities' => $this->amenities(),
-            'medias' => new PropertyMediaResource($this->medias),
+            'amenities_group' => $this->getGroupAmenities(),
+            'amenities' => new PropertyAmenityResource($this->amenities),
+            'medias' => $this->medias(),
             'download_company_logo' => $this->company_logo ? route('storage.download', ['file' => $this->company_logo]) : null,
             'download_poster' => $this->poster ? route('storage.download', ['file' => $this->poster]) : null,
             'target_type' => $this->target_type ? $this->target_type->name : "",
@@ -29,18 +30,13 @@ class PropertyResource extends JsonResource
         ]);
     }
 
-    /*private function amenities()
-    {
-        return PropertyAmenityResource::collection($this->amenities);
-    }*/
-
     private function medias()
     {
-        return PropertyMediaResource::collection($this->property_media);
+        return PropertyMediaResource::collection($this->medias);
     }
 
-    /*private function getGroupAmenities()
+    private function getGroupAmenities()
     {
         return $this->amenities->groupBy('type.name');
-    }*/
+    }
 }

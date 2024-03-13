@@ -3,7 +3,7 @@
 namespace Modules\Auth\Transformers;
 
 use Illuminate\Http\Resources\Json\JsonResource;
-use Modules\Company\App\resources\CompanyResource;
+use Modules\Company\Transformers\CompanyResource;
 
 class UserResource extends JsonResource
 {

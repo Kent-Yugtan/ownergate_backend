@@ -104,7 +104,7 @@ class CompanyProperty extends Model
         return $this->hasMany(PropertyPlan::class, 'property_id');
     }
 
-    public function media()
+    public function medias()
     {
         return $this->hasMany(PropertyMedia::class, 'property_id');
     }
