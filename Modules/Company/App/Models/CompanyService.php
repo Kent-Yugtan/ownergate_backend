@@ -13,10 +13,14 @@ class CompanyService extends Model
     /**
      * The attributes that are mass assignable.
      */
-    protected $fillable = [];
+    protected $fillable = [
+        'company_id',
+        'title',
+        'description',
+        'image_path',
+    ];
     
-    protected static function newFactory(): CompanyServiceFactory
-    {
-        //return CompanyServiceFactory::new();
-    }
+    protected $hidden = ['created_at', 'updated_at'];
+
 }
+

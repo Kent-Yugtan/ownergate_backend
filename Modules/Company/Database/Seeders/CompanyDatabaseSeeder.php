@@ -16,6 +16,7 @@ class CompanyDatabaseSeeder extends Seeder
         $faker = Faker::create();
         $users = User::all();
         $subuser = User::find(3);
+        $subuser1 = User::find(2);
 
         $types = [
             ['company_type_name' => 'Owner', 'company_type_enum' => 'owner', 'description' => $faker->realText(250)],
@@ -55,6 +56,7 @@ class CompanyDatabaseSeeder extends Seeder
             ]);
 
             $company->users()->attach($user->id, ['is_admin' => 1]);
+            $company->users()->attach($subuser1->id, ['is_admin' => 0]);
 
             for ($i = 1; $i <= 3; $i++) {
                 $company->managements()->create([

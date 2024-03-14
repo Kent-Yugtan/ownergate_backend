@@ -10,13 +10,13 @@ class Amenity extends Model
 {
     use HasFactory;
 
-    /**
-     * The attributes that are mass assignable.
-     */
-    protected $fillable = [];
-    
-    protected static function newFactory(): AmenityFactory
+    protected $fillable = [
+        'amenity_type_id',
+        'name',
+    ];
+
+    public function type()
     {
-        //return AmenityFactory::new();
+        return $this->belongsTo(AmenityType::class, 'amenity_type_id');
     }
 }

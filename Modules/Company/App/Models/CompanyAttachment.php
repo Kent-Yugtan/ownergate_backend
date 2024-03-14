@@ -13,10 +13,15 @@ class CompanyAttachment extends Model
     /**
      * The attributes that are mass assignable.
      */
-    protected $fillable = [];
-    
-    protected static function newFactory(): CompanyAttachmentFactory
+    protected $fillable = [
+        'company_id',
+        'name',
+        'path',
+        'type'
+    ];
+
+    public function company()
     {
-        //return CompanyAttachmentFactory::new();
+        return $this->belongsTo(Company::class, 'company_id');
     }
 }

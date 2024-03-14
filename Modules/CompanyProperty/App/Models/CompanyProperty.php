@@ -16,6 +16,7 @@ use Modules\CompanyProperty\App\Models\PropertyMedia;
 use Modules\CompanyProperty\App\Models\UnitalityField;
 use Modules\CompanyProperty\App\Models\CategoryTargetType;
 use Modules\CompanyProperty\App\Models\PropertyWhatsNearby;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 
 class CompanyProperty extends Model
 {
@@ -103,8 +104,13 @@ class CompanyProperty extends Model
         return $this->hasMany(PropertyPlan::class, 'property_id');
     }
 
-    public function media()
+    public function medias()
     {
         return $this->hasMany(PropertyMedia::class, 'property_id');
+    }
+
+    public function address()
+    {
+        return $this->hasMany(PropertyLocation::class, 'property_id');
     }
 }

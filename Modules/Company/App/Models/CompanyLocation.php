@@ -13,10 +13,15 @@ class CompanyLocation extends Model
     /**
      * The attributes that are mass assignable.
      */
-    protected $fillable = [];
-    
-    protected static function newFactory(): CompanyLocationFactory
-    {
-        //return CompanyLocationFactory::new();
-    }
+    protected $fillable = [
+        'company_id',
+        'office_name',
+        'address',
+        'latitude',
+        'longitude',
+        'is_default',
+
+    ];
+
+    protected $hidden = ['created_at', 'updated_at'];
 }

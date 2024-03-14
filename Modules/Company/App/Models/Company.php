@@ -82,7 +82,7 @@ class Company extends Model
 
     public function attachments()
     {
-        return $this->hasMany(CompanyAttachment::class);
+        return $this->hasMany(CompanyAttachment::class, 'company_id');
     }
 
     public function users()

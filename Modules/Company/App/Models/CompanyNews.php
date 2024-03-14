@@ -13,10 +13,15 @@ class CompanyNews extends Model
     /**
      * The attributes that are mass assignable.
      */
-    protected $fillable = [];
-    
-    protected static function newFactory(): CompanyNewsFactory
-    {
-        //return CompanyNewsFactory::new();
-    }
+    protected $fillable = [
+        'company_id',
+        'title',
+        'description',
+        'image_path',
+        'posted_at',
+    ];
+
+    protected $hidden = ['created_at', 'updated_at'];
+
 }
+
