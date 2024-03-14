@@ -8,8 +8,8 @@ use Illuminate\Http\Response;
 use Illuminate\Support\Facades\DB;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\RedirectResponse;
-use Modules\Company\Entities\Company;
-use Modules\Company\Entities\CompanyLocation;
+use Modules\Company\App\Models\Company;
+use Modules\Company\App\Models\CompanyLocation;
 use Modules\Company\Repositories\Interfaces\CompanyRepositoryInterface;
 
 class CompanyLocationController extends Controller
@@ -39,7 +39,7 @@ class CompanyLocationController extends Controller
             DB::beginTransaction();
 
             $locations = $this->companyRepository->saveLocations($request, $company);
-            
+
             DB::commit();
 
             if ($locations instanceof \Illuminate\Pagination\LengthAwarePaginator) {
