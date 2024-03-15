@@ -21,7 +21,7 @@ return new class extends Migration {
             $table->string('logo')->nullable();
             $table->string('poster')->nullable();
             $table->string('currency')->nullable();
-            $table->decimal('value', 8, 2)->nullable();
+            $table->decimal('value', 15, 2)->nullable();
             $table->string('country')->nullable();
             $table->string('state')->nullable();
             $table->string('city')->nullable();
