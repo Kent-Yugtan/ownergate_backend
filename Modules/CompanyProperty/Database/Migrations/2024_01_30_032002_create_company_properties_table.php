@@ -17,6 +17,8 @@ return new class extends Migration {
             $table->unsignedBigInteger('type_id')->nullable();
             $table->unsignedBigInteger('target_type_id')->nullable();
             $table->unsignedBigInteger('source_property_id')->nullable();
+            $table->string('og_code')->nullable();
+            $table->string('addmail')->nullable();
             $table->string('name')->nullable();
             $table->string('logo')->nullable();
             $table->string('poster')->nullable();
