@@ -4,6 +4,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use Modules\CompanyProperty\App\Http\Controllers\PropertyMediaController;
 use Modules\CompanyProperty\App\Http\Controllers\CompanyPropertyController;
+use Modules\CompanyProperty\App\Http\Controllers\PropertyFeatureController;
 
 /*
     |--------------------------------------------------------------------------
@@ -52,9 +53,11 @@ Route::prefix('admin')->middleware(['auth:api'])->group(function () {
         Route::post('/photos', [PropertyMediaController::class, 'savePhotos']);
     });
 
-    Route::get('property/category-types', [CompanyPropertyController::class, 'getCategories']);
-    Route::get('property/get-overviews', [CompanyPropertyController::class, 'getOverviews']);
-    Route::get('property/get-details', [CompanyPropertyController::class, 'getDetails']);
-    Route::get('property/get-features', [CompanyPropertyController::class, 'getFeatures']);
+    Route::get('property/category-types', [PropertyFeatureController::class, 'getCategories']);
+    Route::get('property/get-overviews', [PropertyFeatureController::class, 'getOverviews']);
+    Route::get('property/get-details', [PropertyFeatureController::class, 'getDetails']);
+    Route::get('property/get-features', [PropertyFeatureController::class, 'getFeatures']);
+    Route::get('property/get-amenities', [PropertyFeatureController::class, 'getAmenities']);
+    Route::get('property/get-utilities', [PropertyFeatureController::class, 'getUtilities']);
 
 });
