@@ -1,4 +1,5 @@
 <?php
+
 namespace Modules\Company\Repositories;
 
 //use App\Models\Media;
@@ -39,7 +40,7 @@ class CompanyRepository extends BaseRepository implements CompanyRepositoryInter
 
     public function addAttachment(Company $company, $name, $file, $type)
     {
-        $uniqueFilename = 'attachment'.date('Ymd').rand(0, 9999) . $file->guessExtension();
+        $uniqueFilename = 'attachment' . date('Ymd') . rand(0, 9999) . '.' . $file->guessExtension();
 
         $path = $file->storeAs('company/attachment/' . $company->id . '/', $uniqueFilename);
 
@@ -56,7 +57,7 @@ class CompanyRepository extends BaseRepository implements CompanyRepositoryInter
     {
         if (Storage::delete($attachment->path)) {
             $company = $attachment->company();
-            if($attachment->delete()) {
+            if ($attachment->delete()) {
                 return $company;
             }
         }
@@ -69,7 +70,7 @@ class CompanyRepository extends BaseRepository implements CompanyRepositoryInter
         $profile = auth()->user()->company()->updateOrCreate([
             'owner_id' => auth()->user()->id
         ], $request->all());
-        
+
         if ($request->has('profile_picture')) {
             $this->uploadPhoto($profile, $request->avatar, 'profile_picture');
         }
@@ -84,7 +85,7 @@ class CompanyRepository extends BaseRepository implements CompanyRepositoryInter
     {
         $path = $file;
 
-        if(is_file($file)) {
+        if (is_file($file)) {
             if ($profile->{$key}) {
                 Storage::delete($profile->{$key});
             }
@@ -106,9 +107,8 @@ class CompanyRepository extends BaseRepository implements CompanyRepositoryInter
 
     public function deleteManagement($management)
     {
-        if($management->image_path != null) {
+        if ($management->image_path != null)
             Storage::delete($management->image_path);
-        }
         return $management->delete();
     }
 
@@ -123,9 +123,8 @@ class CompanyRepository extends BaseRepository implements CompanyRepositoryInter
 
     public function deleteNews($news)
     {
-        if($management->image_path != null) {
+        if ($management->image_path != null)
             Storage::delete($news->image_path);
-        }
         return $news->delete();
     }
 
@@ -158,16 +157,16 @@ class CompanyRepository extends BaseRepository implements CompanyRepositoryInter
     {
         return $location->delete();
     }
-    
+
 
     public function addMember(Company $company, $request)
     {
         $data = $request->input();
-        if($request->file('image')) {
+        if ($request->file('image')) {
             $file = $request->file('image');
-            $uniqueFilename = 'attachment'.date('Ymd').rand(0, 9999) . $file->guessExtension();
+            $uniqueFilename = 'attachment' . date('Ymd') . rand(0, 9999) . $file->guessExtension();
             $image = $file->storeAs('company/' . $company->id . '/team/', $uniqueFilename);
-            $data= array_merge($data, ['image' => $image]);
+            $data = array_merge($data, ['image' => $image]);
         }
 
         $company->users()->create($data);
@@ -205,7 +204,6 @@ class CompanyRepository extends BaseRepository implements CompanyRepositoryInter
 
     public function changeStatus(Company $company, Request $request)
     {
-        
         $company->status = $request->status;
         $company->save();
         return $company;
@@ -247,7 +245,7 @@ class CompanyRepository extends BaseRepository implements CompanyRepositoryInter
                     $old_data = $company->{$key}()->where('id', $payload['id'])->first();
 
                     if ($old_data) {
-                        if(isset($payload['image']) && is_file($payload['image'])) {
+                        if (isset($payload['image']) && is_file($payload['image'])) {
                             if ($old_data->image_path) {
                                 Storage::delete($old_data->image_path);
                             }
@@ -261,7 +259,7 @@ class CompanyRepository extends BaseRepository implements CompanyRepositoryInter
                         $response = $old_data;
                     }
                 } else {
-                    if(isset($payload['image']) && is_file($payload['image'])) {
+                    if (isset($payload['image']) && is_file($payload['image'])) {
                         $path = $payload['image']->store('company/' . $company->id . '/' . $key);
                         $data['image_path'] = $path;
                     }
