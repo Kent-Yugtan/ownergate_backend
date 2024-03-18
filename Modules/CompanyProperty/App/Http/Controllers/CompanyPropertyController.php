@@ -19,7 +19,7 @@ use Modules\CompanyProperty\App\Models\Category;
 use Modules\CompanyProperty\App\Models\Overview;
 use Modules\CompanyProperty\App\Models\PropertyType;
 use Modules\CompanyProperty\App\Models\CompanyProperty;
-use Modules\CompanyProperty\App\resources\PropertyResource;
+use Modules\CompanyProperty\Transformers\PropertyResource;
 
 class CompanyPropertyController extends Controller
 {
@@ -373,7 +373,7 @@ class CompanyPropertyController extends Controller
 
             DB::commit();
 
-            return $this->successresponse(new PropertyResource($property), 'Property remark has been updated.');
+            return $this->successresponse(new PropertyResource($property->load('remark')), 'Property remark has been updated.');
         } catch (\Exception $e) {
             DB::rollBack();
             return $this->errorResponse(null, $e->getMessage());
