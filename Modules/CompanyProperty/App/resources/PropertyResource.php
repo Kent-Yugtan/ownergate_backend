@@ -11,6 +11,20 @@ class PropertyResource extends JsonResource
      */
     public function toArray($request): array
     {
+        $groupedAmenities = $this->amenities->groupBy('amenity_type_id')->map(function ($amenities) {
+            return [
+                'amenity_type_id' => $amenities[0]->amenity_type_id,
+                'amenity_type_name' => $amenities[0]->type->name,
+                'amenities_details' => $amenities->map(function ($amenity) {
+                    return [
+                        'amenity_id' => $amenity->id,
+                        'amenity_name' => $amenity->name
+                    ];
+                })
+            ];
+        })->values();
+
+
         return array_merge(parent::toArray($request), [
             'property_id' => $this->id,
             'category' => $this->category,
@@ -43,7 +57,7 @@ class PropertyResource extends JsonResource
                     'feature_id' => $feature->pivot->feature_id,
                 ];
             }),
-            'amenities' => $this->amenities,
+            'amenities' => $groupedAmenities,
             'utilities' => $this->utilities,
             'unitalities' => $this->unitalities,
             'whats_nearbies' => $this->whatsNearbies,
