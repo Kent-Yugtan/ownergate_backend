@@ -360,8 +360,7 @@ class CompanyPropertyController extends Controller
 
             $validatedData = $request->validate([
                 'property_id' => 'nullable',
-                'title' => 'required',
-                'description' => 'nullable',
+                'remark' => 'nullable',
             ]);
 
             $property = $company->createOrGetProperty($request->property_id);

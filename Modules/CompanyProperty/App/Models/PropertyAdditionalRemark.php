@@ -11,8 +11,7 @@ class PropertyAdditionalRemark extends Model
      * The attributes that are mass assignable.
      */
     protected $fillable = [
-        'title',
-        'description',
+        'remark',
     ];
     
 
