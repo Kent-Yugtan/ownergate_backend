@@ -361,7 +361,7 @@ class CompanyPropertyController extends Controller
 
             $validatedData = $request->validate([
                 'property_id' => 'nullable',
-                'remark' => 'nullable',
+                'remark' => 'required',
             ]);
 
             $property = $company->createOrGetProperty($request->property_id);
@@ -388,6 +388,7 @@ class CompanyPropertyController extends Controller
 
             $validatedData = $request->validate([
                 'property_id' => 'nullable',
+                'nearbies' => 'required',
                 'nearbies.*.nearby_id' => 'nullable',
                 'nearbies.*.name' => 'nullable',
                 'nearbies.*.km' => 'nullable',
@@ -423,6 +424,7 @@ class CompanyPropertyController extends Controller
 
             $validatedData = $request->validate([
                 'property_id' => 'nullable',
+                'details' => 'required',
                 'details.*.detail_id' => 'nullable',
                 'details.*.name' => 'nullable',
                 'details.*.value' => 'nullable',
