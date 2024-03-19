@@ -2,6 +2,7 @@
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
+use Modules\Dashboard\App\Http\Controllers\DashboardController;
 
 /*
     |--------------------------------------------------------------------------
@@ -14,6 +15,14 @@ use Illuminate\Support\Facades\Route;
     |
 */
 
-Route::middleware(['auth:sanctum'])->prefix('v1')->name('api.')->group(function () {
-    Route::get('dashboard', fn (Request $request) => $request->user())->name('dashboard');
+Route::prefix('admin')->middleware(['auth:api'])->group(function () {
+
+    Route::prefix('dashboard')->group(function () {
+        Route::get('/', [DashboardController::class, 'index']);
+        Route::get('shortcut', [DashboardController::class, 'getShortcuts']);
+        Route::post('shortcut', [DashboardController::class, 'addShortcut']);
+        Route::post('shortcut/{shortcut}', [DashboardController::class, 'updateShortcut']);
+        Route::delete('shortcut/{shortcut}', [DashboardController::class, 'deleteShortcut']);
+    });
+
 });

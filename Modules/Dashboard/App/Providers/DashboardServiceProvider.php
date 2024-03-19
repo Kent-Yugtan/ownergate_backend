@@ -4,6 +4,8 @@ namespace Modules\Dashboard\App\Providers;
 
 use Illuminate\Support\Facades\Blade;
 use Illuminate\Support\ServiceProvider;
+use Modules\Dashboard\Repositories\Interfaces\DashboardRepositoryInterface;
+use Modules\Dashboard\Repositories\DashboardRepository;
 
 class DashboardServiceProvider extends ServiceProvider
 {
@@ -30,6 +32,7 @@ class DashboardServiceProvider extends ServiceProvider
     public function register(): void
     {
         $this->app->register(RouteServiceProvider::class);
+        $this->app->bind(DashboardRepositoryInterface::class, DashboardRepository::class);
     }
 
     /**
