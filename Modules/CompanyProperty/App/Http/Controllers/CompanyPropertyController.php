@@ -358,18 +358,18 @@ class CompanyPropertyController extends Controller
         try {
             DB::beginTransaction();
 
-            // $validatedData = $request->validate([
-            //     'property_id' => 'nullable',
-            //     'unitalities.*.field_id' => 'required|exists:unitality_fields,id',
-            //     'unitalities.*.value' => 'nullable',
-            // ]);
+            $validatedData = $request->validate([
+                'property_id' => 'nullable',
+                'remark' => 'nullable',
+            ]);
 
+            $property = $company->createOrGetProperty($request->property_id);
 
-            // $formattedData = $this->formatDataForSync($validatedData['unitalities'], 'field_id');
-
-            // $property = $company->createOrGetProperty($request->property_id);
-
-            // $property->unitalities()->sync($formattedData);
+            if ($property->remark) {
+                $property->remark()->update($validatedData);
+            } else {
+                $property->remark()->create($validatedData);
+            }
 
             DB::commit();
 
@@ -387,19 +387,23 @@ class CompanyPropertyController extends Controller
 
             $validatedData = $request->validate([
                 'property_id' => 'nullable',
-                'nearbies.*.name' => 'required',
-                'nearbies.*.km' => 'required',
+                'nearbies.*.nearby_id' => 'nullable',
+                'nearbies.*.name' => 'nullable',
+                'nearbies.*.km' => 'nullable',
             ]);
 
             $property = $company->createOrGetProperty($request->property_id);
 
             foreach ($validatedData['nearbies'] as $value) {
-                $property->whatsNearbies()->updateOrCreate([
-                    'property_id' => $request->property_id,
-                    'name' => $value['name'],
-                ], [
-                    'km' => $value['km']
-                ]);
+                if (!$value['name'] && !$value['km']) {
+                    $property->whatsNearbies()->where('id', $value['nearby_id'])->delete();
+                } else {
+                    $property->whatsNearbies()->updateOrCreate([
+                        'name' => $value['name'],
+                    ], [
+                        'km' => $value['km']
+                    ]);
+                }
             }
 
             DB::commit();
@@ -410,6 +414,43 @@ class CompanyPropertyController extends Controller
             return $this->errorResponse(null, $e->getMessage());
         }
     }
+
+    public function saveAddressDetails(Request $request, Company $company)
+    {
+        try {
+            DB::beginTransaction();
+
+            $validatedData = $request->validate([
+                'property_id' => 'nullable',
+                'details.*.detail_id' => 'nullable',
+                'details.*.name' => 'nullable',
+                'details.*.value' => 'nullable',
+            ]);
+
+            $property = $company->createOrGetProperty($request->property_id);
+
+            foreach ($validatedData['details'] as $value) {
+                if (!$value['name'] && !$value['value']) {
+                    $property->addressDetails()->where('id', $value['detail_id'])->delete();
+                } else {
+                    $property->addressDetails()->updateOrCreate([
+                        'name' => $value['name'],
+                    ], [
+                        'value' => $value['value']
+                    ]);
+                }
+            }
+
+            DB::commit();
+
+            return $this->successresponse(new PropertyResource($property), 'Property Whats Nearby has been updated.');
+        } catch (\Exception $e) {
+            DB::rollBack();
+            return $this->errorResponse(null, $e->getMessage());
+        }
+    }
+
+    
 
     public function saveMapLocation(Request $request, Company $company)
     {

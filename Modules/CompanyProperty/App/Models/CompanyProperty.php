@@ -10,13 +10,15 @@ use Modules\CompanyProperty\App\Models\Feature;
 use Modules\CompanyProperty\App\Models\Utility;
 use Modules\CompanyProperty\App\Models\Category;
 use Modules\CompanyProperty\App\Models\Overview;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 use Modules\CompanyProperty\App\Models\PropertyPlan;
 use Modules\CompanyProperty\App\Models\PropertyType;
 use Modules\CompanyProperty\App\Models\PropertyMedia;
 use Modules\CompanyProperty\App\Models\UnitalityField;
 use Modules\CompanyProperty\App\Models\CategoryTargetType;
 use Modules\CompanyProperty\App\Models\PropertyWhatsNearby;
-use Illuminate\Database\Eloquent\Relations\HasOne;
+use Modules\CompanyProperty\App\Models\PropertyAddressDetail;
+use Modules\CompanyProperty\App\Models\PropertyAdditionalRemark;
 
 class CompanyProperty extends Model
 {
@@ -99,9 +101,19 @@ class CompanyProperty extends Model
         return $this->hasMany(PropertyWhatsNearby::class, 'property_id');
     }
 
+    public function addressDetails()
+    {
+        return $this->hasMany(PropertyAddressDetail::class, 'property_id');
+    }
+
     public function plans()
     {
         return $this->hasMany(PropertyPlan::class, 'property_id');
+    }
+
+    public function remark()
+    {
+        return $this->hasOne(PropertyAdditionalRemark::class, 'property_id');
     }
 
     public function medias()

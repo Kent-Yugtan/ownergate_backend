@@ -10,10 +10,11 @@ return new class extends Migration {
      */
     public function up(): void
     {
-        Schema::create('property_additional_remarks', function (Blueprint $table) {
+        Schema::create('property_address_details', function (Blueprint $table) {
             $table->id();
             $table->unsignedBigInteger("property_id");
-            $table->text('remark');
+            $table->string('name');
+            $table->string('value');
             $table->timestamps();
 
             $table->foreign('property_id')->references('id')->on('company_properties')->onUpdate('cascade')->onDelete('cascade');
@@ -25,6 +26,6 @@ return new class extends Migration {
      */
     public function down(): void
     {
-        Schema::dropIfExists('property_additional_remarks');
+        Schema::dropIfExists('property_address_details');
     }
 };

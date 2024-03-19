@@ -40,9 +40,9 @@ Route::prefix('admin')->middleware(['auth:api'])->group(function () {
         Route::post('/owner-details', [CompanyPropertyController::class, 'saveUtilities']);
         Route::post('/unitality-details', [CompanyPropertyController::class, 'saveUnitalityDetails']);
         Route::post('/condition-roles-details', [CompanyPropertyController::class, 'saveUnitalityDetails']);
-        Route::post('/additional-remark', [CompanyPropertyController::class, 'saveRemark']);
+        Route::post('/remark', [CompanyPropertyController::class, 'saveRemark']);
         Route::post('/whats-nearby', [CompanyPropertyController::class, 'saveWhatsNearby']);
-        Route::post('/address-details', [CompanyPropertyController::class, 'saveWhatsNearby']);
+        Route::post('/address-details', [CompanyPropertyController::class, 'saveAddressDetails']);
         Route::post('/map-location', [CompanyPropertyController::class, 'saveMapLocation']);
         Route::post('/view-live', [CompanyPropertyController::class, 'saveWhatsNearby']);
         Route::post('/plans', [CompanyPropertyController::class, 'savePlans']);
