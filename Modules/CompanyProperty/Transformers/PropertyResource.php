@@ -64,6 +64,7 @@ class PropertyResource extends JsonResource
             'utilities' => $this->utilities,
             'unitalities' => $this->unitalities,
             'whats_nearbies' => $this->whatsNearbies,
+            'address_details' => $this->addressDetails,
             'plans' => $this->plans->map(function ($plan) {
                 return [
                     'name' => $plan->name,
