@@ -83,7 +83,7 @@ class CompanyProperty extends Model
 
     public function amenities()
     {
-        return $this->belongsToMany(Amenity::class, 'property_amenities', 'property_id', 'amenity_id')->withTimestamps();
+        return $this->belongsToMany(Amenity::class, 'property_amenities', 'property_id', 'amenity_id')->withTimestamps()->with('type');
     }
 
     public function utilities()
