@@ -13,7 +13,7 @@ class EmployeeAttachment extends Model
     /**
      * The attributes that are mass assignable.
      */
-    protected $fillable = [];
+    protected $fillable = ['employee_id ', 'title', 'path'];
     
     protected static function newFactory(): EmployeeAttachmentFactory
     {

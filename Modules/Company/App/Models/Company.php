@@ -60,6 +60,11 @@ class Company extends Model
         return $this->hasMany(CompanyProperty::class);
     }
 
+    public function getPropertiesIdsAttribute()
+    {
+        return $this->properties->pluck('id');
+    }
+
     public function managements()
     {
         return $this->hasMany(CompanyManagement::class, 'company_id');

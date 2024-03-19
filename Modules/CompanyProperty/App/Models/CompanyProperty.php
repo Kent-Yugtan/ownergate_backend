@@ -16,6 +16,7 @@ use Modules\CompanyProperty\App\Models\PropertyMedia;
 use Modules\CompanyProperty\App\Models\UnitalityField;
 use Modules\CompanyProperty\App\Models\CategoryTargetType;
 use Modules\CompanyProperty\App\Models\PropertyWhatsNearby;
+use Modules\CompanyEmployee\App\Models\CompanyEmployee;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 
 class CompanyProperty extends Model
@@ -112,5 +113,10 @@ class CompanyProperty extends Model
     public function address()
     {
         return $this->hasMany(PropertyLocation::class, 'property_id');
+    }
+
+    public function employee()
+    {
+        return $this->belongsToMany(CompanyEmployee::class, 'employee_properties', 'employee_id', 'property_id')->withPivot('access_code');
     }
 }

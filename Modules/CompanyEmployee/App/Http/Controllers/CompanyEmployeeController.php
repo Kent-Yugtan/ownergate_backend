@@ -3,34 +3,52 @@
 namespace Modules\CompanyEmployee\App\Http\Controllers;
 
 use App\Http\Controllers\Controller;
-use Illuminate\Http\RedirectResponse;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use Modules\CompanyEmployee\App\Http\Requests\ChangePasswordRequest;
 use Illuminate\Http\Response;
+use App\Traits\ApiResponser;
+use Illuminate\Support\Facades\DB;
+use Modules\CompanyProperty\App\Models\CompanyProperty;
+use Modules\CompanyEmployee\App\Models\CompanyEmployee;
+use Modules\CompanyEmployee\Repositories\Interfaces\EmployeeRepositoryInterface;
+use Modules\CompanyEmployee\App\resources\EmployeeResource;
+use Modules\CompanyEmployee\App\resources\EmployeeAttachmentsResource;
+
 
 class CompanyEmployeeController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
-    public function index()
+    use ApiResponser;
+    private $employeeRepository;
+
+    public function __construct(EmployeeRepositoryInterface $employeeRepository)
     {
-        return view('companyemployee::index');
+        $this->employeeRepository = $employeeRepository;
     }
 
-    /**
-     * Show the form for creating a new resource.
-     */
-    public function create()
+    public function index(Request $request)
     {
-        return view('companyemployee::create');
+        try {
+            $employees = $this->employeeRepository->search($request);
+            return $this->successresponse(EmployeeResource::collection($employees), 'employee has been created successfully.');
+        } catch (\Exception $e) {
+            return $this->errorResponse(null, $e->getMessage());
+        }
     }
 
-    /**
-     * Store a newly created resource in storage.
-     */
-    public function store(Request $request): RedirectResponse
+    public function store(Request $request)
     {
-        //
+        DB::beginTransaction();
+
+        try {
+            $employee = $this->employeeRepository->AddNew($request);
+
+            DB::commit();
+            return $this->successresponse(new EmployeeResource($employee), 'employee has been created successfully.');
+        } catch (\Exception $e) {
+            DB::rollBack();
+            return $this->errorResponse(null, $e->getMessage());
+        }
     }
 
     /**
@@ -38,30 +56,112 @@ class CompanyEmployeeController extends Controller
      */
     public function show($id)
     {
-        return view('companyemployee::show');
+        try {
+            $employee = $this->employeeRepository->show($id);
+            if(isset($employee["employee_info"])) {
+                return $this->successresponse(new EmployeeResource($employee["employee_info"]), 'Employee has been retrieved.');
+            } else {
+                return $this->successresponse(null, 'Employee not found.');
+            }
+        } catch (\Exception $e) {
+            return $this->errorResponse(null, $e->getMessage());
+        }
     }
 
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit($id)
+    public function update(Request $request, $id)
     {
-        return view('companyemployee::edit');
+        DB::beginTransaction();
+
+        try {
+            $employee = $this->employeeRepository->updateInfo($request, $id);
+
+            DB::commit();
+            return $this->successresponse(new EmployeeResource($employee), 'employee has been updated successfully.');
+        } catch (\Exception $e) {
+            DB::rollBack();
+            return $this->errorResponse(null, $e->getMessage());
+        }
     }
 
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(Request $request, $id): RedirectResponse
+    public function updateAttachments(Request $request, CompanyEmployee $employee)
     {
-        //
+        DB::beginTransaction();
+
+        try {
+            $attachments = $this->employeeRepository->updateAttachments($request, $employee);
+
+            DB::commit();
+            return $this->successresponse(EmployeeAttachmentsResource::collection($attachments), 'employee Attachments has been updated successfully.');
+        } catch (\Exception $e) {
+            DB::rollBack();
+            return $this->errorResponse(null, $e->getMessage());
+        }
     }
 
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy($id)
+    public function changePassword(ChangePasswordRequest $request, CompanyEmployee $employee)
     {
-        //
+        DB::beginTransaction();
+
+        try {
+            $changePassword = $this->employeeRepository->changePassword($request, $employee);
+
+            DB::commit();
+            return $this->successresponse($changePassword, 'employee password has set successfully.');
+        } catch (\Exception $e) {
+            DB::rollBack();
+            return $this->errorResponse(null, $e->getMessage());
+        }
     }
+
+    public function addAccess(request $request, CompanyEmployee $employee, CompanyProperty $property)
+    {
+        DB::beginTransaction();
+
+        try {
+            $addAccess = $this->employeeRepository->addAccess($request, $employee, $property);
+            
+            if($addAccess === false){
+                return $this->errorResponse(null, "You don't have permission to this property");
+            }
+            DB::commit();
+            return $this->successresponse($addAccess, 'employee access has set successfully.');
+        } catch (\Exception $e) {
+            DB::rollBack();
+            return $this->errorResponse(null, $e->getMessage());
+        }
+    }
+
+    public function removeAccess(request $request, CompanyEmployee $employee, CompanyProperty $property)
+    {
+        DB::beginTransaction();
+
+        try {
+            $addAccess = $this->employeeRepository->removeAccess($request, $employee, $property);
+
+            if($addAccess === false){
+                return $this->errorResponse(null, "You don't have permission to this property");
+            }
+            DB::commit();
+            return $this->successresponse($addAccess, 'employee access has unset successfully.');
+        } catch (\Exception $e) {
+            DB::rollBack();
+            return $this->errorResponse(null, $e->getMessage());
+        }
+    }
+
+    public function searchAccess(request $request, CompanyEmployee $employee)
+    {
+
+        try {
+
+            $properties = $this->employeeRepository->searchAccess($request, $employee);  
+            return $this->successresponse($properties);
+
+        } catch (\Exception $e) {
+
+            DB::rollBack();
+            return $this->errorResponse(null, $e->getMessage());
+        }
+    }
+
 }

@@ -27,7 +27,6 @@ class UserProfile extends Model
         'license_no',
         'license_expiry',
         'postal_code',
-        'addmail',
         'account_no',
         'country',
         'state',
