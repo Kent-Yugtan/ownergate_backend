@@ -7,5 +7,6 @@
     "CompanyEmployee": true,
     "Message": true,
     "Customer": true,
-    "Admin": true
+    "Admin": true,
+    "Sample": true
 }

@@ -19,7 +19,7 @@ use Modules\CompanyProperty\App\Models\Category;
 use Modules\CompanyProperty\App\Models\Overview;
 use Modules\CompanyProperty\App\Models\PropertyType;
 use Modules\CompanyProperty\App\Models\CompanyProperty;
-use Modules\CompanyProperty\App\resources\PropertyResource;
+use Modules\CompanyProperty\Transformers\PropertyResource;
 
 class CompanyPropertyController extends Controller
 {
@@ -287,9 +287,10 @@ class CompanyPropertyController extends Controller
 
             $validatedData = $request->validate([
                 'property_id' => 'nullable',
+                'amenities' => 'required',
                 'amenities.*' => 'required|exists:amenities,id',
             ]);
-
+            
             $property = $company->createOrGetProperty($request->property_id);
 
             $property->amenities()->sync($validatedData['amenities']);
@@ -360,7 +361,7 @@ class CompanyPropertyController extends Controller
 
             $validatedData = $request->validate([
                 'property_id' => 'nullable',
-                'remark' => 'nullable',
+                'remark' => 'required',
             ]);
 
             $property = $company->createOrGetProperty($request->property_id);
@@ -373,7 +374,7 @@ class CompanyPropertyController extends Controller
 
             DB::commit();
 
-            return $this->successresponse(new PropertyResource($property), 'Property remark has been updated.');
+            return $this->successresponse(new PropertyResource($property->load('remark')), 'Property remark has been updated.');
         } catch (\Exception $e) {
             DB::rollBack();
             return $this->errorResponse(null, $e->getMessage());
@@ -387,6 +388,7 @@ class CompanyPropertyController extends Controller
 
             $validatedData = $request->validate([
                 'property_id' => 'nullable',
+                'nearbies' => 'required',
                 'nearbies.*.nearby_id' => 'nullable',
                 'nearbies.*.name' => 'nullable',
                 'nearbies.*.km' => 'nullable',
@@ -398,11 +400,23 @@ class CompanyPropertyController extends Controller
                 if (!$value['name'] && !$value['km']) {
                     $property->whatsNearbies()->where('id', $value['nearby_id'])->delete();
                 } else {
-                    $property->whatsNearbies()->updateOrCreate([
-                        'name' => $value['name'],
-                    ], [
-                        'km' => $value['km']
-                    ]);
+                    if (isset($value['nearby_id']) && $value['nearby_id']) {
+                        $nearby = $property->whatsNearbies()->where('id', $value['nearby_id'])->first();
+
+                        if (!$nearby) {
+                            abort(403, 'Unauthorized action.');
+                        } else {
+                            $nearby->update([
+                                'name' => $value['name'],
+                                'km' => $value['km']
+                            ]);
+                        }
+                    } else {
+                        $property->whatsNearbies()->create([
+                            'name' => $value['name'],
+                            'km' => $value['km']
+                        ]);
+                    }
                 }
             }
 
@@ -422,6 +436,7 @@ class CompanyPropertyController extends Controller
 
             $validatedData = $request->validate([
                 'property_id' => 'nullable',
+                'details' => 'required',
                 'details.*.detail_id' => 'nullable',
                 'details.*.name' => 'nullable',
                 'details.*.value' => 'nullable',

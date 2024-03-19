@@ -107,8 +107,9 @@ class CompanyRepository extends BaseRepository implements CompanyRepositoryInter
 
     public function deleteManagement($management)
     {
-        if ($management->image_path != null)
+        if ($management->image_path != null) {
             Storage::delete($management->image_path);
+        }
         return $management->delete();
     }
 
@@ -123,8 +124,9 @@ class CompanyRepository extends BaseRepository implements CompanyRepositoryInter
 
     public function deleteNews($news)
     {
-        if ($management->image_path != null)
+        if ($management->image_path != null) {
             Storage::delete($news->image_path);
+        }
         return $news->delete();
     }
 
@@ -196,7 +198,7 @@ class CompanyRepository extends BaseRepository implements CompanyRepositoryInter
     }
 
     /*public function accountsList(Company $company){
-        
+
         $accounts = $company->companyUsers()->get();
         return $accounts;
 
@@ -204,7 +206,6 @@ class CompanyRepository extends BaseRepository implements CompanyRepositoryInter
 
     public function changeStatus(Company $company, Request $request)
     {
-
         $company->status = $request->status;
         $company->save();
         return $company;

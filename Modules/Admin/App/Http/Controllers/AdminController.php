@@ -9,7 +9,7 @@ use Illuminate\Http\RedirectResponse;
 use Modules\Company\App\Models\Company;
 use Illuminate\Pagination\LengthAwarePaginator;
 use Modules\CompanyProperty\App\Models\CompanyProperty;
-use Modules\CompanyProperty\App\resources\PropertyResource;
+use Modules\CompanyProperty\Transformers\PropertyResource;
 
 class AdminController extends Controller
 {

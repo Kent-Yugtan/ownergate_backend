@@ -46,9 +46,13 @@ class Company extends Model
 
     public function createOrGetProperty($property_id) : CompanyProperty
     {
-        $property = $this->properties()->where('id', $property_id)->first();
-        
-        if (! $property) {
+        if ($property_id) {
+            $property = $this->properties()->where('id', $property_id)->first();
+
+            if (!$property) {
+                abort(403, 'Unauthorized action.');
+            }
+        } else {
             $property = $this->properties()->create();
         }
 

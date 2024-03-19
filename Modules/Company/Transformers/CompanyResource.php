@@ -5,7 +5,7 @@ namespace Modules\Company\Transformers;
 use Illuminate\Http\Resources\Json\JsonResource;
 use Modules\Company\App\resources\LocationResource;
 use Modules\Company\Transformers\AttachmentResource;
-use Modules\CompanyProperty\App\resources\PropertyResource;
+use Modules\CompanyProperty\Transformers\PropertyResource;
 
 class CompanyResource extends JsonResource
 {
