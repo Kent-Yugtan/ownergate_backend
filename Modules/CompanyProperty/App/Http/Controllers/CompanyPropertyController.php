@@ -287,6 +287,7 @@ class CompanyPropertyController extends Controller
 
             $validatedData = $request->validate([
                 'property_id' => 'nullable',
+                'amenities' => 'required',
                 'amenities.*' => 'required|exists:amenities,id',
             ]);
 
