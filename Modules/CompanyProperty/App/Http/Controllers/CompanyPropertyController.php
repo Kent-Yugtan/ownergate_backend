@@ -400,11 +400,23 @@ class CompanyPropertyController extends Controller
                 if (!$value['name'] && !$value['km']) {
                     $property->whatsNearbies()->where('id', $value['nearby_id'])->delete();
                 } else {
-                    $property->whatsNearbies()->updateOrCreate([
-                        'name' => $value['name'],
-                    ], [
-                        'km' => $value['km']
-                    ]);
+                    if ($value['nearby_id']) {
+                        $nearby = $property->whatsNearbies()->where('id', $value['nearby_id'])->first();
+
+                        if (!$nearby) {
+                            abort(403, 'Unauthorized action.');
+                        } else {
+                            $nearby->update([
+                                'name' => $value['name'],
+                                'km' => $value['km']
+                            ]);
+                        }
+                    } else {
+                        $nearby->create([
+                            'name' => $value['name'],
+                            'km' => $value['km']
+                        ]);
+                    }
                 }
             }
 
