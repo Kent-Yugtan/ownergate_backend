@@ -290,7 +290,7 @@ class CompanyPropertyController extends Controller
                 'amenities' => 'required',
                 'amenities.*' => 'required|exists:amenities,id',
             ]);
-
+            
             $property = $company->createOrGetProperty($request->property_id);
 
             $property->amenities()->sync($validatedData['amenities']);
