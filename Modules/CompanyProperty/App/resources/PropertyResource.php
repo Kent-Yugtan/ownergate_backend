@@ -16,7 +16,7 @@ class PropertyResource extends JsonResource
             'category' => $this->category,
             'company_name' => $this->company->company_name,
             'property_type' => $this->propertyType,
-            'target_type' => $this->targetType,
+            'target_type' => $this->targetType ? $this->targetType->name : "",
             'logo' => $this->logo,
             'download_logo' => $this->logo ? route('storage.download', ['file' => $this->logo]) : null,
             'poster' => $this->poster,
