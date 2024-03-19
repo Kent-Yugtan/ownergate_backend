@@ -14,19 +14,59 @@ class PropertyResource extends JsonResource
      */
     public function toArray($request)
     {
-        // return parent::toArray($request);
         return array_merge(parent::toArray($request), [
-            'property_type' => new PropertyTypeResource($this->property_type),
+            'property_id' => $this->id,
+            'category' => $this->category,
+            'company_name' => $this->company->company_name,
+            'property_type' => $this->propertyType,
+            'target_type' => $this->targetType,
+            'remark' => $this->remark,
+            'logo' => $this->logo,
+            'download_logo' => $this->logo ? route('storage.download', ['file' => $this->logo]) : null,
+            'poster' => $this->poster,
+            'download_poster' => $this->poster ? route('storage.download', ['file' => $this->poster]) : null,
+            'overviews' => $this->overviews->map(function ($overview) {
+                return [
+                    'id' => $overview->id,
+                    'name' => $overview->name,
+                    'quantity' => $overview->pivot->quantity,
+                    'visible' => $overview->pivot->visible,
+                ];
+            }),
+            'details' => $this->details->map(function ($detail) {
+                return [
+                    'id' => $detail->id,
+                    'name' => $detail->name,
+                    'value' => $detail->pivot->value,
+                ];
+            }),
+            'features' => $this->features->map(function ($feature) {
+                return [
+                    'id' => $feature->id,
+                    'name' => $feature->name,
+                    'feature_id' => $feature->pivot->feature_id,
+                ];
+            }),
+            'amenities' => new PropertyAmenityResource($this->amenities),
+            'utilities' => $this->utilities,
+            'unitalities' => $this->unitalities,
+            'whats_nearbies' => $this->whatsNearbies,
+            'plans' => $this->plans->map(function ($plan) {
+                return [
+                    'name' => $plan->name,
+                    'photo' => $plan->photo,
+                    'download_photo' => $plan->photo ? route('storage.download', ['file' => $plan->photo]) : null,
+                ];
+            }),
             'addresses'     => new PropertyAddressesResource($this->address()->first()),
             'owner' => new PropertyUserResource($this->owners),
-            'amenities_group' => $this->getGroupAmenities(),
-            'amenities' => new PropertyAmenityResource($this->amenities),
             'medias' => $this->medias(),
-            'download_company_logo' => $this->company_logo ? route('storage.download', ['file' => $this->company_logo]) : null,
-            'download_poster' => $this->poster ? route('storage.download', ['file' => $this->poster]) : null,
-            'target_type' => $this->target_type ? $this->target_type->name : "",
-            'property_overview' => $this->property_overview ,
-            'property_detail' => $this->property_detail ,
+            // 'download_company_logo' => $this->company_logo ? route('storage.download', ['file' => $this->company_logo]) : null,
+            // 'download_poster' => $this->poster ? route('storage.download', ['file' => $this->poster]) : null,
+            // 'amenities_group' => $this->getGroupAmenities(),
+            // 'target_type' => $this->target_type ? $this->target_type->name : "",
+            // 'property_overview' => $this->property_overview ,
+            // 'property_detail' => $this->property_detail ,
         ]);
     }
 

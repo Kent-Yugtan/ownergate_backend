@@ -14,5 +14,9 @@ class PropertyAdditionalRemark extends Model
         'remark',
     ];
     
+    protected $hidden = [
+        'created_at',
+        'updated_at'
+    ];
 
 }
