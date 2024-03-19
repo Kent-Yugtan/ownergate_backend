@@ -26,9 +26,9 @@ class CompanyDatabaseSeeder extends Seeder
             ['company_type_name' => 'Vendor', 'company_type_enum' => 'vendor', 'description' => $faker->realText(250)],
         ];
 
-        foreach($users as $user){
-            
-            if($user->hasRole('Customer')){
+        foreach ($users as $user) {
+
+            if ($user->hasRole('Customer')) {
                 continue;
             }
 
@@ -69,18 +69,18 @@ class CompanyDatabaseSeeder extends Seeder
 
             for ($i = 1; $i <= 3; $i++) {
                 $company->news()->create([
-                    'title'=> $faker->name,
-                    'description'=> $faker->name,
-                    'image_path'=> $faker->name,
-                    'posted_at'=> now()
+                    'title' => $faker->name,
+                    'description' => $faker->name,
+                    'image_path' => $faker->name,
+                    'posted_at' => now()
                 ]);
             }
 
             for ($i = 1; $i <= 4; $i++) {
                 $company->services()->create([
-                    'title'=> $faker->name,
-                    'description'=> $faker->name,
-                    'image_path'=> $faker->name,
+                    'title' => $faker->name,
+                    'description' => $faker->name,
+                    'image_path' => $faker->name,
                 ]);
             }
 
@@ -94,8 +94,8 @@ class CompanyDatabaseSeeder extends Seeder
                 $company->locations()->create([
                     'office_name' => $faker->name,
                     'address' => $faker->name,
-                    'latitude' => $faker->name,
-                    'longitude' => $faker->name,
+                    'latitude' => '8.950037',
+                    'longitude' => '125.581505',
                     'is_default' => $is_default,
                 ]);
             }

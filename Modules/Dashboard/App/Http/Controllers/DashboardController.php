@@ -2,66 +2,100 @@
 
 namespace Modules\Dashboard\App\Http\Controllers;
 
+use Carbon\Carbon;
+use App\Models\User;
+use App\Traits\ApiResponser;
+use Illuminate\Http\Request;
+use Modules\Dashboard\App\Models\Shortcut;
+use Modules\Dashboard\App\Http\Requests\ShortcutRequest;
+use Illuminate\Http\Response;
+use Illuminate\Support\Facades\DB;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\RedirectResponse;
-use Illuminate\Http\Request;
-use Illuminate\Http\Response;
+use Modules\Dashboard\Repositories\Interfaces\DashboardRepositoryInterface;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
+//use Modules\Dashboard\Transformers\DashboardResource;
+
 
 class DashboardController extends Controller
 {
+    use ApiResponser;
+    private $DashboardRepository;
+
+    public function __construct(DashboardRepositoryInterface $DashboardRepository)
+    {
+        $this->DashboardRepository = $DashboardRepository;
+    }
+
     /**
      * Display a listing of the resource.
      */
     public function index()
     {
-        return view('dashboard::index');
+        abort(404, 'Need to clarify.');
+        /*try {
+            $analytics = $this->DashboardRepository->getAnalytics();
+            return $this->successresponse($analytics, 'Shortcuts has been returned successfully.');
+        } catch (\Exception $e) {
+            return $this->errorResponse(null, $e->getMessage());
+        }*/
     }
 
-    /**
-     * Show the form for creating a new resource.
-     */
-    public function create()
+    public function getShortcuts()
     {
-        return view('dashboard::create');
+        try {
+            $shortcuts = $this->DashboardRepository->getShortcuts();
+            return $this->successresponse($shortcuts, 'Shortcuts has been returned successfully.');
+        } catch (\Exception $e) {
+            return $this->errorResponse(null, $e->getMessage());
+        }
     }
 
-    /**
-     * Store a newly created resource in storage.
-     */
-    public function store(Request $request): RedirectResponse
+    public function addShortcut(ShortcutRequest $request)
     {
-        //
+        DB::beginTransaction();
+
+        try {
+            $shortcut = $this->DashboardRepository->addShortcut($request);
+
+            DB::commit();
+            return $this->successresponse($shortcut, 'Shortcut has been added successfully.');
+            //return $this->successresponse(ShortcutResource::collection($shortcut), 'Shortcut has been added successfully.');
+        } catch (\Exception $e) {
+            DB::rollBack();
+            return $this->errorResponse(null, $e->getMessage());
+        }
     }
 
-    /**
-     * Show the specified resource.
-     */
-    public function show($id)
+    public function updateShortcut(ShortcutRequest $request, Shortcut $shortcut)
     {
-        return view('dashboard::show');
+        DB::beginTransaction();
+
+        try {
+            $shortcut = $this->DashboardRepository->updateShortcut($request, $shortcut);
+
+            DB::commit();
+            return $this->successresponse($shortcut, 'Shortcut has been updated successfully.');
+            //return $this->successresponse(ShortcutResource::collection($shortcut), 'Shortcut has been added successfully.');
+        } catch (\Exception $e) {
+            DB::rollBack();
+            return $this->errorResponse(null, $e->getMessage());
+        }
     }
 
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit($id)
+    public function deleteShortcut(Shortcut $shortcut)
     {
-        return view('dashboard::edit');
-    }
+        DB::beginTransaction();
 
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(Request $request, $id): RedirectResponse
-    {
-        //
-    }
+        try {
+            $shortcut = $this->DashboardRepository->deleteShortcut($shortcut);
 
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy($id)
-    {
-        //
+            DB::commit();
+            return $this->successresponse($shortcut, 'Shortcut has been deleted successfully.');
+            //return $this->successresponse(ShortcutResource::collection($shortcut), 'Shortcut has been added successfully.');
+        } catch (\Exception $e) {
+            DB::rollBack();
+            return $this->errorResponse(null, $e->getMessage());
+        }
     }
 }

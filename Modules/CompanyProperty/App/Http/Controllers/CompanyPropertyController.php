@@ -11,13 +11,15 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Facades\Storage;
 use Modules\Company\App\Models\Company;
-use Modules\CompanyProperty\App\Models\Category;
 use Modules\CompanyProperty\App\Models\Detail;
+use Modules\CompanyProperty\App\Models\Amenity;
 use Modules\CompanyProperty\App\Models\Feature;
+use Modules\CompanyProperty\App\Models\Utility;
+use Modules\CompanyProperty\App\Models\Category;
 use Modules\CompanyProperty\App\Models\Overview;
 use Modules\CompanyProperty\App\Models\PropertyType;
 use Modules\CompanyProperty\App\Models\CompanyProperty;
-use Modules\CompanyProperty\App\resources\PropertyResource;
+use Modules\CompanyProperty\Transformers\PropertyResource;
 
 class CompanyPropertyController extends Controller
 {
@@ -36,50 +38,6 @@ class CompanyPropertyController extends Controller
     {
         return new PropertyResource($property);
     }
-
-    public function getOverviews()
-    {
-        return Overview::get();
-    }
-
-    public function getFeatures()
-    {
-        return Feature::get();
-    }
-
-    public function getDetails()
-    {
-        return Detail::get();
-    }
-
-    public function getCategories()
-    {
-        // Fetch CategoryTypes
-        $categoryTypes = Category::with('targets')->get();
-
-        // Fetch PropertyTypes
-        $propertyTypes = PropertyType::all();
-        // Map CategoryType data
-        return $categoryTypes->map(function ($category) use ($propertyTypes) {
-            return [
-                'category_id'    => $category->id,
-                'category' => $category->name,
-                'targets' => $category->targets->map(function ($type) use ($category) {
-                    return [
-                        'target_type_id' => $type->id,
-                        'name' => $category->name . ' ' . $type->name
-                    ];
-                }),
-                'property_types' => $propertyTypes->map(function ($propertyType) {
-                    return [
-                        'type_id' => $propertyType->id,
-                        'name' => $propertyType->name
-                    ];
-                })->toArray()
-            ];
-        });
-    }
-
 
     public function saveStatus(Request $request, Company $company)
     {
@@ -329,9 +287,10 @@ class CompanyPropertyController extends Controller
 
             $validatedData = $request->validate([
                 'property_id' => 'nullable',
+                'amenities' => 'required',
                 'amenities.*' => 'required|exists:amenities,id',
             ]);
-
+            
             $property = $company->createOrGetProperty($request->property_id);
 
             $property->amenities()->sync($validatedData['amenities']);
@@ -400,22 +359,22 @@ class CompanyPropertyController extends Controller
         try {
             DB::beginTransaction();
 
-            // $validatedData = $request->validate([
-            //     'property_id' => 'nullable',
-            //     'unitalities.*.field_id' => 'required|exists:unitality_fields,id',
-            //     'unitalities.*.value' => 'nullable',
-            // ]);
+            $validatedData = $request->validate([
+                'property_id' => 'nullable',
+                'remark' => 'required',
+            ]);
 
+            $property = $company->createOrGetProperty($request->property_id);
 
-            // $formattedData = $this->formatDataForSync($validatedData['unitalities'], 'field_id');
-
-            // $property = $company->createOrGetProperty($request->property_id);
-
-            // $property->unitalities()->sync($formattedData);
+            if ($property->remark) {
+                $property->remark()->update($validatedData);
+            } else {
+                $property->remark()->create($validatedData);
+            }
 
             DB::commit();
 
-            return $this->successresponse(new PropertyResource($property), 'Property remark has been updated.');
+            return $this->successresponse(new PropertyResource($property->load('remark')), 'Property remark has been updated.');
         } catch (\Exception $e) {
             DB::rollBack();
             return $this->errorResponse(null, $e->getMessage());
@@ -429,19 +388,36 @@ class CompanyPropertyController extends Controller
 
             $validatedData = $request->validate([
                 'property_id' => 'nullable',
-                'nearbies.*.name' => 'required',
-                'nearbies.*.km' => 'required',
+                'nearbies' => 'required',
+                'nearbies.*.nearby_id' => 'nullable',
+                'nearbies.*.name' => 'nullable',
+                'nearbies.*.km' => 'nullable',
             ]);
 
             $property = $company->createOrGetProperty($request->property_id);
 
             foreach ($validatedData['nearbies'] as $value) {
-                $property->whatsNearbies()->updateOrCreate([
-                    'property_id' => $request->property_id,
-                    'name' => $value['name'],
-                ], [
-                    'km' => $value['km']
-                ]);
+                if (!$value['name'] && !$value['km']) {
+                    $property->whatsNearbies()->where('id', $value['nearby_id'])->delete();
+                } else {
+                    if (isset($value['nearby_id']) && $value['nearby_id']) {
+                        $nearby = $property->whatsNearbies()->where('id', $value['nearby_id'])->first();
+
+                        if (!$nearby) {
+                            abort(403, 'Unauthorized action.');
+                        } else {
+                            $nearby->update([
+                                'name' => $value['name'],
+                                'km' => $value['km']
+                            ]);
+                        }
+                    } else {
+                        $property->whatsNearbies()->create([
+                            'name' => $value['name'],
+                            'km' => $value['km']
+                        ]);
+                    }
+                }
             }
 
             DB::commit();
@@ -452,6 +428,44 @@ class CompanyPropertyController extends Controller
             return $this->errorResponse(null, $e->getMessage());
         }
     }
+
+    public function saveAddressDetails(Request $request, Company $company)
+    {
+        try {
+            DB::beginTransaction();
+
+            $validatedData = $request->validate([
+                'property_id' => 'nullable',
+                'details' => 'required',
+                'details.*.detail_id' => 'nullable',
+                'details.*.name' => 'nullable',
+                'details.*.value' => 'nullable',
+            ]);
+
+            $property = $company->createOrGetProperty($request->property_id);
+
+            foreach ($validatedData['details'] as $value) {
+                if (!$value['name'] && !$value['value']) {
+                    $property->addressDetails()->where('id', $value['detail_id'])->delete();
+                } else {
+                    $property->addressDetails()->updateOrCreate([
+                        'name' => $value['name'],
+                    ], [
+                        'value' => $value['value']
+                    ]);
+                }
+            }
+
+            DB::commit();
+
+            return $this->successresponse(new PropertyResource($property), 'Property Whats Nearby has been updated.');
+        } catch (\Exception $e) {
+            DB::rollBack();
+            return $this->errorResponse(null, $e->getMessage());
+        }
+    }
+
+    
 
     public function saveMapLocation(Request $request, Company $company)
     {
