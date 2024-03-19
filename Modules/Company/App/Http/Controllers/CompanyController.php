@@ -16,7 +16,7 @@ use Modules\Company\Transformers\AttachmentResource;
 use Modules\Company\Transformers\CompanyResource;
 use Modules\Company\App\Models\CompanyTeam;
 use Modules\Company\Repositories\Interfaces\CompanyRepositoryInterface;
-use Modules\CompanyProperty\Transformers\PropertyResource;
+use Modules\CompanyProperty\App\Resources\PropertyResource;
 
 class CompanyController extends Controller
 {
@@ -38,9 +38,7 @@ class CompanyController extends Controller
                 abort(403, 'Unauthorized action.');
             }
 
-            $profile = $this->companyRepository->getProfile($company);
-
-            return $this->successresponse(new CompanyResource($profile));
+            return $this->successresponse(new CompanyResource($company));
         } catch (\Exception $e) {
             return $this->errorResponse(null, $e->getMessage());
         }

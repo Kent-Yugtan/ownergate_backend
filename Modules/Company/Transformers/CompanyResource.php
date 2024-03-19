@@ -31,9 +31,10 @@ class CompanyResource extends JsonResource
             }
         }
         return array_merge(parent::toArray($request), [
-            'managements' => ManagementResource::collection($this->managements),
-            'news' => NewsResource::collection($this->news),
-            'services' => ServicesResource::collection($this->services),
+            'managements' => $this->managements()->paginate(10),
+            'news' => $this->news()->paginate(10),
+            'services' => $this->services()->paginate(10),
+            'locations' => $this->locations()->paginate(10),
             'attachments' => AttachmentResource::collection($this->attachments),
             'licenses' => $licenses,
             'documents' => $documents,
