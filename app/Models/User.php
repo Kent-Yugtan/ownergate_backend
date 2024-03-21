@@ -3,6 +3,8 @@
 namespace App\Models;
 
 use Carbon\Carbon;
+use App\Models\User;
+use Illuminate\Support\Str;
 use Modules\Agent\Entities\Agent;
 use Modules\Owner\Entities\Owner;
 use Laravel\Passport\HasApiTokens;
@@ -11,8 +13,8 @@ use Modules\Auth\Entities\UserProfile;
 use Spatie\Permission\Traits\HasRoles;
 use Modules\Company\App\Models\Company;
 use Modules\Customer\Entities\Customer;
-use Modules\Shortcut\App\Models\Shortcut;
 use Illuminate\Notifications\Notifiable;
+use Modules\Shortcut\App\Models\Shortcut;
 use Modules\Inventory\App\Models\Inventory;
 use Illuminate\Database\Eloquent\Collection;
 use Modules\Customer\Entities\CustomerDocument;
@@ -57,6 +59,7 @@ class User extends Authenticatable
     ];
 
     protected $fillable = [
+        'og_code',
         'role_id',
         'username',
         'email',
@@ -149,5 +152,6 @@ class User extends Authenticatable
     {
         return $this->hasMany(Inventory::class, 'user_id');
     }
+
 
 }

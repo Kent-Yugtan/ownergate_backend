@@ -2,6 +2,8 @@
 
 namespace App\Traits;
 
+use App\Models\User;
+use Illuminate\Support\Str;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 
@@ -46,6 +48,60 @@ trait ApiHelper
         return $formattedData;
     }
 
+    public function generateOGCode(User $user)
+    {
+        $role = $user->getRoleNames()->first();
+        $code = '';
+        
+        switch ($role) {
+            case 'Admin':
+                $code = 'OG' . strtoupper(substr($user->profile->first_name, 0, 6));
+                $code = 'SU ' . implode(' ', str_split($code, 4));
+                break;
+            
+            case 'Owner':
+                $code = 'OG' . strtoupper(substr($user->profile->first_name, 0, 6));
+                $code = 'OW ' . implode(' ', str_split($code, 4));
+                break;
+
+            case 'Employee':
+                $code = 'OG' . strtoupper(substr($user->profile->first_name, 0, 6));
+                $code = 'EM ' . implode(' ', str_split($code, 4));
+                break;
+
+            case 'Developer':
+                $code = 'OG' . strtoupper(substr($user->profile->first_name, 0, 6));
+                $code = 'DE ' . implode(' ', str_split($code, 4));
+                break;
+
+            case 'Real Estate':
+                $code = 'OG' . strtoupper(substr($user->profile->first_name, 0, 6));
+                $code = 'RE ' . implode(' ', str_split($code, 4));
+                break;
+            
+            case 'Vendor':
+                $code = 'OG' . strtoupper(substr($user->profile->first_name, 0, 6));
+                $code = 'VE ' . implode(' ', str_split($code, 4));
+                break;
+
+            case 'Agent':
+                $code = 'OG' . strtoupper(substr($user->profile->first_name, 0, 6));
+                $code = 'AG ' . implode(' ', str_split($code, 4));
+                break;
+
+            case 'Customer':
+                $length = 9;
+                $code = sprintf("CU %0". $length . "d", $user->id);
+                $code = preg_replace('/(\d)(?=(\d{3})+(?!\d))/', '$1 ', $code);
+                break;
+        }
+
+        if (User::where('og_code', $code)->exists()) {
+            $this->generateOGCode();
+        }
+
+        return $code;
+    }
 
 
 }

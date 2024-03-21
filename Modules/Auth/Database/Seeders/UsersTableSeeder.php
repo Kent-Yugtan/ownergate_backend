@@ -15,6 +15,7 @@ class UsersTableSeeder extends Seeder
         $users = [
             [
                 'role_name' => 'Admin',
+                'og_code' => 'SU OGAD MIN',
                 'first_name' => 'Administrator',
                 'last_name' => 'Administrator',
                 'email' => 'admin@test.com',
@@ -23,6 +24,7 @@ class UsersTableSeeder extends Seeder
             ],
             [
                 'role_name' => 'Customer',
+                'og_code' => 'CU 000 000 123',
                 'first_name' => 'Customer',
                 'last_name' => 'Customer',
                 'email' => 'customer@test.com',
@@ -31,6 +33,7 @@ class UsersTableSeeder extends Seeder
             ],
             [
                 'role_name' => 'Owner',
+                'og_code' => 'OW OGSA MOON',
                 'first_name' => 'Owner',
                 'last_name' => 'Owner',
                 'email' => 'owner@test.com',
