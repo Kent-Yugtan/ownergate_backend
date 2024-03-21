@@ -20,6 +20,7 @@ class CompanyLocation extends Model
         'latitude',
         'longitude',
         'is_default',
+        'visibility',
 
     ];
 

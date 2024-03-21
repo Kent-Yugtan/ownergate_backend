@@ -16,6 +16,7 @@ return new class extends Migration {
             $table->string('name');
             $table->enum('type', ['document', 'license'])->default('document');
             $table->string('path');
+            $table->tinyInteger('visibility')->default(1);
             $table->timestamps();
             $table->softDeletes();
             $table->foreign('company_id')->references('id')->on('companies')->onUpdate('cascade')->onDelete('cascade');

@@ -19,9 +19,9 @@ class CompanyNews extends Model
         'description',
         'image_path',
         'posted_at',
+        'visibility',
     ];
 
     protected $hidden = ['created_at', 'updated_at'];
 
 }
-

@@ -8,5 +8,6 @@
     "Message": true,
     "Customer": true,
     "Admin": true,
-    "Sample": true
+    "Sample": true,
+    "CompanyPrivacy": true
 }

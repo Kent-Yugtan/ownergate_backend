@@ -17,7 +17,8 @@ class CompanyAttachment extends Model
         'company_id',
         'name',
         'path',
-        'type'
+        'type',
+        'visibility',
     ];
 
     public function company()

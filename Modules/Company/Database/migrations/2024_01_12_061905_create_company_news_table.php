@@ -17,6 +17,7 @@ return new class extends Migration {
             $table->text('description');
             $table->string('image_path')->nullable();
             $table->timestamp('posted_at');
+            $table->tinyInteger('visibility')->default(1);
             $table->timestamps();
 
             $table->foreign('company_id')->references('id')->on('companies')->onUpdate('cascade')->onDelete('cascade');
