@@ -47,7 +47,8 @@ class CompanyController extends Controller
     public function addAttachment(Company $company, Request $request)
     {
         try {
-            $attachment = $this->companyRepository->addAttachment($company, $request->name, $request->file('file'), $request->type);
+            $payload = $request->all();
+            $attachment = $this->companyRepository->addAttachment($company, $payload);
             return $this->successresponse(new AttachmentResource($attachment), 'The Attachment has been uploaded successfully.');
         } catch (Exception $e) {
             return $this->errorResponse(null, $e->getMessage());

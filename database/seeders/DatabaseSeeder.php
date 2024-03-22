@@ -12,6 +12,7 @@ use Modules\CompanyProperty\Database\Seeders\DetailTableSeeder;
 use Modules\CompanyProperty\Database\Seeders\AmenitiesTableSeeder;
 use Modules\CompanyProperty\Database\Seeders\UtilitiesTableSeeder;
 use Modules\CompanyProperty\Database\Seeders\PropertyTypeTableSeeder;
+use Modules\CompanyPrivacy\Database\Seeders\CompanySectionTableSeeder;
 use Modules\CompanyProperty\Database\Seeders\CompanyPropertyDatabaseSeeder;
 
 class DatabaseSeeder extends Seeder
@@ -28,6 +29,7 @@ class DatabaseSeeder extends Seeder
         $this->call(DetailTableSeeder::class);
         $this->call(AmenitiesTableSeeder::class);
         $this->call(UtilitiesTableSeeder::class);
+        $this->call(CompanySectionTableSeeder::class);
         $this->call(CompanyDatabaseSeeder::class);
         $this->call(CompanyPropertyDatabaseSeeder::class);
     }

@@ -16,6 +16,7 @@ return new class extends Migration {
             $table->string('title');
             $table->text('description');
             $table->string('image_path')->nullable();
+            $table->tinyInteger('visibility')->default(1);
             $table->timestamps();
 
             $table->foreign('company_id')->references('id')->on('companies')->onUpdate('cascade')->onDelete('cascade');

@@ -18,9 +18,9 @@ class CompanyService extends Model
         'title',
         'description',
         'image_path',
+        'visibility'
     ];
     
     protected $hidden = ['created_at', 'updated_at'];
 
 }
-

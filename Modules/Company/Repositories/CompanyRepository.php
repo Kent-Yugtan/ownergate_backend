@@ -38,16 +38,17 @@ class CompanyRepository extends BaseRepository implements CompanyRepositoryInter
         return $company;
     }
 
-    public function addAttachment(Company $company, $name, $file, $type)
+    public function addAttachment(Company $company, $payload)
     {
-        $uniqueFilename = 'attachment' . date('Ymd') . rand(0, 9999) . '.' . $file->guessExtension();
+        $uniqueFilename = 'attachment' . date('Ymd') . rand(0, 9999) . '.' . $payload['file']->guessExtension();
 
-        $path = $file->storeAs('company/attachment/' . $company->id . '/', $uniqueFilename);
+        $path = $payload['file']->storeAs('company/attachment/' . $company->id . '/', $uniqueFilename);
 
         $attachment = $company->attachments()->create([
-            "name" => $name,
+            "name" => $payload['name'],
             "path" => $path,
-            "type" => $type
+            "type" => $payload['type'],
+            "visibility" => $payload['visibility'],
         ]);
 
         return $attachment;
@@ -101,7 +102,8 @@ class CompanyRepository extends BaseRepository implements CompanyRepositoryInter
         return $this->saveOrEdit($company, 'managements', $request->managements, [
             'name',
             'position',
-            'phone_number'
+            'phone_number',
+            'visibility'
         ]);
     }
 
@@ -118,7 +120,8 @@ class CompanyRepository extends BaseRepository implements CompanyRepositoryInter
         return $this->saveOrEdit($company, 'news', $request->news, [
             'title',
             'description',
-            'posted_at'
+            'posted_at',
+            'visibility'
         ]);
     }
 
@@ -135,6 +138,7 @@ class CompanyRepository extends BaseRepository implements CompanyRepositoryInter
         return $this->saveOrEdit($company, 'services', $request->services, [
             'title',
             'description',
+            'visibility'
         ]);
     }
 
@@ -152,6 +156,7 @@ class CompanyRepository extends BaseRepository implements CompanyRepositoryInter
             'latitude',
             'longitude',
             'is_default',
+            'visibility'
         ]);
     }
 

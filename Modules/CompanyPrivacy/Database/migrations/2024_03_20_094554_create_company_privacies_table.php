@@ -10,17 +10,20 @@ return new class extends Migration {
      */
     public function up(): void
     {
-        Schema::create('company_managements', function (Blueprint $table) {
+        Schema::create('sections', function (Blueprint $table) {
+            $table->id();
+            $table->string('name');
+            $table->timestamps();
+        });
+
+        Schema::create('company_privacies', function (Blueprint $table) {
             $table->id();
             $table->unsignedBigInteger('company_id');
-            $table->string('name');
-            $table->string('phone_number')->nullable();
-            $table->string('position');
-            $table->string('image_path')->nullable();
-            $table->tinyInteger('visibility')->default(1);
+            $table->unsignedBigInteger('section_id');
             $table->timestamps();
 
             $table->foreign('company_id')->references('id')->on('companies')->onUpdate('cascade')->onDelete('cascade');
+            $table->foreign('section_id')->references('id')->on('sections')->onUpdate('cascade')->onDelete('cascade');
         });
     }
 
@@ -29,6 +32,7 @@ return new class extends Migration {
      */
     public function down(): void
     {
-        Schema::dropIfExists('company_managements');
+        Schema::dropIfExists('sections');
+        Schema::dropIfExists('company_privacies');
     }
 };

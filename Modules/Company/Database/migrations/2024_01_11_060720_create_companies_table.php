@@ -32,7 +32,9 @@ return new class extends Migration {
             $table->string('youtube_url')->nullable();
             $table->string('wechat_url')->nullable();
             $table->string('telegram_url')->nullable();
-            $table->json('privacy')->nullable();
+            $table->tinyInteger('mission_visibility')->default(1);
+            $table->tinyInteger('vission_visibility')->default(1);
+            $table->tinyInteger('values_visibility')->default(1);
             $table->timestamps();
             $table->softDeletes();
 
