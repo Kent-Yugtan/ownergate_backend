@@ -2,14 +2,16 @@
 
 namespace Modules\Company\App\Models;
 
+use App\Models\User;
 use Illuminate\Database\Eloquent\Model;
 use Modules\Company\App\Models\CompanyNews;
 use Modules\Company\App\Models\CompanyService;
+use Modules\CompanyPrivacy\App\Models\Section;
 use Modules\Company\App\Models\CompanyLocation;
 use Modules\Company\App\Models\CompanyAttachment;
 use Modules\Company\App\Models\CompanyManagement;
+use Modules\CompanyPrivacy\App\Models\CompanyPrivacy;
 use Modules\CompanyProperty\App\Models\CompanyProperty;
-use App\Models\User;
 
 class Company extends Model
 {
@@ -36,6 +38,9 @@ class Company extends Model
         'youtube_url',
         'wechat_url',
         'telegram_url',
+        'mission_visibility',
+        'vission_visibility',
+        'values_visibility',
     ];
 
     public function owner()
@@ -98,4 +103,10 @@ class Company extends Model
     {
         return $this->belongsToMany(User::class, 'company_users', 'company_id', 'user_id')->withPivot('is_admin');
     }
+
+    public function privacies()
+    {
+        return $this->belongsToMany(Section::class, 'company_privacies', 'company_id', 'section_id');
+    }
+
 }

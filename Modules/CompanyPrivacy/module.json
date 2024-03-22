@@ -1,0 +1,11 @@
+{
+    "name": "CompanyPrivacy",
+    "alias": "companyprivacy",
+    "description": "",
+    "keywords": [],
+    "priority": 0,
+    "providers": [
+        "Modules\\CompanyPrivacy\\App\\Providers\\CompanyPrivacyServiceProvider"
+    ],
+    "files": []
+}

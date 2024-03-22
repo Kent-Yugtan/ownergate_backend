@@ -3,6 +3,8 @@
 namespace App\Models;
 
 use Carbon\Carbon;
+use App\Models\User;
+use Illuminate\Support\Str;
 use Modules\Agent\Entities\Agent;
 use Modules\Owner\Entities\Owner;
 use Laravel\Passport\HasApiTokens;
@@ -58,6 +60,7 @@ class User extends Authenticatable
     ];
 
     protected $fillable = [
+        'og_code',
         'role_id',
         'username',
         'email',
@@ -160,5 +163,6 @@ class User extends Authenticatable
     {
         return $this->hasOne(CompanyEmployee::class, 'user_id');
     }
+
 
 }

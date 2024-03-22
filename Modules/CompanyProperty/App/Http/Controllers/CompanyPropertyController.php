@@ -448,11 +448,23 @@ class CompanyPropertyController extends Controller
                 if (!$value['name'] && !$value['value']) {
                     $property->addressDetails()->where('id', $value['detail_id'])->delete();
                 } else {
-                    $property->addressDetails()->updateOrCreate([
-                        'name' => $value['name'],
-                    ], [
-                        'value' => $value['value']
-                    ]);
+                    if (isset($value['detail_id']) && $value['detail_id']) {
+                        $address_detail = $property->addressDetails()->where('id', $value['detail_id'])->first();
+
+                        if (!$address_detail) {
+                            abort(403, 'Unauthorized action.');
+                        } else {
+                            $address_detail->update([
+                                'name' => $value['name'],
+                                'value' => $value['value']
+                            ]);
+                        }
+                    } else {
+                        $property->addressDetails()->create([
+                            'name' => $value['name'],
+                            'value' => $value['value']
+                        ]);
+                    }
                 }
             }
 
