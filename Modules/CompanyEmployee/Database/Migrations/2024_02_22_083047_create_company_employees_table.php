@@ -16,6 +16,7 @@ return new class extends Migration {
             $table->unsignedBigInteger('company_id');
             $table->unsignedBigInteger('user_id');
             $table->unsignedBigInteger('profile_id');
+            $table->string('employee_id')->nullable();
             $table->enum('status', ['active', 'inactive'])->default('active');
             $table->string('type');
             $table->string('addmail');
