@@ -12,11 +12,11 @@ class EmployeeResource extends JsonResource
     public function toArray($request): array
     {
         return array_merge(parent::toArray($request), [
-            'attachments'=>EmployeeAttachmentsResource::collection($this->attachments),
-            'user'=>$this->user,
-            'admin'=>$this->admin,
-            'company'=>$this->company
-
+            'attachments' => EmployeeAttachmentsResource::collection($this->attachments),
+            'user' => $this->user,
+            'admin' => $this->admin,
+            'company' => $this->company,
+            'profile' => $this->profile,
         ]);
     }
 }
