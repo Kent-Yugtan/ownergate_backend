@@ -32,7 +32,6 @@ class EmployeeRepository extends BaseRepository implements EmployeeRepositoryInt
 
         $profile = $createUser->profile()->updateOrCreate([
             'user_id' => $createUser->id,
-            'email' => $request->email,
         ], $request->all());
 
         $employee = $createUser->employee()->create(array_merge($request->all(), [
@@ -60,6 +59,9 @@ class EmployeeRepository extends BaseRepository implements EmployeeRepositoryInt
         $requestData = $request->json()->all();
         $employee = $this->model::find($id);
         $employee->update($requestData);
+        if ($request->has('profile')) {
+            $employee->profile()->update($request->input('profile'));
+        }
         return $employee;
     }
 
@@ -75,7 +77,6 @@ class EmployeeRepository extends BaseRepository implements EmployeeRepositoryInt
                     $attachment->update(['path' => $path]);
                 }
             } else {
-
                 $attachment =  $employee->attachments()->create($val);
                 if (is_file($val['file'])) {
                     $path = $val['file']->store('employee/' . $employee->id);
