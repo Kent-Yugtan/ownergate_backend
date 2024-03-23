@@ -6,8 +6,10 @@ use App\Models\User;
 use App\Traits\ApiResponser;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
+use Spatie\Permission\Models\Role;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\RedirectResponse;
+use Modules\CompanyProperty\App\Models\CompanyProperty;
 use Modules\Dashboard\Transformers\DashboardAnalyticResource;
 
 class DashboardAnalyticsController extends Controller
@@ -19,16 +21,12 @@ class DashboardAnalyticsController extends Controller
      */
     public function index()
     {
-        $user = auth()->user();
+        $total_properties = CompanyProperty::count();
+        $total_customers = User::roleCount('Customer');
+        $total_vendors = User::roleCount('Vendor');
+        
+        dd($total_vendors);
 
-        $stats = User::with(['customers' => function ($query) {
-            $query->withCount('contracts');
-        }])
-        ->withCount([
-            'customers',
-        ])
-        ->find($user->id);
-        dd($stats);
         $near_expired_contracts = $this->nearExpiredContracts();
         
         $properties_status = $this->propertiesStatus();

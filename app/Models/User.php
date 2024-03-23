@@ -82,6 +82,13 @@ class User extends Authenticatable
         $this->attributes['password'] = bcrypt($value);
     }
 
+    public function scopeRoleCount($query, $role)
+    {
+        return $query->whereHas("roles", function ($q) use ($role) {
+            $q->where("name", $role);
+        })->count();
+    }
+
     public function company()
     {
         return $this->hasOne(Company::class, 'owner_id');
