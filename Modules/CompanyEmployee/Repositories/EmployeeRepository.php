@@ -59,8 +59,8 @@ class EmployeeRepository extends BaseRepository implements EmployeeRepositoryInt
         $requestData = $request->json()->all();
         $employee = $this->model::find($id);
         $employee->update($requestData);
-        if ($request->has('profile')) {
-            $employee->profile()->update($request->input('profile'));
+        if ($request->has('user')) {
+            $employee->user()->update($request->input('user'));
         }
         return $employee;
     }
