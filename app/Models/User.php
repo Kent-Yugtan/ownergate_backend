@@ -154,12 +154,12 @@ class User extends Authenticatable
         return $this->hasMany(Inventory::class, 'user_id');
     }
 
-    public function employees()
+    public function adminEmployees()
     {
         return $this->hasMany(CompanyEmployee::class, 'admin_id');
     }
 
-    public function employee()
+    public function employeeAccount()
     {
         return $this->hasOne(CompanyEmployee::class, 'user_id');
     }

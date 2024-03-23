@@ -82,21 +82,6 @@ class CompanyEmployeeController extends Controller
         }
     }
 
-    public function updateAttachments(Request $request, CompanyEmployee $employee)
-    {
-        DB::beginTransaction();
-
-        try {
-            $attachments = $this->employeeRepository->updateAttachments($request, $employee);
-
-            DB::commit();
-            return $this->successresponse(EmployeeAttachmentsResource::collection($attachments), 'Employee Attachments has been updated successfully.');
-        } catch (\Exception $e) {
-            DB::rollBack();
-            return $this->errorResponse(null, $e->getMessage());
-        }
-    }
-
     public function changePassword(ChangePasswordRequest $request, CompanyEmployee $employee)
     {
         DB::beginTransaction();

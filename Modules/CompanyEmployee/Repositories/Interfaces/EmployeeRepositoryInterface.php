@@ -11,7 +11,6 @@ interface EmployeeRepositoryInterface
 {
     public function AddNew(Request $request);
     public function updateInfo(Request $request, $id);
-    public function updateAttachments(Request $request, CompanyEmployee $employee);
     public function search(Request $request);
     public function changePassword(ChangePasswordRequest $request, CompanyEmployee $employee);
     public function show($id);

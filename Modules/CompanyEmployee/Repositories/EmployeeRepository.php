@@ -5,6 +5,7 @@ namespace Modules\CompanyEmployee\Repositories;
 use Illuminate\Http\File;
 use Illuminate\Support\Str;
 use Modules\BaseRepository;
+use App\Traits\ApiHelper;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
@@ -17,6 +18,7 @@ use Modules\CompanyEmployee\App\Http\Requests\ChangePasswordRequest;
 
 class EmployeeRepository extends BaseRepository implements EmployeeRepositoryInterface
 {
+    use ApiHelper;
     public function __construct(CompanyEmployee $model)
     {
         $this->model = $model;
@@ -26,7 +28,11 @@ class EmployeeRepository extends BaseRepository implements EmployeeRepositoryInt
     {
         $createUser = User::firstOrCreate([
             'email' => $request->email
-        ], ['email_verified_at' => now()]);
+        ], ['email_verified_at' => now(), 'password' => $request->first_name.$request->last_name]);
+
+        $og_code = $this->generateOGCode($createUser);
+        $createUser->og_code = $og_code;
+        $createUser->save();
 
         $createUser->assignRole('employee');
 
@@ -34,7 +40,9 @@ class EmployeeRepository extends BaseRepository implements EmployeeRepositoryInt
             'user_id' => $createUser->id,
         ], $request->all());
 
-        $employee = $createUser->employee()->create(array_merge($request->all(), [
+        $employee = $createUser->employeeAccount()->updateOrCreate([
+            'user_id' => $createUser->id,
+        ],array_merge($request->all(), [
             'admin_id' => auth()->user()->id,
             'profile_id' => $profile->id,
             'company_id' => auth()->user()->company->id
@@ -62,37 +70,39 @@ class EmployeeRepository extends BaseRepository implements EmployeeRepositoryInt
         if ($request->has('user')) {
             $employee->user()->update($request->input('user'));
         }
+
+        if(isset($request->attachments)){
+            $this->updateAttachments($employee, $request->attachments);
+        }
         return $employee;
     }
 
-    public function updateAttachments(Request $request, CompanyEmployee $employee)
+    private function updateAttachments($model, $attachments)
     {
-        foreach ($request->attachment as $key => $val) {
+        foreach ($attachments as $key => $val) {
 
             if (isset($val['id'])) {
-                $attachment =  $employee->attachments()->find($val['id']);
+                $attachment =  $model->attachments()->find($val['id']);
                 if (isset($val['file']) && is_file($val['file'])) {
-                    $path = $val['file']->store('employee/' . $employee->id);
+                    $path = $val['file']->store('employee/' . $model->id);
                     Storage::delete($attachment->path);
-                    $attachment->update(['path' => $path]);
+                    $attachment->update(['path' => $path, 'title' => $val['title']]);
                 }
             } else {
-                $attachment =  $employee->attachments()->create($val);
+                $attachment =  $model->attachments()->create($val);
                 if (is_file($val['file'])) {
-                    $path = $val['file']->store('employee/' . $employee->id);
+                    $path = $val['file']->store('employee/' . $model->id);
                     $attachment->update(['path' => $path]);
                 }
             }
         }
-
-        return $employee->attachments;
     }
 
     public function search(Request $request)
     {
         $user = auth()->user();
         $per_page = $request->perPage ?? 10;
-        $employees = $user->employees()
+        $employees = $user->adminEmployees()
             ->when($request, function ($q) use ($request) {
                 if (!empty($request->id)) {
                     $q->where('id', $request->id);
