@@ -46,7 +46,9 @@ class CompanyEmployee extends Model
         'official_contract',
         'company_contract',
         'more_details',
-        'password_period'
+        'password_period',
+        'street',
+        'employee_number',
     ];
 
     public function properties()

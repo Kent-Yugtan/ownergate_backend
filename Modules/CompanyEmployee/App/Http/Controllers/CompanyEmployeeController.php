@@ -30,7 +30,7 @@ class CompanyEmployeeController extends Controller
     {
         try {
             $employees = $this->employeeRepository->search($request);
-            return $this->successresponse(EmployeeResource::collection($employees), 'employee has been created successfully.');
+            return EmployeeResource::collection($employees);
         } catch (\Exception $e) {
             return $this->errorResponse(null, $e->getMessage());
         }
@@ -42,9 +42,8 @@ class CompanyEmployeeController extends Controller
 
         try {
             $employee = $this->employeeRepository->AddNew($request);
-
             DB::commit();
-            return $this->successresponse(new EmployeeResource($employee), 'employee has been created successfully.');
+            return $this->successresponse(new EmployeeResource($employee), 'Employee has been created successfully.');
         } catch (\Exception $e) {
             DB::rollBack();
             return $this->errorResponse(null, $e->getMessage());
@@ -58,7 +57,7 @@ class CompanyEmployeeController extends Controller
     {
         try {
             $employee = $this->employeeRepository->show($id);
-            if(isset($employee["employee_info"])) {
+            if (isset($employee["employee_info"])) {
                 return $this->successresponse(new EmployeeResource($employee["employee_info"]), 'Employee has been retrieved.');
             } else {
                 return $this->successresponse(null, 'Employee not found.');
@@ -76,7 +75,7 @@ class CompanyEmployeeController extends Controller
             $employee = $this->employeeRepository->updateInfo($request, $id);
 
             DB::commit();
-            return $this->successresponse(new EmployeeResource($employee), 'employee has been updated successfully.');
+            return $this->successresponse(new EmployeeResource($employee), 'Employee has been updated successfully.');
         } catch (\Exception $e) {
             DB::rollBack();
             return $this->errorResponse(null, $e->getMessage());
@@ -91,7 +90,7 @@ class CompanyEmployeeController extends Controller
             $attachments = $this->employeeRepository->updateAttachments($request, $employee);
 
             DB::commit();
-            return $this->successresponse(EmployeeAttachmentsResource::collection($attachments), 'employee Attachments has been updated successfully.');
+            return $this->successresponse(EmployeeAttachmentsResource::collection($attachments), 'Employee Attachments has been updated successfully.');
         } catch (\Exception $e) {
             DB::rollBack();
             return $this->errorResponse(null, $e->getMessage());
@@ -119,8 +118,8 @@ class CompanyEmployeeController extends Controller
 
         try {
             $addAccess = $this->employeeRepository->addAccess($request, $employee, $property);
-            
-            if($addAccess === false){
+
+            if ($addAccess === false) {
                 return $this->errorResponse(null, "You don't have permission to this property");
             }
             DB::commit();
@@ -138,7 +137,7 @@ class CompanyEmployeeController extends Controller
         try {
             $addAccess = $this->employeeRepository->removeAccess($request, $employee, $property);
 
-            if($addAccess === false){
+            if ($addAccess === false) {
                 return $this->errorResponse(null, "You don't have permission to this property");
             }
             DB::commit();
@@ -154,14 +153,12 @@ class CompanyEmployeeController extends Controller
 
         try {
 
-            $properties = $this->employeeRepository->searchAccess($request, $employee);  
+            $properties = $this->employeeRepository->searchAccess($request, $employee);
             return $this->successresponse($properties);
-
         } catch (\Exception $e) {
 
             DB::rollBack();
             return $this->errorResponse(null, $e->getMessage());
         }
     }
-
 }
