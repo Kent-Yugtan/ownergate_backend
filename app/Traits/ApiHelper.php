@@ -56,37 +56,37 @@ trait ApiHelper
         switch ($role) {
             case 'Admin':
                 $code = 'OG' . strtoupper(substr($user->profile->first_name, 0, 6));
-                $code = 'SU ' . implode(' ', str_split($code, 4));
+                $code = 'SU ' . implode(' ', str_split($code, 4)) . ' ' . $user->id;
                 break;
             
             case 'Owner':
                 $code = 'OG' . strtoupper(substr($user->profile->first_name, 0, 6));
-                $code = 'OW ' . implode(' ', str_split($code, 4));
+                $code = 'OW ' . implode(' ', str_split($code, 4)) . ' ' . $user->id;
                 break;
 
             case 'Employee':
                 $code = 'OG' . strtoupper(substr($user->profile->first_name, 0, 6));
-                $code = 'EM ' . implode(' ', str_split($code, 4));
+                $code = 'EM ' . implode(' ', str_split($code, 4)) . ' ' . $user->id;
                 break;
 
             case 'Developer':
                 $code = 'OG' . strtoupper(substr($user->profile->first_name, 0, 6));
-                $code = 'DE ' . implode(' ', str_split($code, 4));
+                $code = 'DE ' . implode(' ', str_split($code, 4)) . ' ' . $user->id;
                 break;
 
             case 'Real Estate':
                 $code = 'OG' . strtoupper(substr($user->profile->first_name, 0, 6));
-                $code = 'RE ' . implode(' ', str_split($code, 4));
+                $code = 'RE ' . implode(' ', str_split($code, 4)) . ' ' . $user->id;
                 break;
             
             case 'Vendor':
                 $code = 'OG' . strtoupper(substr($user->profile->first_name, 0, 6));
-                $code = 'VE ' . implode(' ', str_split($code, 4));
+                $code = 'VE ' . implode(' ', str_split($code, 4)) . ' ' . $user->id;
                 break;
 
             case 'Agent':
                 $code = 'OG' . strtoupper(substr($user->profile->first_name, 0, 6));
-                $code = 'AG ' . implode(' ', str_split($code, 4));
+                $code = 'AG ' . implode(' ', str_split($code, 4)) . ' ' . $user->id;
                 break;
 
             case 'Customer':
