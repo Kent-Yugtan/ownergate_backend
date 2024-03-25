@@ -17,7 +17,7 @@ class PropertyMediaResource extends JsonResource
         $this->makeHidden(['created_at', 'updated_at']);
 
         return array_merge(parent::toArray($request), [
-            'paths' => $this->media_paths->map(function ($attachment) {
+            'paths' => $this->paths->map(function ($attachment) {
                 return [
                     'id' => $attachment->id,
                     'name' => $attachment->name,

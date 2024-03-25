@@ -17,6 +17,7 @@ return new class extends Migration {
             $table->unsignedBigInteger('user_id');
             $table->unsignedBigInteger('profile_id');
             $table->enum('status', ['active', 'inactive'])->default('active');
+            $table->string('type');
             $table->string('addmail');
             $table->string('department')->nullable();
             $table->string('building_name')->nullable();
@@ -24,9 +25,13 @@ return new class extends Migration {
             $table->date('join_date');
             $table->string('position');
             $table->float("salary")->nullable();
-            $table->string("mobile_number");
+            $table->string("mobile_number_1");
             $table->string('emergency_contact_name');
             $table->string('emergency_contact_number');
+            $table->json("official_contract");
+            $table->json("company_contract");
+            $table->json("more_details")->nullable();
+            $table->json("password_period")->nullable();
             $table->timestamps();
 
             $table->foreign('admin_id')->references('id')->on('users')->onUpdate('cascade')->onDelete('cascade');

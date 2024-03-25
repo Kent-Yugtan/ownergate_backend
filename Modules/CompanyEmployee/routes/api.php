@@ -2,6 +2,7 @@
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
+use Modules\CompanyEmployee\App\Http\Controllers\CompanyEmployeeController;
 
 /*
     |--------------------------------------------------------------------------
@@ -14,6 +15,13 @@ use Illuminate\Support\Facades\Route;
     |
 */
 
-Route::middleware(['auth:sanctum'])->prefix('v1')->name('api.')->group(function () {
-    Route::get('companyemployee', fn (Request $request) => $request->user())->name('companyemployee');
+Route::prefix('admin')->middleware(['auth:api'])->group(function () {
+    Route::post('employee/{employee}', [CompanyEmployeeController::class, 'update']);
+    Route::post('employee/change-password/{employee}', [CompanyEmployeeController::class, 'changePassword']);
+    Route::post('employee/add-access/{employee}/{property}', [CompanyEmployeeController::class, 'addAccess']);
+    Route::get('employee/remove-access/{employee}/{property}', [CompanyEmployeeController::class, 'removeAccess']);
+    Route::get('employee/search-access/{employee}', [CompanyEmployeeController::class, 'searchAccess']);
+    Route::resource('employee', CompanyEmployeeController::class)->only([
+        'index', 'store', 'show'
+    ]);
 });

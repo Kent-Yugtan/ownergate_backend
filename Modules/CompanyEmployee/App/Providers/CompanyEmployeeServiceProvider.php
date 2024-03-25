@@ -4,6 +4,8 @@ namespace Modules\CompanyEmployee\App\Providers;
 
 use Illuminate\Support\Facades\Blade;
 use Illuminate\Support\ServiceProvider;
+use Modules\CompanyEmployee\Repositories\Interfaces\EmployeeRepositoryInterface;
+use Modules\CompanyEmployee\Repositories\EmployeeRepository;
 
 class CompanyEmployeeServiceProvider extends ServiceProvider
 {
@@ -30,6 +32,7 @@ class CompanyEmployeeServiceProvider extends ServiceProvider
     public function register(): void
     {
         $this->app->register(RouteServiceProvider::class);
+        $this->app->bind(EmployeeRepositoryInterface::class, EmployeeRepository::class);
     }
 
     /**
