@@ -14,7 +14,7 @@ use Spatie\Permission\Traits\HasRoles;
 use Modules\Company\App\Models\Company;
 use Modules\Customer\Entities\Customer;
 use Modules\CompanyEmployee\App\Models\CompanyEmployee;
-use Modules\Shortcut\App\Models\Shortcut;
+use Modules\Dashboard\App\Models\Shortcut;
 use Illuminate\Notifications\Notifiable;
 use Modules\Inventory\App\Models\Inventory;
 use Illuminate\Database\Eloquent\Collection;
@@ -163,6 +163,4 @@ class User extends Authenticatable
     {
         return $this->hasOne(CompanyEmployee::class, 'user_id');
     }
-
-
 }
