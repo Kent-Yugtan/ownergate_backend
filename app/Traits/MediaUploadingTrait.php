@@ -5,13 +5,13 @@ namespace App\Traits;
 use Illuminate\Support\Str;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
-use Modules\Company\Entities\CompanyProperty;
+use Modules\CompanyProperty\App\Models\CompanyProperty;
 
 trait MediaUploadingTrait
 {
     public function storeMedia($validatedData, CompanyProperty $property)
     {
-        $property_media = $property->media()->updateOrCreate([
+        $property_media = $property->medias()->updateOrCreate([
             'name' => $validatedData['name'] ?? null,
             'description' => $validatedData['description'] ?? null,
             'type' => $validatedData['type'],
