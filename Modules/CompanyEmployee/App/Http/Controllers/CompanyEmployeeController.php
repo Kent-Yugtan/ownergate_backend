@@ -15,7 +15,6 @@ use Modules\CompanyEmployee\Repositories\Interfaces\EmployeeRepositoryInterface;
 use Modules\CompanyEmployee\App\resources\EmployeeResource;
 use Modules\CompanyEmployee\App\resources\EmployeeAttachmentsResource;
 
-
 class CompanyEmployeeController extends Controller
 {
     use ApiResponser;
@@ -30,6 +29,7 @@ class CompanyEmployeeController extends Controller
     {
         try {
             $employees = $this->employeeRepository->search($request);
+            dd($employees);
             return EmployeeResource::collection($employees);
         } catch (\Exception $e) {
             return $this->errorResponse(null, $e->getMessage());
