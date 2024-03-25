@@ -30,11 +30,11 @@ class EmployeeRepository extends BaseRepository implements EmployeeRepositoryInt
             'email' => $request->email
         ], ['email_verified_at' => now(), 'password' => $request->first_name.$request->last_name]);
 
+        $createUser->assignRole('employee');
+        
         $og_code = $this->generateOGCode($createUser);
         $createUser->og_code = $og_code;
         $createUser->save();
-
-        $createUser->assignRole('employee');
 
         $profile = $createUser->profile()->updateOrCreate([
             'user_id' => $createUser->id,
@@ -42,7 +42,7 @@ class EmployeeRepository extends BaseRepository implements EmployeeRepositoryInt
 
         $employee = $createUser->employeeAccount()->updateOrCreate([
             'user_id' => $createUser->id,
-        ],array_merge($request->all(), [
+        ], array_merge($request->all(), [
             'admin_id' => auth()->user()->id,
             'profile_id' => $profile->id,
             'company_id' => auth()->user()->company->id
@@ -71,7 +71,7 @@ class EmployeeRepository extends BaseRepository implements EmployeeRepositoryInt
             $employee->user()->update($request->input('user'));
         }
 
-        if(isset($request->attachments)){
+        if(isset($request->attachments)) {
             $this->updateAttachments($employee, $request->attachments);
         }
         return $employee;
