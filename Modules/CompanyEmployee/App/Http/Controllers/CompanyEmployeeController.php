@@ -73,7 +73,6 @@ class CompanyEmployeeController extends Controller
 
         try {
             $employee = $this->employeeRepository->updateInfo($request, $id);
-
             DB::commit();
             return $this->successresponse(new EmployeeResource($employee), 'Employee has been updated successfully.');
         } catch (\Exception $e) {

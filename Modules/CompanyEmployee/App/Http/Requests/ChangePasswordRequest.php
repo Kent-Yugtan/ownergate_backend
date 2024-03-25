@@ -15,29 +15,29 @@ class ChangePasswordRequest extends FormRequest
     public function rules(): array
     {
         return [
-            "password" =>"required|min:8|same:password_confirmation",
-            'permission_period' => [
-                'required_without:official_contract', function ($attribute, $value, $fail) {
-                    if ($value['from'] >= $value['to']) {
-                        $fail('Start date must not equal or greater than end date');
-                    }
+            // "password" =>"required|min:8|same:password_confirmation",
+            // 'permission_period' => [
+            //     'required_without:official_contract', function ($attribute, $value, $fail) {
+            //         if ($value['from'] >= $value['to']) {
+            //             $fail('Start date must not equal or greater than end date');
+            //         }
 
-                    if (DateTime::createFromFormat('Y-m-d H:i:s', $value['from']) === false) {
-                        $fail('The start date of permission period is not date.');
-                    }
+            //         if (DateTime::createFromFormat('Y-m-d H:i:s', $value['from']) === false) {
+            //             $fail('The start date of permission period is not date.');
+            //         }
 
-                    if (DateTime::createFromFormat('Y-m-d H:i:s', $value['to']) === false) {
-                        $fail('The end date of permission period is not date.');
-                    }
-                },
-            ],
-            'official_contract' => [
-                'required_without:permission_period', function ($attribute, $value, $fail) {
-                    if ($value['from'] >= $value['to']) {
-                        $fail('Start date must not equal or greater than end date');
-                    }
-                },
-            ],
+            //         if (DateTime::createFromFormat('Y-m-d H:i:s', $value['to']) === false) {
+            //             $fail('The end date of permission period is not date.');
+            //         }
+            //     },
+            // ],
+            // 'official_contract' => [
+            //     'required_without:permission_period', function ($attribute, $value, $fail) {
+            //         if ($value['from'] >= $value['to']) {
+            //             $fail('Start date must not equal or greater than end date');
+            //         }
+            //     },
+            // ],
         ];
     }
 

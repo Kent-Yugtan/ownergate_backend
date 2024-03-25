@@ -50,6 +50,7 @@ trait ApiHelper
 
     public function generateOGCode(User $user)
     {
+
         $role = $user->getRoleNames()->first();
         $code = '';
         
@@ -95,11 +96,9 @@ trait ApiHelper
                 $code = preg_replace('/(\d)(?=(\d{3})+(?!\d))/', '$1 ', $code);
                 break;
         }
-
         if (User::where('og_code', $code)->exists()) {
-            $this->generateOGCode();
+            $this->generateOGCode($user);
         }
-
         return $code;
     }
 
