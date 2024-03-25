@@ -6,21 +6,13 @@ use Illuminate\Http\Resources\Json\JsonResource;
 
 class DashboardAnalyticResource extends JsonResource
 {
-    protected $near_expired_contracts;
-    protected $properties_status;
-
-    public function __construct($resource, $near_expired_contracts, $properties_status)
-    {
-        $this->near_expired_contracts = $near_expired_contracts;
-        $this->properties_status = $properties_status;
-        parent::__construct($resource);
-    }
 
     /**
      * Transform the resource into an array.
      */
     public function toArray($request): array
     {
+        return parent::toArray($request);
         $total_contracts = 0;
 
         foreach ($this->customers as $customer) {

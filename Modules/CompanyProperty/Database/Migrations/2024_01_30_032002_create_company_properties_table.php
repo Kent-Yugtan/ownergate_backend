@@ -32,7 +32,7 @@ return new class extends Migration {
             $table->string('longitude')->nullable();
             $table->text('description')->nullable();
             $table->string('full_video')->nullable();
-            $table->enum('status', ['active', 'inactive'])->default('active');
+            $table->enum('status', ['Active', 'Inactive', 'Under Construction', 'Under Development', 'Under Maintenance'])->default('Active');
             $table->text('notes')->nullable();
             $table->softDeletes();
             $table->timestamps();

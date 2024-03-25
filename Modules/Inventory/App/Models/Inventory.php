@@ -3,6 +3,7 @@
 namespace Modules\Inventory\App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Modules\Inventory\App\Models\InventoryType;
 use Modules\Inventory\App\Models\InventoryAttachment;
 
 class Inventory extends Model
@@ -34,5 +35,10 @@ class Inventory extends Model
     public function attachments()
     {
         return $this->hasMany(InventoryAttachment::class);
+    }
+
+    public function type()
+    {
+        return $this->belongsTo(InventoryType::class, 'inventory_type_id');
     }
 }
