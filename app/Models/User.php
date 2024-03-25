@@ -13,8 +13,9 @@ use Modules\Auth\Entities\UserProfile;
 use Spatie\Permission\Traits\HasRoles;
 use Modules\Company\App\Models\Company;
 use Modules\Customer\Entities\Customer;
-use Illuminate\Notifications\Notifiable;
+use Modules\CompanyEmployee\App\Models\CompanyEmployee;
 use Modules\Shortcut\App\Models\Shortcut;
+use Illuminate\Notifications\Notifiable;
 use Modules\Inventory\App\Models\Inventory;
 use Illuminate\Database\Eloquent\Collection;
 use Modules\Customer\Entities\CustomerDocument;
@@ -151,6 +152,16 @@ class User extends Authenticatable
     public function inventories()
     {
         return $this->hasMany(Inventory::class, 'user_id');
+    }
+
+    public function adminEmployees()
+    {
+        return $this->hasMany(CompanyEmployee::class, 'admin_id');
+    }
+
+    public function employeeAccount()
+    {
+        return $this->hasOne(CompanyEmployee::class, 'user_id');
     }
 
 

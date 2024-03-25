@@ -27,7 +27,6 @@ class UserProfile extends Model
         'license_no',
         'license_expiry',
         'postal_code',
-        'addmail',
         'account_no',
         'country',
         'state',
@@ -41,14 +40,14 @@ class UserProfile extends Model
         'social_id',
         'social_type',
         'website',
-        'avatar'
+        'avatar',
     ];
 
     public function user()
     {
         return $this->belongsTo(User::class);
     }
-    
+
     protected static function newFactory(): UserProfileFactory
     {
         //return UserProfileFactory::new();
