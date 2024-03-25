@@ -8,11 +8,11 @@ use Illuminate\Http\Response;
 use Illuminate\Support\Facades\DB;
 use App\Traits\MediaUploadingTrait;
 use App\Http\Controllers\Controller;
-use Modules\Company\Entities\Company;
 use Illuminate\Support\Facades\Storage;
+use Modules\Company\App\Models\Company;
 use Illuminate\Contracts\Support\Renderable;
-use Modules\CompanyProperty\Http\Requests\StoreMediaRequest;
 use Modules\CompanyProperty\Transformers\PropertyMediaResource;
+use Modules\CompanyProperty\App\Http\Requests\StoreMediaRequest;
 
 class PropertyMediaController extends Controller
 {
