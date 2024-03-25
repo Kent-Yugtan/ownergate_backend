@@ -30,15 +30,15 @@ class EmployeeRepository extends BaseRepository implements EmployeeRepositoryInt
             'email' => $request->email
         ], ['email_verified_at' => now(), 'password' => $request->first_name.$request->last_name]);
 
-        $og_code = $this->generateOGCode($createUser);
-        $createUser->og_code = $og_code;
-        $createUser->save();
-
-        $createUser->assignRole('employee');
-
         $profile = $createUser->profile()->updateOrCreate([
             'user_id' => $createUser->id,
         ], $request->all());
+
+        $createUser->assignRole('employee');
+      
+        $og_code = $this->generateOGCode($createUser);
+        $createUser->og_code = $og_code;
+        $createUser->save();
 
         $employee = $createUser->employeeAccount()->updateOrCreate([
             'user_id' => $createUser->id,
@@ -66,11 +66,11 @@ class EmployeeRepository extends BaseRepository implements EmployeeRepositoryInt
     {
         $requestData = $request->json()->all();
         $employee = $this->model::find($id);
-        $employee->update($requestData);
+        $employee->fill($request->all())->save();
+        // $employee->update($requestData);
         if ($request->has('user')) {
             $employee->user()->update($request->input('user'));
         }
-
         if(isset($request->attachments)){
             $this->updateAttachments($employee, $request->attachments);
         }
@@ -80,23 +80,42 @@ class EmployeeRepository extends BaseRepository implements EmployeeRepositoryInt
     private function updateAttachments($model, $attachments)
     {
         foreach ($attachments as $key => $val) {
-
             if (isset($val['id'])) {
-                $attachment =  $model->attachments()->find($val['id']);
+                $attachment = $model->attachments()->find($val['id']);
+                if (!$attachment) {
+                    continue; // Skip if attachment not found
+                }
+    
+                // Check if title is set and update it
+                if (isset($val['title'])) {
+                    $attachment->update(['title' => $val['title']]);
+                } else {
+                    $attachment->update(['title' => '']);
+                }
+    
+                // Check if file is set and update it
                 if (isset($val['file']) && is_file($val['file'])) {
                     $path = $val['file']->store('employee/' . $model->id);
                     Storage::delete($attachment->path);
-                    $attachment->update(['path' => $path, 'title' => $val['title']]);
+                    $attachment->update(['path' => $path]);
                 }
-            } else {
+    
+                // Check if both title and file are empty, then delete the attachment
+                if (empty($val['title']) && empty($val['file'])) {
+                    $attachment->delete();
+                }
+            }else{
                 $attachment =  $model->attachments()->create($val);
-                if (is_file($val['file'])) {
+                if (isset($val['file']) && is_file($val['file'])) {
                     $path = $val['file']->store('employee/' . $model->id);
                     $attachment->update(['path' => $path]);
                 }
+                
+                
             }
         }
     }
+    
 
     public function search(Request $request)
     {
