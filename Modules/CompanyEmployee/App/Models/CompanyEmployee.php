@@ -49,6 +49,7 @@ class CompanyEmployee extends Model
         'password_period',
         'street',
         'employee_number',
+        'permission_type',
     ];
 
     public function properties()

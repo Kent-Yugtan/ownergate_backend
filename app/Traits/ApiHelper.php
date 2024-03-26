@@ -50,6 +50,7 @@ trait ApiHelper
 
     public function generateOGCode(User $user)
     {
+
         $role = $user->getRoleNames()->first();
         $code = null;
 
@@ -95,7 +96,7 @@ trait ApiHelper
                 $code = preg_replace('/(\d)(?=(\d{3})+(?!\d))/', '$1 ', $code);
                 break;
         }
-
+       
         return $code;
     }
 

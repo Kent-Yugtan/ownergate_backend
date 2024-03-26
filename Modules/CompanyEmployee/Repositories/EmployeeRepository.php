@@ -28,20 +28,20 @@ class EmployeeRepository extends BaseRepository implements EmployeeRepositoryInt
     {
         $createUser = User::firstOrCreate([
             'email' => $request->email
-        ], ['email_verified_at' => now(), 'password' => $request->first_name.$request->last_name]);
+        ], ['email_verified_at' => now(), 'password' => $request->first_name . $request->last_name]);
 
-        $createUser->assignRole('employee');
-        
         $profile = $createUser->profile()->updateOrCreate([
             'user_id' => $createUser->id,
         ], $request->all());
+
+        $createUser->assignRole('employee');
 
         $employee = $createUser->employeeAccount()->updateOrCreate([
             'user_id' => $createUser->id,
         ], array_merge($request->all(), [
             'admin_id' => auth()->user()->id,
             'profile_id' => $profile->id,
-            'company_id' => auth()->user()->company->id
+            'company_id' => $request->company_id
         ]));
 
         $og_code = $this->generateOGCode($createUser);
@@ -66,12 +66,12 @@ class EmployeeRepository extends BaseRepository implements EmployeeRepositoryInt
     {
         $requestData = $request->json()->all();
         $employee = $this->model::find($id);
-        $employee->update($requestData);
+        $employee->fill($request->all())->save();
+        // $employee->update($requestData);
         if ($request->has('user')) {
             $employee->user()->update($request->input('user'));
         }
-
-        if(isset($request->attachments)) {
+        if (isset($request->attachments)) {
             $this->updateAttachments($employee, $request->attachments);
         }
         return $employee;
@@ -80,23 +80,40 @@ class EmployeeRepository extends BaseRepository implements EmployeeRepositoryInt
     private function updateAttachments($model, $attachments)
     {
         foreach ($attachments as $key => $val) {
-
             if (isset($val['id'])) {
-                $attachment =  $model->attachments()->find($val['id']);
+                $attachment = $model->attachments()->find($val['id']);
+                if (!$attachment) {
+                    continue; // Skip if attachment not found
+                }
+
+                // Check if title is set and update it
+                if (isset($val['title'])) {
+                    $attachment->update(['title' => $val['title']]);
+                } else {
+                    $attachment->update(['title' => '']);
+                }
+
+                // Check if file is set and update it
                 if (isset($val['file']) && is_file($val['file'])) {
                     $path = $val['file']->store('employee/' . $model->id);
                     Storage::delete($attachment->path);
-                    $attachment->update(['path' => $path, 'title' => $val['title']]);
+                    $attachment->update(['path' => $path]);
+                }
+
+                // Check if both title and file are empty, then delete the attachment
+                if (empty($val['title']) && empty($val['file'])) {
+                    $attachment->delete();
                 }
             } else {
                 $attachment =  $model->attachments()->create($val);
-                if (is_file($val['file'])) {
+                if (isset($val['file']) && is_file($val['file'])) {
                     $path = $val['file']->store('employee/' . $model->id);
                     $attachment->update(['path' => $path]);
                 }
             }
         }
     }
+
 
     public function search(Request $request)
     {
@@ -162,8 +179,17 @@ class EmployeeRepository extends BaseRepository implements EmployeeRepositoryInt
     public function changePassword(ChangePasswordRequest $request, CompanyEmployee $employee)
     {
         $result = $employee->user->update(['password' => $request->password]);
+
+        if (isset($request->permission_type)) {
+            $employee->update(['permission_type' => $request->permission_type]);
+        }
+
         if (isset($request->permission_period)) {
             $employee->update(['password_period' => $request->permission_period]);
+        }
+
+        if (isset($request->official_contract)) {
+            $employee->update(['official_contract' => $request->official_contract]);
         }
 
         return $result;
