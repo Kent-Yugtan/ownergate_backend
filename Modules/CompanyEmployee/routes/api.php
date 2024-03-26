@@ -16,6 +16,11 @@ use Modules\CompanyEmployee\App\Http\Controllers\CompanyEmployeeController;
 */
 
 Route::prefix('admin')->middleware(['auth:api'])->group(function () {
+    Route::prefix('employee')->group(function () {
+        Route::post('/{employee}/access-level', [CompanyEmployeeController::class, 'saveAccessLevel']);
+    });
+
+
     Route::post('employee/{employee}', [CompanyEmployeeController::class, 'update']);
     Route::post('employee/change-password/{employee}', [CompanyEmployeeController::class, 'changePassword']);
     Route::post('employee/add-access/{employee}/{property}', [CompanyEmployeeController::class, 'addAccess']);

@@ -36,10 +36,6 @@ class EmployeeRepository extends BaseRepository implements EmployeeRepositoryInt
 
         $createUser->assignRole('employee');
 
-        $og_code = $this->generateOGCode($createUser);
-        $createUser->og_code = $og_code;
-        $createUser->save();
-
         $employee = $createUser->employeeAccount()->updateOrCreate([
             'user_id' => $createUser->id,
         ], array_merge($request->all(), [
@@ -47,7 +43,11 @@ class EmployeeRepository extends BaseRepository implements EmployeeRepositoryInt
             'profile_id' => $profile->id,
             'company_id' => $request->company_id
         ]));
-        //die("asd");
+
+        $og_code = $this->generateOGCode($createUser);
+        $createUser->og_code = $og_code;
+        $createUser->save();
+
         if (isset($request->attachments)) {
             foreach ($request->attachments as $key => $val) {
                 $attachment =  $employee->attachments()->create($val);

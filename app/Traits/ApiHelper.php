@@ -52,8 +52,8 @@ trait ApiHelper
     {
 
         $role = $user->getRoleNames()->first();
-        $code = '';
-        
+        $code = null;
+
         switch ($role) {
             case 'Admin':
                 $code = 'OG' . strtoupper(substr($user->profile->first_name, 0, 6));
@@ -96,9 +96,7 @@ trait ApiHelper
                 $code = preg_replace('/(\d)(?=(\d{3})+(?!\d))/', '$1 ', $code);
                 break;
         }
-        if (User::where('og_code', $code)->exists()) {
-            $this->generateOGCode($user);
-        }
+       
         return $code;
     }
 

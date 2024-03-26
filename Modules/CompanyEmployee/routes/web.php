@@ -15,5 +15,5 @@ use Modules\CompanyEmployee\App\Http\Controllers\CompanyEmployeeController;
 */
 
 Route::group([], function () {
-    Route::resource('companyemployee', CompanyEmployeeController::class)->names('companyemployee');
+    // Route::resource('companyemployee', CompanyEmployeeController::class)->names('companyemployee');
 });
