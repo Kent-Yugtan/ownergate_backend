@@ -552,9 +552,12 @@ class CompanyPropertyController extends Controller
     {
         try {
             $perPage = $request->perPage ?? 10;
-            $addmail = $request->addmail;
-            
-            $company =  Company::with('properties')->where('addmail', $addmail)->first();
+
+            $company =  Company::with('properties')
+                ->where('company_name', 'like', '%' . $request->keyword . '%')
+                ->orWhere('addmail', 'like', '%' . $request->keyword . '%')
+                ->firstOrFail();
+   
             $properties = $company->properties()->paginate($perPage);
 
             return PropertyResource::collection($properties);
