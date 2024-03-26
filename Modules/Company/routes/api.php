@@ -41,18 +41,21 @@ Route::prefix('admin')->middleware(['auth:api'])->group(function () {
         Route::get('{company}/get-attachments/', [CompanyController::class, 'getAttachments']);
         Route::post('{company}/add-attachment/', [CompanyController::class, 'addAttachment']);
         Route::delete('{company}/remove-attachment/{attachment}', [CompanyController::class, 'removeAttachment']);
+
         Route::get('{company}/team/', [CompanyController::class, 'getTeam']);
         Route::post('{company}/add-member/', [CompanyController::class, 'addMember']);
         Route::post('{company}/update-member/{member}', [CompanyController::class, 'updateMember']);
         Route::delete('{company}/remove_member/{member}', [CompanyController::class, 'removeMember']);
 
-        Route::post('{company}/add-property/{property}', [CompanyController::class, 'addProperty']);
         Route::get('{company}/accounts-list', [CompanyController::class, 'accountsList']);
+        Route::post('{company}/add-property/{property}', [CompanyController::class, 'addProperty']);
         Route::post('{company}/change-status', [CompanyController::class, 'changeStatus']);
         Route::post('{company}/privacy', [CompanyController::class, 'changePrivacy']);
+
+        
     });
 });
 
-Route::prefix('admin')->group(function() {
+Route::prefix('admin')->group(function () {
     Route::apiResource('company-types', CompanyTypeController::class);
 });

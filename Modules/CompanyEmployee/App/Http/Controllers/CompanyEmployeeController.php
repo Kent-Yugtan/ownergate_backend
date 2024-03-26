@@ -2,18 +2,19 @@
 
 namespace Modules\CompanyEmployee\App\Http\Controllers;
 
-use App\Http\Controllers\Controller;
-use Illuminate\Http\JsonResponse;
-use Illuminate\Http\Request;
-use Modules\CompanyEmployee\App\Http\Requests\ChangePasswordRequest;
-use Illuminate\Http\Response;
 use App\Traits\ApiResponser;
+use Illuminate\Http\Request;
+use Illuminate\Http\Response;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Facades\DB;
-use Modules\CompanyProperty\App\Models\CompanyProperty;
+use App\Http\Controllers\Controller;
 use Modules\CompanyEmployee\App\Models\CompanyEmployee;
-use Modules\CompanyEmployee\Repositories\Interfaces\EmployeeRepositoryInterface;
+use Modules\CompanyProperty\App\Models\CompanyProperty;
+use Modules\CompanyProperty\Transformers\PropertyResource;
 use Modules\CompanyEmployee\App\resources\EmployeeResource;
+use Modules\CompanyEmployee\App\Http\Requests\ChangePasswordRequest;
 use Modules\CompanyEmployee\App\resources\EmployeeAttachmentsResource;
+use Modules\CompanyEmployee\Repositories\Interfaces\EmployeeRepositoryInterface;
 
 class CompanyEmployeeController extends Controller
 {
@@ -29,7 +30,7 @@ class CompanyEmployeeController extends Controller
     {
         try {
             $employees = $this->employeeRepository->search($request);
-            dd($employees);
+            
             return EmployeeResource::collection($employees);
         } catch (\Exception $e) {
             return $this->errorResponse(null, $e->getMessage());
@@ -146,4 +147,36 @@ class CompanyEmployeeController extends Controller
             return $this->errorResponse(null, $e->getMessage());
         }
     }
+
+    public function saveAccessLevel(Request $request, CompanyEmployee $employee)
+    {
+        try {
+            DB::beginTransaction();
+
+            $validatedData = $request->validate([
+                'properties' => 'required',
+                'properties.*.id' => 'required',
+                'properties.*.access_code' => 'nullable',
+            ]);
+
+            $formatted_data = [];
+            $perPage = $request->perPage ?? 10;
+            
+            foreach ($validatedData['properties'] as $item) {
+                $formatted_data[$item['id']] = ['access_code' => $item['access_code']];
+            }
+
+            $employee->properties()->sync($formatted_data);
+
+            $employee_properties = $employee->properties()->paginate($perPage);
+
+            DB::commit();
+
+            return PropertyResource::collection($employee_properties);
+        } catch (\Exception $e) {
+            DB::rollBack();
+            return $this->errorResponse(null, $e->getMessage());
+        }
+    }
+
 }

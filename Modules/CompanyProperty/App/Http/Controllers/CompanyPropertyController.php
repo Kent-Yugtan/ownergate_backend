@@ -547,4 +547,20 @@ class CompanyPropertyController extends Controller
             return $this->errorResponse(null, $e->getMessage());
         }
     }
+
+    public function getAddmailProperties(Request $request)
+    {
+        try {
+            $perPage = $request->perPage ?? 10;
+            $addmail = $request->addmail;
+            
+            $company =  Company::with('properties')->where('addmail', $addmail)->first();
+            $properties = $company->properties()->paginate($perPage);
+
+            return PropertyResource::collection($properties);
+        } catch (Exception $e) {
+            DB::rollback();
+            return $this->errorResponse(null, $e->getMessage());
+        }
+    }
 }

@@ -32,6 +32,7 @@ class CompanyPropertyDatabaseSeeder extends Seeder
                 'target_type_id' => $target_type->id,
                 'type_id' => PropertyType::inRandomOrder()->first()->id,
                 'source_property_id' => null,
+                'addmail' => $faker->name,
                 'name' => $faker->name,
                 'logo' => $faker->name,
                 'poster' => $faker->name,
