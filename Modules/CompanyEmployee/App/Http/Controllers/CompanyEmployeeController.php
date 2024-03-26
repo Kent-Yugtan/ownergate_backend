@@ -8,6 +8,7 @@ use Illuminate\Http\Response;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Facades\DB;
 use App\Http\Controllers\Controller;
+use Modules\Company\App\Models\Company;
 use Modules\CompanyEmployee\App\Models\CompanyEmployee;
 use Modules\CompanyProperty\App\Models\CompanyProperty;
 use Modules\CompanyEmployee\App\Models\EmployeeProperty;
@@ -154,8 +155,9 @@ class CompanyEmployeeController extends Controller
             DB::beginTransaction();
 
             $validatedData = $request->validate([
+                'company_id' => 'required',
                 'properties' => 'required',
-                'properties.*.id' => 'required',
+                'properties.*.id' => 'required|exists:company_properties,id,company_id,' . $request->company_id,
                 'properties.*.access_code' => 'nullable',
             ]);
 
@@ -167,6 +169,10 @@ class CompanyEmployeeController extends Controller
             }
 
             $employee->properties()->sync($formatted_data);
+
+            $employee->update([
+                'company_id' => $request->company_id
+            ]);
 
             $employee_properties = $employee->properties()->paginate($perPage);
 
