@@ -27,7 +27,6 @@ class PropertyResource extends JsonResource
             ];
         })->values();
 
-        // dd();
         return array_merge(parent::toArray($request), [
             'property_id' => $this->id,
             'category' => $this->category,
@@ -76,8 +75,11 @@ class PropertyResource extends JsonResource
             'addresses'     => new PropertyAddressesResource($this->address()->first()),
             'owner' => new PropertyUserResource($this->owners),
             'medias' => $this->medias(),
-            'access_code' => $this->when($this->pivot && isset($this->pivot->access_code), function () {
-                return $this->pivot->access_code;
+            'employee' => $this->when($this->pivot && isset($this->pivot->employee_id), function () {
+                return [
+                    'employee_property_id' => $this->pivot->id,
+                    'access_code' => $this->pivot->access_code ?? null,
+                ];
             }),
             // 'download_company_logo' => $this->company_logo ? route('storage.download', ['file' => $this->company_logo]) : null,
             // 'download_poster' => $this->poster ? route('storage.download', ['file' => $this->poster]) : null,
