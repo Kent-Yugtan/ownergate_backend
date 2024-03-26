@@ -10,6 +10,7 @@ use Illuminate\Support\Facades\DB;
 use App\Http\Controllers\Controller;
 use Modules\CompanyEmployee\App\Models\CompanyEmployee;
 use Modules\CompanyProperty\App\Models\CompanyProperty;
+use Modules\CompanyEmployee\App\Models\EmployeeProperty;
 use Modules\CompanyProperty\Transformers\PropertyResource;
 use Modules\CompanyEmployee\App\resources\EmployeeResource;
 use Modules\CompanyEmployee\App\Http\Requests\ChangePasswordRequest;
@@ -147,7 +148,7 @@ class CompanyEmployeeController extends Controller
         }
     }
 
-    public function saveAccessLevel(Request $request, CompanyEmployee $employee)
+    public function saveProperties(Request $request, CompanyEmployee $employee)
     {
         try {
             DB::beginTransaction();
@@ -177,5 +178,21 @@ class CompanyEmployeeController extends Controller
             return $this->errorResponse(null, $e->getMessage());
         }
     }
+
+    public function destroyProperty(Request $request, CompanyEmployee $employee, EmployeeProperty $property)
+    {
+        try {
+            DB::beginTransaction();
+
+            $access = $property->delete();
+
+            DB::commit();
+            return $this->successresponse($access, 'Access has been Successfully Deleted.');
+        } catch (\Exception $e) {
+            DB::rollBack();
+            return $this->errorResponse(null, $e->getMessage());
+        }
+    }
+    
 
 }

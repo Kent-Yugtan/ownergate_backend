@@ -17,16 +17,21 @@ use Modules\CompanyEmployee\App\Http\Controllers\CompanyEmployeeController;
 
 Route::prefix('admin')->middleware(['auth:api'])->group(function () {
     Route::prefix('employee')->group(function () {
-        Route::post('/{employee}/access-level', [CompanyEmployeeController::class, 'saveAccessLevel']);
+        Route::resource('/', CompanyEmployeeController::class)->only([
+            'index', 'store', 'show'
+        ]);
+
+        Route::get('remove-access/{employee}/{property}', [CompanyEmployeeController::class, 'removeAccess']);
+        Route::get('search-access/{employee}', [CompanyEmployeeController::class, 'searchAccess']);
+
+        Route::post('{employee}', [CompanyEmployeeController::class, 'update']);
+        Route::post('change-password/{employee}', [CompanyEmployeeController::class, 'changePassword']);
+        Route::post('add-access/{employee}/{property}', [CompanyEmployeeController::class, 'addAccess']);
+
+        Route::post('/{employee}/properties', [CompanyEmployeeController::class, 'saveProperties']);
+        Route::delete('/{employee}/properties/{property}', [CompanyEmployeeController::class, 'destroyProperty']);
     });
 
 
-    Route::post('employee/{employee}', [CompanyEmployeeController::class, 'update']);
-    Route::post('employee/change-password/{employee}', [CompanyEmployeeController::class, 'changePassword']);
-    Route::post('employee/add-access/{employee}/{property}', [CompanyEmployeeController::class, 'addAccess']);
-    Route::get('employee/remove-access/{employee}/{property}', [CompanyEmployeeController::class, 'removeAccess']);
-    Route::get('employee/search-access/{employee}', [CompanyEmployeeController::class, 'searchAccess']);
-    Route::resource('employee', CompanyEmployeeController::class)->only([
-        'index', 'store', 'show'
-    ]);
+
 });
