@@ -8,8 +8,10 @@ use Illuminate\Http\Response;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Facades\DB;
 use App\Http\Controllers\Controller;
+use Modules\Company\App\Models\Company;
 use Modules\CompanyEmployee\App\Models\CompanyEmployee;
 use Modules\CompanyProperty\App\Models\CompanyProperty;
+use Modules\CompanyEmployee\App\Models\EmployeeProperty;
 use Modules\CompanyProperty\Transformers\PropertyResource;
 use Modules\CompanyEmployee\App\resources\EmployeeResource;
 use Modules\CompanyEmployee\App\Http\Requests\ChangePasswordRequest;
@@ -30,7 +32,7 @@ class CompanyEmployeeController extends Controller
     {
         try {
             $employees = $this->employeeRepository->search($request);
-            
+
             return EmployeeResource::collection($employees);
         } catch (\Exception $e) {
             return $this->errorResponse(null, $e->getMessage());
@@ -54,10 +56,10 @@ class CompanyEmployeeController extends Controller
     /**
      * Show the specified resource.
      */
-    public function show($id)
+    public function show($employee)
     {
         try {
-            $employee = $this->employeeRepository->show($id);
+            $employee = $this->employeeRepository->show($employee);
             if (isset($employee["employee_info"])) {
                 return $this->successresponse(new EmployeeResource($employee["employee_info"]), 'Employee has been retrieved.');
             } else {
@@ -147,25 +149,30 @@ class CompanyEmployeeController extends Controller
         }
     }
 
-    public function saveAccessLevel(Request $request, CompanyEmployee $employee)
+    public function saveProperties(Request $request, CompanyEmployee $employee)
     {
         try {
             DB::beginTransaction();
 
             $validatedData = $request->validate([
+                'company_id' => 'required',
                 'properties' => 'required',
-                'properties.*.id' => 'required',
+                'properties.*.id' => 'required|exists:company_properties,id,company_id,' . $request->company_id,
                 'properties.*.access_code' => 'nullable',
             ]);
 
             $formatted_data = [];
             $perPage = $request->perPage ?? 10;
-            
+
             foreach ($validatedData['properties'] as $item) {
                 $formatted_data[$item['id']] = ['access_code' => $item['access_code']];
             }
 
             $employee->properties()->sync($formatted_data);
+
+            $employee->update([
+                'company_id' => $request->company_id
+            ]);
 
             $employee_properties = $employee->properties()->paginate($perPage);
 
@@ -178,4 +185,18 @@ class CompanyEmployeeController extends Controller
         }
     }
 
+    public function destroyProperty(Request $request, CompanyEmployee $employee, EmployeeProperty $property)
+    {
+        try {
+            DB::beginTransaction();
+
+            $access = $property->delete();
+
+            DB::commit();
+            return $this->successresponse($access, 'Access has been Successfully Deleted.');
+        } catch (\Exception $e) {
+            DB::rollBack();
+            return $this->errorResponse(null, $e->getMessage());
+        }
+    }
 }

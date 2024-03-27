@@ -551,17 +551,24 @@ class CompanyPropertyController extends Controller
     public function getAddmailProperties(Request $request)
     {
         try {
-            $perPage = $request->perPage ?? 10;
+            if ($request->keyword) {
+                $perPage = $request->perPage ?? 10;
 
-            $company =  Company::with('properties')
-                ->where('company_name', 'like', '%' . $request->keyword . '%')
-                ->orWhere('addmail', 'like', '%' . $request->keyword . '%')
-                ->firstOrFail();
-   
-            $properties = $company->properties()->paginate($perPage);
+                $company =  Company::with('properties')
+                    ->where('company_name', 'like', '%' . $request->keyword . '%')
+                    ->orWhere('addmail', 'like', '%' . $request->keyword . '%')
+                    ->first();
+    
+                if ($company) {
+                    $properties = $company->properties()->paginate($perPage);
 
-            return PropertyResource::collection($properties);
+                    return PropertyResource::collection($properties);
+                }
+            }
+            
+            return $this->errorResponse(null, 'No result found');
         } catch (Exception $e) {
+            dd($e->getMessage());
             DB::rollback();
             return $this->errorResponse(null, $e->getMessage());
         }

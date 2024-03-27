@@ -54,7 +54,7 @@ class CompanyEmployee extends Model
 
     public function properties()
     {
-        return $this->belongsToMany(CompanyProperty::class, 'employee_properties', 'employee_id', 'property_id')->withPivot('access_code');
+        return $this->belongsToMany(CompanyProperty::class, 'employee_properties', 'employee_id', 'property_id')->withPivot(['id', 'access_code']);
     }
 
     public function attachments(): HasMany
