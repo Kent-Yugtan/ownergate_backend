@@ -31,6 +31,7 @@ class PropertyResource extends JsonResource
             'property_id' => $this->id,
             'category' => $this->category,
             'company_name' => $this->company->company_name,
+            'company_addmail' => $this->company->addmail,
             'property_type' => $this->propertyType,
             'target_type' => $this->targetType,
             'remark' => $this->remark,
