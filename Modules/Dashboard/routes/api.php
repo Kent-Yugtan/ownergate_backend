@@ -3,6 +3,7 @@
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use Modules\Dashboard\App\Http\Controllers\DashboardController;
+use Modules\Dashboard\App\Http\Controllers\DashboardAnalyticsController;
 
 /*
     |--------------------------------------------------------------------------
@@ -23,6 +24,8 @@ Route::prefix('admin')->middleware(['auth:api'])->group(function () {
         Route::post('shortcut', [DashboardController::class, 'addShortcut']);
         Route::post('shortcut/{shortcut}', [DashboardController::class, 'updateShortcut']);
         Route::delete('shortcut/{shortcut}', [DashboardController::class, 'deleteShortcut']);
+        
+        Route::get('stats', [DashboardAnalyticsController::class, 'index']);
     });
 
 });
