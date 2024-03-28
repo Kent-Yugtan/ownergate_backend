@@ -33,7 +33,7 @@ class CompanyEmployeeController extends Controller
     {
         try {
             $employees = $this->employeeRepository->search($request);
-            
+
             return EmployeeResource::collection($employees);
         } catch (\Exception $e) {
             return $this->errorResponse(null, $e->getMessage());
@@ -57,10 +57,10 @@ class CompanyEmployeeController extends Controller
     /**
      * Show the specified resource.
      */
-    public function show($id)
+    public function show($employee)
     {
         try {
-            $employee = $this->employeeRepository->show($id);
+            $employee = $this->employeeRepository->show($employee);
             if (isset($employee["employee_info"])) {
                 return $this->successresponse(new EmployeeResource($employee["employee_info"]), 'Employee has been retrieved.');
             } else {
@@ -164,7 +164,7 @@ class CompanyEmployeeController extends Controller
 
             $formatted_data = [];
             $perPage = $request->perPage ?? 10;
-            
+
             foreach ($validatedData['properties'] as $item) {
                 $formatted_data[$item['id']] = ['access_code' => $item['access_code']];
             }
@@ -206,6 +206,4 @@ class CompanyEmployeeController extends Controller
             return $this->errorResponse(null, $e->getMessage());
         }
     }
-    
-
 }

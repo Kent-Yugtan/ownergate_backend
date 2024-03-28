@@ -18,12 +18,13 @@ use Modules\CompanyEmployee\App\Http\Controllers\CompanyEmployeeController;
 Route::prefix('admin')->middleware(['auth:api'])->group(function () {
     Route::prefix('employee')->group(function () {
         Route::resource('/', CompanyEmployeeController::class)->only([
-            'index', 'store', 'show'
+            'index', 'store'
         ]);
 
         Route::get('remove-access/{employee}/{property}', [CompanyEmployeeController::class, 'removeAccess']);
         Route::get('search-access/{employee}', [CompanyEmployeeController::class, 'searchAccess']);
 
+        Route::get('{employee}', [CompanyEmployeeController::class, 'show']);
         Route::post('{employee}', [CompanyEmployeeController::class, 'update']);
         Route::post('change-password/{employee}', [CompanyEmployeeController::class, 'changePassword']);
         Route::post('add-access/{employee}/{property}', [CompanyEmployeeController::class, 'addAccess']);
@@ -31,7 +32,4 @@ Route::prefix('admin')->middleware(['auth:api'])->group(function () {
         Route::post('/{employee}/properties', [CompanyEmployeeController::class, 'saveProperties']);
         Route::delete('/{employee}/properties/{property}', [CompanyEmployeeController::class, 'destroyProperty']);
     });
-
-
-
 });
