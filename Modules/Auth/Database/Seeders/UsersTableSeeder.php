@@ -44,6 +44,7 @@ class UsersTableSeeder extends Seeder
 
         foreach($users as $user) {
             $user_data = User::create([
+                'og_code' => $user['og_code'],
                 'email' => $user['email'],
                 'email_verified_at' => $user['email_verified_at'],
                 'password' => $user['password'],
