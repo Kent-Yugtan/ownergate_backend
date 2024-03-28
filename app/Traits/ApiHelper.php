@@ -56,7 +56,7 @@ trait ApiHelper
 
         switch ($role) {
             case 'Admin':
-                $code = 'OG' . strtoupper(substr($user->profile->first_name, 0, 6));
+                $code = 'OG' . strtoupper(substr($user->profile->first_name, 0, 6)); //min  4 digis ang id
                 $code = 'SU ' . implode(' ', str_split($code, 4)) . ' ' . $user->id;
                 break;
             
@@ -66,7 +66,8 @@ trait ApiHelper
                 break;
 
             case 'Employee':
-                $code = 'OG' . strtoupper(substr($user->profile->first_name, 0, 6));
+                dd($user->employeeAccount);
+                $code = 'OG' . strtoupper(substr($user->profile->first_name, 0, 6)); //ogcode sa company
                 $code = 'EM ' . implode(' ', str_split($code, 4)) . ' ' . $user->id;
                 break;
 

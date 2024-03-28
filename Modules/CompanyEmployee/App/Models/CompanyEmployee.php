@@ -33,7 +33,6 @@ class CompanyEmployee extends Model
         'profile_id',
         'status',
         'type',
-        'addmail',
         'department',
         'building_name',
         'unit_number',
