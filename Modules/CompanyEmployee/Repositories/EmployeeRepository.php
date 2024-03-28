@@ -229,7 +229,6 @@ class EmployeeRepository extends BaseRepository implements EmployeeRepositoryInt
                 $q->where(function ($subquery) use ($request) {
                     $subquery->where('name', 'LIKE', '%' . $request['keyword'] . '%')
                         ->orWhere('description', 'LIKE', '%' . $request['keyword'] . '%')
-                        //->orWhere('addmail', 'LIKE', '%' . $request['keyword'] . '%')
                         ->orWhere('access_code', 'LIKE', '%' . $request['keyword'] . '%');
                 });
             }

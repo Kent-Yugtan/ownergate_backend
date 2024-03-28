@@ -18,7 +18,6 @@ return new class extends Migration {
             $table->unsignedBigInteger('target_type_id')->nullable();
             $table->unsignedBigInteger('source_property_id')->nullable();
             $table->string('og_code')->nullable();
-            $table->string('addmail')->nullable();
             $table->string('name')->nullable();
             $table->string('logo')->nullable();
             $table->string('poster')->nullable();
@@ -32,7 +31,7 @@ return new class extends Migration {
             $table->string('longitude')->nullable();
             $table->text('description')->nullable();
             $table->string('full_video')->nullable();
-            $table->enum('status', ['active', 'inactive'])->default('active');
+            $table->enum('status', ['Active', 'Inactive', 'Under Construction', 'Under Development', 'Under Maintenance'])->default('Active');
             $table->text('notes')->nullable();
             $table->softDeletes();
             $table->timestamps();

@@ -19,20 +19,19 @@ class CompanyPropertyDatabaseSeeder extends Seeder
     public function run(): void
     {
         $faker = Faker::create();
-        // $statuses = ['Active', 'Under Construction', 'Under Development', 'Under Maintenance'];
+        $statuses = ['Active', 'Inactive', 'Under Construction', 'Under Development', 'Under Maintenance'];
 
         for ($i = 0; $i < 30; $i++) {
-
             $category = Category::inRandomOrder()->where('name', '!=', 'Others')->first();
             $target_type = CategoryTargetType::inRandomOrder()->where('category_id', $category->id)->first();
 
             $property = CompanyProperty::create([
+                'status'    => $statuses[array_rand($statuses)],
                 'company_id' => Company::inRandomOrder()->first()->id,
                 'category_id' => $category->id,
                 'target_type_id' => $target_type->id,
                 'type_id' => PropertyType::inRandomOrder()->first()->id,
                 'source_property_id' => null,
-                'addmail' => $faker->name,
                 'name' => $faker->name,
                 'logo' => $faker->name,
                 'poster' => $faker->name,
