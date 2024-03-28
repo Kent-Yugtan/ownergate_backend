@@ -548,15 +548,17 @@ class CompanyPropertyController extends Controller
         }
     }
 
-    public function getAddmailProperties(Request $request)
+    public function getOGCodeProperties(Request $request)
     {
         try {
             if ($request->keyword) {
                 $perPage = $request->perPage ?? 10;
 
                 $company =  Company::with('properties')
-                    ->where('company_name', 'like', '%' . $request->keyword . '%')
-                    ->orWhere('addmail', 'like', '%' . $request->keyword . '%')
+                    ->whereHas('owner', function ($query) use ($request) {
+                        $query->where('og_code', 'like', '%'. $request->keyword .'%');
+                    })
+                    ->orWhere('company_name', 'like', '%' . $request->keyword . '%')
                     ->first();
     
                 if ($company) {

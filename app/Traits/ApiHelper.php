@@ -53,42 +53,45 @@ trait ApiHelper
 
         $role = $user->getRoleNames()->first();
         $code = null;
+        $length = 4;
+        $id = sprintf("%0". $length . "d", $user->id);
 
         switch ($role) {
             case 'Admin':
                 $code = 'OG' . strtoupper(substr($user->profile->first_name, 0, 6)); //min  4 digis ang id
-                $code = 'SU ' . implode(' ', str_split($code, 4)) . ' ' . $user->id;
+                $code = 'SU ' . implode(' ', str_split($code, 4)) . $id;
                 break;
             
             case 'Owner':
                 $code = 'OG' . strtoupper(substr($user->profile->first_name, 0, 6));
-                $code = 'OW ' . implode(' ', str_split($code, 4)) . ' ' . $user->id;
+                $code = 'OW ' . implode(' ', str_split($code, 4)) . $id;
                 break;
 
             case 'Employee':
-                dd($user->employeeAccount);
-                $code = 'OG' . strtoupper(substr($user->profile->first_name, 0, 6)); //ogcode sa company
-                $code = 'EM ' . implode(' ', str_split($code, 4)) . ' ' . $user->id;
+                if ($user->employeeAccount->company_id) {
+                    $company_name = $user->employeeAccount->company->company_name;
+                    $code = 'OG' . strtoupper(substr($company_name, 0, 6)); //ogcode sa company
+                    $code = 'EM ' . implode(' ', str_split($code, 4)) . $id;
+                }
                 break;
-
             case 'Developer':
                 $code = 'OG' . strtoupper(substr($user->profile->first_name, 0, 6));
-                $code = 'DE ' . implode(' ', str_split($code, 4)) . ' ' . $user->id;
+                $code = 'DE ' . implode(' ', str_split($code, 4)) . $id;
                 break;
 
             case 'Real Estate':
                 $code = 'OG' . strtoupper(substr($user->profile->first_name, 0, 6));
-                $code = 'RE ' . implode(' ', str_split($code, 4)) . ' ' . $user->id;
+                $code = 'RE ' . implode(' ', str_split($code, 4)) . $id;
                 break;
             
             case 'Vendor':
                 $code = 'OG' . strtoupper(substr($user->profile->first_name, 0, 6));
-                $code = 'VE ' . implode(' ', str_split($code, 4)) . ' ' . $user->id;
+                $code = 'VE ' . implode(' ', str_split($code, 4)) . $id;
                 break;
 
             case 'Agent':
                 $code = 'OG' . strtoupper(substr($user->profile->first_name, 0, 6));
-                $code = 'AG ' . implode(' ', str_split($code, 4)) . ' ' . $user->id;
+                $code = 'AG ' . implode(' ', str_split($code, 4)) . $id;
                 break;
 
             case 'Customer':

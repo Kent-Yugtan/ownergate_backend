@@ -2,6 +2,7 @@
 
 namespace Modules\CompanyEmployee\App\Http\Controllers;
 
+use App\Traits\ApiHelper;
 use App\Traits\ApiResponser;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
@@ -20,7 +21,7 @@ use Modules\CompanyEmployee\Repositories\Interfaces\EmployeeRepositoryInterface;
 
 class CompanyEmployeeController extends Controller
 {
-    use ApiResponser;
+    use ApiResponser, ApiHelper;
     private $employeeRepository;
 
     public function __construct(EmployeeRepositoryInterface $employeeRepository)
@@ -172,6 +173,12 @@ class CompanyEmployeeController extends Controller
 
             $employee->update([
                 'company_id' => $request->company_id
+            ]);
+
+            $og_code = $this->generateOGCode($employee->user);
+            
+            $employee->user()->update([
+                'og_code' => $og_code
             ]);
 
             $employee_properties = $employee->properties()->paginate($perPage);
