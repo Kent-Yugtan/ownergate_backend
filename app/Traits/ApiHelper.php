@@ -50,15 +50,14 @@ trait ApiHelper
 
     public function generateOGCode(User $user)
     {
-
-        $role = $user->getRoleNames()->first();
         $code = null;
         $length = 4;
         $id = sprintf("%0". $length . "d", $user->id);
-
+        $role = $user->getRoleNames()->first();
+        
         switch ($role) {
             case 'Admin':
-                $code = 'OG' . strtoupper(substr($user->profile->first_name, 0, 6)); //min  4 digis ang id
+                $code = 'OG' . strtoupper(substr($user->profile->first_name, 0, 6));
                 $code = 'SU ' . implode(' ', str_split($code, 4)) . $id;
                 break;
             
@@ -70,7 +69,7 @@ trait ApiHelper
             case 'Employee':
                 if ($user->employeeAccount->company_id) {
                     $company_name = $user->employeeAccount->company->company_name;
-                    $code = 'OG' . strtoupper(substr($company_name, 0, 6)); //ogcode sa company
+                    $code = 'OG' . strtoupper(substr($company_name, 0, 6));
                     $code = 'EM ' . implode(' ', str_split($code, 4)) . $id;
                 }
                 break;

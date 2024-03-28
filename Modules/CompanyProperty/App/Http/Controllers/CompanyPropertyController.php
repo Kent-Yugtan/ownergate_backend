@@ -570,7 +570,6 @@ class CompanyPropertyController extends Controller
             
             return $this->errorResponse(null, 'No result found');
         } catch (Exception $e) {
-            dd($e->getMessage());
             DB::rollback();
             return $this->errorResponse(null, $e->getMessage());
         }
