@@ -52,7 +52,7 @@ Route::prefix('admin')->middleware(['auth:api'])->group(function () {
         Route::post('{company}/change-status', [CompanyController::class, 'changeStatus']);
         Route::post('{company}/privacy', [CompanyController::class, 'changePrivacy']);
 
-        
+        Route::get('search', [CompanyController::class, 'searchCompanies']);
     });
 });
 

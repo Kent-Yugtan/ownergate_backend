@@ -140,4 +140,21 @@ class CompanyController extends Controller
         }
     }
 
+    public function searchCompanies(Request $request)
+    {
+        try {
+            $perPage = $request->perPage ?? 10;
+
+            $companies = Company::whereHas('owner', function ($query) use ($request) {
+                $query->where('og_code', 'like', '%'. $request->keyword .'%');
+            })
+            ->orWhere('company_name', 'like', '%' . $request->keyword . '%')
+            ->paginate($perPage);
+
+            return CompanyResource::collection($companies);
+        } catch (Exception $e) {
+            DB::rollback();
+            return $this->errorResponse(null, $e->getMessage());
+        }
+    }
 }
