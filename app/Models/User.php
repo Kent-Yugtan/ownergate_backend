@@ -158,7 +158,7 @@ class User extends Authenticatable
 
     public function inventories()
     {
-        return $this->hasMany(Inventory::class, 'user_id');
+        return $this->hasMany(Inventory::class, 'admin_id');
     }
 
     public function adminEmployees()
