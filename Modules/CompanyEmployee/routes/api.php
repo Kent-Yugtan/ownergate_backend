@@ -30,10 +30,8 @@ Route::prefix('admin')->middleware(['auth:api'])->group(function () {
         Route::post('add-access/{employee}/{property}', [CompanyEmployeeController::class, 'addAccess']);
 
         Route::post('/{employee}/properties', [CompanyEmployeeController::class, 'saveProperties']);
-        Route::delete('/{employee}/properties/{property}', [CompanyEmployeeController::class, 'destroyProperty']);
-
-
-        // ACCESS CODE UPDATE
         Route::put('/{employee}/properties/{property}', [CompanyEmployeeController::class, 'updateProperty']);
+        Route::delete('/{employee}/properties/{property}', [CompanyEmployeeController::class, 'destroyProperty']);
+        
     });
 });

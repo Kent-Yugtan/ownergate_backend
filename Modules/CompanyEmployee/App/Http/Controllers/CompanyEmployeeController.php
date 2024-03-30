@@ -196,12 +196,15 @@ class CompanyEmployeeController extends Controller
     {
         try{
             DB::beginTransaction();
+
             $validatedData = $request->validate([
                 'access_code' => 'required'
             ]);
 
             $updateAccessCode = $property->update(['access_code' => $validatedData['access_code']]);
+
             DB::commit();
+            
             return $this->successresponse($updateAccessCode, 'Employee Access Code has been updated successfully.');
         } catch (\Exception $e) {
             DB::rollBack();
