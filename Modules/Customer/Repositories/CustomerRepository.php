@@ -16,7 +16,7 @@ class CustomerRepository extends BaseRepository implements CustomerRepositoryInt
     public function getCustomers($request)
     {
         $perpage = $request->perPage ?? 10;
-        $customers = User::when($request->keyword, function($q) use($request){
+        $customers = User::withTrashed()->when($request->keyword, function($q) use($request){
             $q->whereHas('profile', function($q) use($request){
                 $q->where('first_name', 'LIKE', $request->keyword.'%')->orWhere('last_name', 'LIKE', $request->keyword.'%');
             });
@@ -29,13 +29,13 @@ class CustomerRepository extends BaseRepository implements CustomerRepositoryInt
 
     public function getCustomer($id)
     {
-        $customer = User::find($id);
+        $customer = User::withTrashed()->find($id);
         return $customer;
     }
 
     public function updateStatus($id, $request)
     {
-        $customer = User::find($id);
+        $customer = User::withTrashed()->find($id);
         if($request->status == 'active')
         {
             $customer->restore();
