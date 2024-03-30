@@ -34,6 +34,6 @@ Route::prefix('admin')->middleware(['auth:api'])->group(function () {
 
 
         // ACCESS CODE UPDATE
-        Route::post('/{employee}/update-access-code/{property}', [CompanyEmployeeController::class, 'updateProperties']);
+        Route::put('/{employee}/properties/{property}', [CompanyEmployeeController::class, 'updateProperty']);
     });
 });

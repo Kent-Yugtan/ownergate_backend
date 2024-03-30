@@ -192,7 +192,7 @@ class CompanyEmployeeController extends Controller
         }
     }
 
-    public function updateProperties(Request $request, CompanyEmployee $employee, EmployeeProperty $property)
+    public function updateProperty(Request $request, CompanyEmployee $employee, EmployeeProperty $property)
     {
         try{
             DB::beginTransaction();
