@@ -192,6 +192,23 @@ class CompanyEmployeeController extends Controller
         }
     }
 
+    public function updateProperties(Request $request, CompanyEmployee $employee, EmployeeProperty $property)
+    {
+        try{
+            DB::beginTransaction();
+            $validatedData = $request->validate([
+                'access_code' => 'required'
+            ]);
+
+            $updateAccessCode = $property->update(['access_code' => $validatedData['access_code']]);
+            DB::commit();
+            return $this->successresponse($updateAccessCode, 'Employee Access Code has been updated successfully.');
+        } catch (\Exception $e) {
+            DB::rollBack();
+            return $this->errorResponse(null, $e->getMessage());
+        }
+    }
+
     public function destroyProperty(Request $request, CompanyEmployee $employee, EmployeeProperty $property)
     {
         try {

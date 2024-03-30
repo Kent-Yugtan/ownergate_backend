@@ -13,7 +13,11 @@ class EmployeeProperty extends Model
     /**
      * The attributes that are mass assignable.
      */
-    protected $fillable = [];
+    protected $fillable = [
+        'access_code'
+    ];
+
+    public $timestamps = false;
     
     protected static function newFactory(): EmployeePropertyFactory
     {
