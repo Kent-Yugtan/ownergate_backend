@@ -40,9 +40,12 @@ class CompanyResource extends JsonResource
             'documents' => $documents,
             'locations' => LocationResource::collection($this->locations),
             'company_properties' => PropertyResource::collection($this->properties),
-            'avatar' => !is_null($this->avatar) && $this->avatar !== 'null' ? route('storage.image', ['file' => $this->avatar]) : null,
-            'cover_photo' => !is_null($this->cover_photo) && $this->cover_photo !== 'null' ? route('storage.image', ['file' => $this->cover_photo]) : null,
-            'type' => new CompanyTypeResource($this->type)
+            'avatar' => !is_null($this->profile_picture) && $this->profile_picture !== 'null' ? route('storage.image', ['file' => $this->profile_picture]) : null,
+            'cover_photo' => !is_null($this->profile_poster) && $this->profile_poster !== 'null' ? route('storage.image', ['file' => $this->profile_poster]) : null,
+            'type' => new CompanyTypeResource($this->type),
+            'owner' => $this->owner,
+            'owner_profile' => $this->owner->profile,
+            'type' => $this->owner->getRoleNames()->first()
         ]);
     }
 }

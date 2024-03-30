@@ -12,29 +12,20 @@ use Modules\Company\App\Models\Company;
 use Modules\Company\App\Models\CompanyAttachment;
 //use Modules\Company\Entities\CompanyTeam;
 use Modules\Company\Repositories\Interfaces\CompanyRepositoryInterface;
+use App\Traits\ApiHelper;
 
 class CompanyRepository extends BaseRepository implements CompanyRepositoryInterface
 {
+    use ApiHelper;
+
     public function __construct(Company $model)
     {
         $this->model = $model;
     }
 
-    public function getProfile(Company $company)
+    public function getProfile($company)
     {
-        $company = $company->with('managements', 'news', 'services', 'locations', 'attachments')->first();
-
-        $news = $company->news()->paginate(10);
-
-        $services = $company->services()->paginate(10);
-
-        $locations = $company->locations()->paginate(10);
-
-        // Add the paginated news and services to the $company model
-        $company->setRelation('news', $news);
-        $company->setRelation('services', $services);
-        $company->setRelation('locations', $locations);
-
+        $company = $this->model->find($company);
         return $company;
     }
 
@@ -52,6 +43,25 @@ class CompanyRepository extends BaseRepository implements CompanyRepositoryInter
         ]);
 
         return $attachment;
+    }
+
+    public function uploadAttachments(Company $company, $payload)
+    {
+        if($payload->filled('attachments')){
+            foreach($payload->attachments as $attachment){
+                $uniqueFilename = 'attachment' . date('Ymd') . rand(0, 9999) . '.' . $attachment['file']->guessExtension();
+    
+                $path = $attachment['file']->storeAs('company/attachment/' . $company->id . '/', $uniqueFilename);
+    
+                $attachment = $company->attachments()->create([
+                    "name" => $attachment['name'],
+                    "path" => $path,
+                    "type" => $attachment['type'],
+                    "visibility" => isset($attachment['visibility']) ? $attachment['visibility'] : 0,
+                ]);
+            }
+        }
+        return $company;
     }
 
     public function removeAttachment(CompanyAttachment $attachment)
@@ -72,11 +82,54 @@ class CompanyRepository extends BaseRepository implements CompanyRepositoryInter
             'owner_id' => auth()->user()->id
         ], $request->all());
 
-        if ($request->has('profile_picture')) {
+        if ($request->has('avatar')) {
             $this->uploadPhoto($profile, $request->avatar, 'profile_picture');
         }
-        if ($request->has('profile_poster')) {
+        if ($request->has('cover_photo')) {
             $this->uploadPhoto($profile, $request->cover_photo, 'profile_poster');
+        }
+
+        if ($request->has('profile_picture')) {
+            $this->uploadPhoto($profile, $request->profile_picture, 'profile_picture');
+        }
+        if ($request->has('profile_poster')) {
+            $this->uploadPhoto($profile, $request->profile_poster, 'profile_poster');
+        }
+
+        return $profile;
+    }
+
+    public function updateOrCreate(Request $request, $user)
+    {
+        $data = $request->all();
+        $isUpdate = $request->filled('id');
+
+        if(!$isUpdate){
+            $data = array_merge($data, [
+                'addmail' => $this->generateOGCode($user)
+            ]);
+        }
+
+        $profile = $user->company()->updateOrCreate([
+            'owner_id' => $user->id
+        ], $data);
+
+        if(!$isUpdate){
+            $profile->users()->attach($user->id);
+        }
+
+        if ($request->has('avatar')) {
+            $this->uploadPhoto($profile, $request->avatar, 'profile_picture');
+        }
+        if ($request->has('cover_photo')) {
+            $this->uploadPhoto($profile, $request->cover_photo, 'profile_poster');
+        }
+
+        if ($request->has('profile_picture')) {
+            $this->uploadPhoto($profile, $request->profile_picture, 'profile_picture');
+        }
+        if ($request->has('profile_poster')) {
+            $this->uploadPhoto($profile, $request->profile_poster, 'profile_poster');
         }
 
         return $profile;
@@ -281,5 +334,24 @@ class CompanyRepository extends BaseRepository implements CompanyRepositoryInter
 
             return $response;
         }
+    }
+
+    public function lists($request)
+    {
+        $perPage = $request->perPage ?? 10;
+        $companies = $this->model->withTrashed()->when($request->id, function ($q) use ($request) {
+            $q->whereHas('owner', function ($q) use ($request) {
+                $q->where('og_code', $request->id);
+            });
+        })->when('keyword', function($q) use($request) {
+            $q->where('company_name', 'LIKE', $request->keyword.'%');
+        })->paginate($perPage);
+
+        return $companies;
+    }
+
+    public function updateStatus($company, $request){
+        $company->update(['note' => $request->note, 'status' => $request->status ]);
+        return $company;
     }
 }

@@ -4,6 +4,7 @@ namespace Modules\Company\App\Models;
 
 use App\Models\User;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\SoftDeletes;
 use Modules\Company\App\Models\CompanyNews;
 use Modules\Company\App\Models\CompanyService;
 use Modules\CompanyPrivacy\App\Models\Section;
@@ -15,6 +16,11 @@ use Modules\CompanyProperty\App\Models\CompanyProperty;
 
 class Company extends Model
 {
+    use SoftDeletes;
+
+    protected $dates = ['deleted_at'];
+
+    
     /**
      * The attributes that are mass assignable.
      */
@@ -41,6 +47,7 @@ class Company extends Model
         'mission_visibility',
         'vission_visibility',
         'values_visibility',
+        'note'
     ];
 
     public function owner()

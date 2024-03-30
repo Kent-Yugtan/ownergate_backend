@@ -24,7 +24,7 @@ Route::prefix('admin')->middleware(['auth:api'])->group(function () {
         Route::apiResource('/{company}/profile', CompanyController::class)->only([
             'index', 'store'
         ]);
-
+        
         Route::apiResource('/{company}/management', CompanyManagementController::class);
 
         Route::apiResource('/{company}/news', CompanyNewsController::class)->scoped([
@@ -37,6 +37,8 @@ Route::prefix('admin')->middleware(['auth:api'])->group(function () {
             'companies' => 'company:id',
         ]);
 
+        Route::post('store', [CompanyController::class, 'saveCompany']);
+        Route::get('lists', [CompanyController::class, 'lists']);
         Route::get('{company}/get-properties/', [CompanyController::class, 'getProperties']);
         Route::get('{company}/get-attachments/', [CompanyController::class, 'getAttachments']);
         Route::post('{company}/add-attachment/', [CompanyController::class, 'addAttachment']);
@@ -49,7 +51,7 @@ Route::prefix('admin')->middleware(['auth:api'])->group(function () {
 
         Route::get('{company}/accounts-list', [CompanyController::class, 'accountsList']);
         Route::post('{company}/add-property/{property}', [CompanyController::class, 'addProperty']);
-        Route::post('{company}/change-status', [CompanyController::class, 'changeStatus']);
+        Route::post('{company}/change-status', [CompanyController::class, 'updateStatus']);
         Route::post('{company}/privacy', [CompanyController::class, 'changePrivacy']);
 
         

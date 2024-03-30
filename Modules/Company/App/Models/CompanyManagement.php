@@ -17,6 +17,7 @@ class CompanyManagement extends Model
         'position',
         'image_path',
         'visibility',
+        'phone_number'
     ];
 
     protected $hidden = ['created_at', 'updated_at'];
