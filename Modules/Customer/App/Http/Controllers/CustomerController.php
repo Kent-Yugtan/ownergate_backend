@@ -9,7 +9,7 @@ use Illuminate\Http\Response;
 use Illuminate\Support\Facades\DB;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\RedirectResponse;
-use Modules\Customer\Transformers\CustomerResource;
+use Modules\Auth\Transformers\UserResource;
 use Modules\Customer\Repositories\Interfaces\CustomerRepositoryInterface;
 use Modules\Company\App\Models\Company;
 use App\Models\User;
@@ -17,6 +17,7 @@ use App\Models\User;
 class CustomerController extends Controller
 {
     use ApiResponser, ApiHelper;
+
     private $customerRepository;
 
     public function __construct(CustomerRepositoryInterface $customerRepository)
@@ -24,57 +25,37 @@ class CustomerController extends Controller
         $this->customerRepository = $customerRepository;
     }
 
-    public function index(Company $company)
+    public function index(Request $request)
     {
         try {
-            $customers = $this->customerRepository->getCompanyCustomers($company);
-            return $this->successresponse($customers, 'There is no contracts.');
-            
+            $customers = $this->customerRepository->getCustomers($request);
+            return UserResource::collection($customers);
         } catch (\Exception $e) {
             return $this->errorResponse(null, $e->getMessage());
         }
     }
-
-    public function updateProfile(Request $request, User $customer)
-    {
-        try {
-            $cus = $this->customerRepository->updateProfile($request, $customer);
-            return $this->successresponse($cus, 'There is no contracts.');
-            
-        } catch (\Exception $e) {
-            return $this->errorResponse(null, $e->getMessage());
-        }
-    }
-
-    /*public function store(Request $request, Company $company)
-    {
-        try {
-            DB::beginTransaction();
-
-            $customer = $this->customerRepository->create($request, $company);
-            DB::commit();
-            return $this->successresponse($customer, 'Customer has been added.');
-        } catch (\Exception $e) {
-            DB::rollback();
-
-            return $this->errorResponse(null, $e->getMessage());
-        }
-    }*/
 
     /**
      * Show the specified resource.
      */
-    public function show($id)
+    public function show($customer)
     {
-        return view('customer::show');
+        try {
+            $customer = $this->customerRepository->getCustomer($customer);
+            return $this->successResponse(new UserResource($customer), 'Customer has been retrieved');
+        } catch (\Exception $e) {
+            return $this->errorResponse(null, $e->getMessage());
+        }
     }
 
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit($id)
+    public function updateStatus(Request $request, $customer)
     {
-        return view('customer::edit');
+        try {
+            $this->customerRepository->updateStatus($customer, $request);
+            return $this->successResponse(null, 'Status has been updated');
+        } catch (\Exception $e) {
+            return $this->errorResponse(null, $e->getMessage());
+        }
     }
 
     /**
