@@ -2,7 +2,7 @@
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
-use Modules\customer\App\Http\Controllers\CustomerController;
+use Modules\Customer\App\Http\Controllers\CustomerController;
 
 /*
     |--------------------------------------------------------------------------
@@ -16,10 +16,6 @@ use Modules\customer\App\Http\Controllers\CustomerController;
 */
 
 Route::prefix('admin')->middleware(['auth:api'])->group(function () {
-    Route::prefix('customer')->group(function () {
-
-        Route::get('/{company}', [CustomerController::class, 'index']);
-        Route::post('/update/{customer}', [CustomerController::class, 'updateProfile']);
-        
-    });
+    Route::resource('customer', CustomerController::class);
+    Route::patch('customer/{customer}/update-status', [CustomerController::class, 'updateStatus']);
 });

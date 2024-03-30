@@ -9,43 +9,41 @@ use Illuminate\Support\Facades\Storage;
 use Illuminate\Pagination\LengthAwarePaginator;
 use Modules\Customer\Http\Requests\CustomerRequest;
 use Modules\Customer\Repositories\Interfaces\CustomerRepositoryInterface;
-use Modules\Company\App\Models\Company;
 use App\Models\User;
 
 class CustomerRepository extends BaseRepository implements CustomerRepositoryInterface
 {
-    public function getCompanyCustomers(Company $company)
+    public function getCustomers($request)
     {
-        $customers = $company->users()->role('customer')->get();
+        $perpage = $request->perPage ?? 10;
+        $customers = User::when($request->keyword, function($q) use($request){
+            $q->whereHas('profile', function($q) use($request){
+                $q->where('first_name', 'LIKE', $request->keyword.'%')->orWhere('last_name', 'LIKE', $request->keyword.'%');
+            });
+        })->whereHas('roles', function ($q) {
+            $q->where('name', 'Customer');
+        })->paginate($request->perPage);
+
         return $customers;
     }
 
-    public function updateProfile(Request $request, User $customer)
+    public function getCustomer($id)
     {
-        $data = $request->all();
-        $profile = $customer->profile;
-        $profile->update($data);
-        
-        if($request->has('avatar') && is_file($request->avatar)) {
-            $this->uploadPhoto($profile, $request->avatar, 'avatar');
-        }
-
-        if($request->has('cover_photo') && is_file($request->cover_photo)) {
-            $this->uploadPhoto($profile, $request->cover_photo, 'cover_photo');
-        }
-
+        $customer = User::find($id);
         return $customer;
     }
 
-    private function uploadPhoto($profile, $file, $key)
+    public function updateStatus($id, $request)
     {
-        $path = $file;
-        if ($profile->{$key}) {
-            Storage::delete($profile->{$key});
+        $customer = User::find($id);
+        if($request->status == 'active')
+        {
+            $customer->restore();
         }
-        $path = $file->store('customer/' . $profile->id);
-        $profile->update([$key => $path]);
+
+        if($request->status == 'inactive')
+        {
+            $customer->delete();
+        }
     }
-
-
 }
