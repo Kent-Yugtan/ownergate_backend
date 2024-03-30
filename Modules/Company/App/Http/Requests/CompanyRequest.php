@@ -3,6 +3,10 @@
 namespace Modules\Company\App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Contracts\Validation\Validator;
+use Illuminate\Http\Exceptions\HttpResponseException;
+use App\Models\User;
+use Modules\Company\App\Models\Company;
 
 class CompanyRequest extends FormRequest
 {
@@ -12,8 +16,96 @@ class CompanyRequest extends FormRequest
     public function rules(): array
     {
         return [
-            //
+            'id' => 'nullable',
+            'role' => 'required',
+            'company_name' => 'required',
+            'avatar' => 'nullable',
+            'cover_photo' => 'nullable',
+            'about' => 'nullable',
+            'notes' => 'nullable',
+            'mission' => 'nullable',
+            'vission' => 'nullable',
+            'values' => 'nullable',
+            'website' => 'nullable',
+            'whatsapp_url' => 'nullable',
+            'instagram_url' => 'nullable',
+            'twitter_url' => 'nullable',
+            'youtube_url' => 'nullable',
+            'wechat_url' => 'nullable',
+            'telegram_url' => 'nullable',
+            'phone' => 'nullable',
+            'email' => 'required',
+            'gender' => 'nullable',
+            'dob' => 'nullable',
+            'nationality' => 'nullable',
+            'national_id_no' => 'nullable',
+            'license_no' => 'nullable',
+            'license_expiry' => 'nullable',
+            'country' => 'required',
+            'province_or_state' => 'nullable',
+            'city' => 'nullable',
+            'postal_or_zipcode' => 'nullable',
+            'address' => 'nullable',
+            'managements' => 'nullable',
+            'news' => 'nullable',
+            'services' => 'nullable',
+            'locations' => 'nullable',
+            'attachments' => 'nullable',
         ];
+    }
+
+    public function createOrUpdateAdminUser()
+    {
+        if($this->missing('id')){
+            $user = User::create([
+                'email' => $this->email,
+                'password' => bcrypt('1234567')
+            ]);
+    
+            $user->assignRole($this->role);
+            $user->markEmailAsVerified();
+
+            $user->profile()->create([
+                'first_name' => $this->company_name,
+                'last_name' => '',
+                'gender' => $this->gender,
+                'phone' => $this->phone,
+                'dob' => $this->dob,
+                'nationality' => $this->nationality,
+                'national_id_no' => $this->national_id_no,
+                'license_no' => $this->license_no,
+                'license_expiry' => $this->license_expiry,
+                'country' => $this->country,
+                'province_or_state' => $this->province_or_state,
+                'city' => $this->city,
+                'postal_or_zipcode' => $this->postal_or_zipcode,
+                'address' => $this->address,
+            ]);
+            
+            return $user;
+        }else{
+            $user = Company::where('id', $this->id)->first()->owner;
+            $user->syncRoles([$this->role]);
+
+            $user->profile()->update([
+                'first_name' => $this->company_name,
+                'last_name' => '',
+                'gender' => $this->gender,
+                'phone' => $this->phone,
+                'dob' => $this->dob,
+                'nationality' => $this->nationality,
+                'national_id_no' => $this->national_id_no,
+                'license_no' => $this->license_no,
+                'license_expiry' => $this->license_expiry,
+                'country' => $this->country,
+                'province_or_state' => $this->province_or_state,
+                'city' => $this->city,
+                'postal_or_zipcode' => $this->postal_or_zipcode,
+                'address' => $this->address,
+            ]);
+
+            return $user;
+        }
     }
 
     /**
@@ -22,5 +114,9 @@ class CompanyRequest extends FormRequest
     public function authorize(): bool
     {
         return true;
+    }
+
+    protected function failedValidation(Validator $validator) {
+        throw new HttpResponseException(response()->json($validator->errors(), 422));
     }
 }

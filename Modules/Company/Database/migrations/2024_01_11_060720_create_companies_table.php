@@ -20,9 +20,9 @@ return new class extends Migration {
             $table->string('profile_poster')->nullable();
             $table->text('about')->nullable();
             $table->text('notes')->nullable();
-            $table->string('mission')->nullable();
-            $table->string('vission')->nullable();
-            $table->string('values')->nullable();
+            $table->text('mission')->nullable();
+            $table->text('vission')->nullable();
+            $table->text('values')->nullable();
             $table->string('website')->nullable();
             $table->string('whatsapp_url')->nullable();
             $table->string('instagram_url')->nullable();

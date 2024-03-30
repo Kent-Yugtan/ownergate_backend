@@ -17,6 +17,7 @@ use Modules\Company\Transformers\CompanyResource;
 use Modules\Company\App\Models\CompanyTeam;
 use Modules\Company\Repositories\Interfaces\CompanyRepositoryInterface;
 use Modules\CompanyProperty\App\Resources\PropertyResource;
+use Modules\Company\App\Http\Requests\CompanyRequest;
 
 class CompanyController extends Controller
 {
@@ -32,12 +33,6 @@ class CompanyController extends Controller
     public function index(Company $company)
     {
         try {
-            $owner_company = auth()->user()->company;
-
-            if (!$owner_company->is($company)) {
-                abort(403, 'Unauthorized action.');
-            }
-
             return $this->successresponse(new CompanyResource($company));
         } catch (\Exception $e) {
             return $this->errorResponse(null, $e->getMessage());
@@ -47,9 +42,15 @@ class CompanyController extends Controller
     public function addAttachment(Company $company, Request $request)
     {
         try {
-            $payload = $request->all();
-            $attachment = $this->companyRepository->addAttachment($company, $payload);
-            return $this->successresponse(new AttachmentResource($attachment), 'The Attachment has been uploaded successfully.');
+            if($request->filled('bulk')){
+                $attachment = $this->companyRepository->uploadAttachments($company, $request);
+                return $this->successresponse(AttachmentResource::collection($company->attachments), 'The Attachment has been uploaded successfully.'); 
+            }else{
+                $payload = $request->all();
+                $attachment = $this->companyRepository->addAttachment($company, $payload);
+                return $this->successresponse(new AttachmentResource($attachment), 'The Attachment has been uploaded successfully.');
+            }
+            
         } catch (Exception $e) {
             return $this->errorResponse(null, $e->getMessage());
         }
@@ -139,4 +140,43 @@ class CompanyController extends Controller
             return $this->errorResponse(null, $e->getMessage());
         }
     }
+
+    public function saveCompany(CompanyRequest $request)
+    {   
+        DB::beginTransaction();
+        try {
+            $user = $request->createOrUpdateAdminUser();
+            $profile = $this->companyRepository->updateOrCreate($request, $user);
+
+            DB::commit();
+            return $this->successresponse(new CompanyResource($profile), 'Company has been saved.');
+        } catch (\Exception $e) {
+            DB::rollback();
+            return $this->errorResponse(null, $e->getMessage());
+        }
+    }
+
+    public function lists(Request $request){
+        try {
+            $companies = $this->companyRepository->lists($request);
+            return CompanyResource::collection($companies);
+        } catch (\Exception $e) {
+            return $this->errorResponse(null, $e->getMessage());
+        }
+    }
+
+    public function updateStatus(Request $request, Company $company)
+    {
+        DB::beginTransaction();
+        try {
+            $company = $this->companyRepository->updateStatus($company, $request);
+            DB::commit();
+
+            return $this->successResponse(new CompanyResource($company), 'Status has been updated');
+        } catch (\Exception $e) {
+            DB::rollBack();
+            return $this->errorResponse(null, $e->getMessage());
+        }
+    }
+
 }
