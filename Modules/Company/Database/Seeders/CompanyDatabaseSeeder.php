@@ -36,7 +36,6 @@ class CompanyDatabaseSeeder extends Seeder
 
             $company = $user->company()->create([
                 'company_name' => $companyName,
-                'addmail' => $faker->name,
                 'status' => 'active',
                 'profile_picture' => $faker->name,
                 'profile_poster' => $faker->name,

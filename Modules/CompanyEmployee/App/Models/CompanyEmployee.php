@@ -33,7 +33,6 @@ class CompanyEmployee extends Model
         'profile_id',
         'status',
         'type',
-        'addmail',
         'department',
         'building_name',
         'unit_number',
@@ -54,7 +53,7 @@ class CompanyEmployee extends Model
 
     public function properties()
     {
-        return $this->belongsToMany(CompanyProperty::class, 'employee_properties', 'employee_id', 'property_id')->withPivot('access_code');
+        return $this->belongsToMany(CompanyProperty::class, 'employee_properties', 'employee_id', 'property_id')->withPivot(['id', 'access_code']);
     }
 
     public function attachments(): HasMany

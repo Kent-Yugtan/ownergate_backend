@@ -13,7 +13,6 @@ return new class extends Migration {
         Schema::create('companies', function (Blueprint $table) {
             $table->id();
             $table->unsignedBigInteger('owner_id');
-            $table->string('addmail')->nullable();
             $table->string('company_name')->nullable();
             $table->string('phone')->nullable();
             $table->enum('status', ['active', 'inactive'])->default('active');

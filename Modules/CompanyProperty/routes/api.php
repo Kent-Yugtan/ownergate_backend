@@ -60,5 +60,5 @@ Route::prefix('admin')->middleware(['auth:api'])->group(function () {
     Route::get('property/get-amenities', [PropertyFeatureController::class, 'getAmenities']);
     Route::get('property/get-utilities', [PropertyFeatureController::class, 'getUtilities']);
 
-    Route::get('company/addmail-properties', [CompanyPropertyController::class, 'getAddmailProperties']);
+    Route::get('company/ogcode-properties', [CompanyPropertyController::class, 'getOGCodeProperties']);
 });

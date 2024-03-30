@@ -31,7 +31,7 @@ trait MediaUploadingTrait
                     }
                 }
 
-                if ($validatedData['type'] === '360 Virtual Tour') {
+                if ($validatedData['type'] === '360 Virtual Tour' || $validatedData['type'] === '360 Virtual Spots') {
                     $uniqueFilename = $name . '.jpg';
                 } else {
                     $uniqueFilename = $this->generateUniqueFilename($media['file']);

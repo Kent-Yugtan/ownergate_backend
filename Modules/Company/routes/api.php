@@ -53,8 +53,6 @@ Route::prefix('admin')->middleware(['auth:api'])->group(function () {
         Route::post('{company}/add-property/{property}', [CompanyController::class, 'addProperty']);
         Route::post('{company}/change-status', [CompanyController::class, 'updateStatus']);
         Route::post('{company}/privacy', [CompanyController::class, 'changePrivacy']);
-
-        
     });
 });
 

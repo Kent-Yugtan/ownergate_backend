@@ -26,7 +26,6 @@ class Company extends Model
      */
     protected $fillable = [
         'owner_id',
-        'addmail',
         'company_name',
         'status',
         'profile_picture',
