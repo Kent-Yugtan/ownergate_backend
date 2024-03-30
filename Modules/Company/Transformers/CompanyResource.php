@@ -3,7 +3,7 @@
 namespace Modules\Company\Transformers;
 
 use Illuminate\Http\Resources\Json\JsonResource;
-use Modules\Company\App\resources\LocationResource;
+use Modules\Company\Transformers\LocationResource;
 use Modules\Company\Transformers\AttachmentResource;
 use Modules\CompanyProperty\Transformers\PropertyResource;
 
@@ -30,7 +30,9 @@ class CompanyResource extends JsonResource
                 $documents[] = new AttachmentResource($attachment);
             }
         }
+
         return array_merge(parent::toArray($request), [
+            'company_ogcode' => $this->owner->og_code,
             'managements' => $this->managements()->paginate(10),
             'news' => $this->news()->paginate(10),
             'services' => $this->services()->paginate(10),

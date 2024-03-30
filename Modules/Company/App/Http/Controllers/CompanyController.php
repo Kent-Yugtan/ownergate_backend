@@ -139,5 +139,4 @@ class CompanyController extends Controller
             return $this->errorResponse(null, $e->getMessage());
         }
     }
-
 }
