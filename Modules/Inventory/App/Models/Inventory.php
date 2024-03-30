@@ -9,7 +9,7 @@ use Modules\Inventory\App\Models\InventoryAttachment;
 class Inventory extends Model
 {
     protected $fillable = [
-        'user_id',
+        'admin_id',
         'inventory_category_id',
         'inventory_type_id',
         'item_id',
@@ -19,6 +19,7 @@ class Inventory extends Model
         'country',
         'city',
         'area',
+        'price',
         'discount',
         'current_date',
         'account_id',

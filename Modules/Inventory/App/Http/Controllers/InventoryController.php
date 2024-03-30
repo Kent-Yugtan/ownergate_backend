@@ -8,8 +8,9 @@ use Illuminate\Http\Response;
 use Illuminate\Support\Facades\DB;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\RedirectResponse;
+use Illuminate\Support\Facades\Storage;
 use Modules\Inventory\App\Models\Inventory;
-use Modules\Inventory\App\resources\InventoryResource;
+use Modules\Inventory\Transformers\InventoryResource;
 
 class InventoryController extends Controller
 {

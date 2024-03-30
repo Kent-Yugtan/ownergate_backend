@@ -24,7 +24,7 @@ return new class extends Migration {
 
         Schema::create('inventories', function (Blueprint $table) {
             $table->id();
-            $table->unsignedBigInteger("user_id");
+            $table->unsignedBigInteger("admin_id");
             $table->unsignedBigInteger("inventory_category_id");
             $table->unsignedBigInteger("inventory_type_id");
             $table->string("item_id");
@@ -34,18 +34,19 @@ return new class extends Migration {
             $table->string("country");
             $table->string("city");
             $table->string("area");
+            $table->decimal('price', 15, 2);
             $table->string("discount");
-            $table->string("current_date");
-            $table->string("account_id");
-            $table->string("opening_balance");
-            $table->string("vendor_id");
-            $table->string("start_date");
-            $table->string("end_date");
+            $table->date("current_date");
+            $table->string("account_id")->nullable();
+            $table->string("opening_balance")->nullable();
+            $table->string("vendor_id")->nullable();
+            $table->date("start_date");
+            $table->date("end_date");
             $table->text("item_id_details");
-            $table->tinyInteger("is_active")->default(0);
+            $table->tinyInteger("is_active")->default(1);
             $table->timestamps();
 
-            $table->foreign('user_id')->references('id')->on('users')->onUpdate('cascade')->onDelete('cascade');
+            $table->foreign('admin_id')->references('id')->on('users')->onUpdate('cascade')->onDelete('cascade');
             $table->foreign('inventory_category_id')->references('id')->on('inventory_category_types')->onUpdate('cascade')->onDelete('cascade');
             $table->foreign('inventory_type_id')->references('id')->on('inventory_types')->onUpdate('cascade')->onDelete('cascade');
         });
