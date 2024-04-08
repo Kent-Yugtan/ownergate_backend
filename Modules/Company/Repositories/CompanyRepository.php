@@ -180,7 +180,7 @@ class CompanyRepository extends BaseRepository implements CompanyRepositoryInter
 
     public function deleteNews($news)
     {
-        if ($management->image_path != null) {
+        if ($news->image_path != null) {
             Storage::delete($news->image_path);
         }
         return $news->delete();
@@ -305,12 +305,12 @@ class CompanyRepository extends BaseRepository implements CompanyRepositoryInter
                     $old_data = $company->{$key}()->where('id', $payload['id'])->first();
 
                     if ($old_data) {
-                        if (isset($payload['image']) && is_file($payload['image'])) {
+                        if (isset($payload['image_path']) && is_file($payload['image_path'])) {
                             if ($old_data->image_path) {
                                 Storage::delete($old_data->image_path);
                             }
 
-                            $path = $payload['image']->store('company/' . $company->id . '/' . $key);
+                            $path = $payload['image_path']->store('company/' . $company->id . '/' . $key);
                             $data['image_path'] = $path;
                         }
 
@@ -319,8 +319,8 @@ class CompanyRepository extends BaseRepository implements CompanyRepositoryInter
                         $response = $old_data;
                     }
                 } else {
-                    if (isset($payload['image']) && is_file($payload['image'])) {
-                        $path = $payload['image']->store('company/' . $company->id . '/' . $key);
+                    if (isset($payload['image_path']) && is_file($payload['image_path'])) {
+                        $path = $payload['image_path']->store('company/' . $company->id . '/' . $key);
                         $data['image_path'] = $path;
                     }
 

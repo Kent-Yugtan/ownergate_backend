@@ -16,20 +16,23 @@ class AdminController extends Controller
     public function getAllProperties(Request $request)
     {
         $perPage = $request->perPage ?? 10;
- 
+
         $all_propertis = CompanyProperty::when($request->owner_id, function ($query) use ($request) {
             return $query->whereHas('company', function ($query) use ($request) {
-                $query ->where('owner_id', $request->owner_id);
+                $query->where('owner_id', $request->owner_id);
             });
         })
-        ->when($request->keywords, function ($query) use ($request) {
-            return $query->where('name', 'like', '%' . $request->keywords . '%')
-                ->orWhereHas('propertyType', function ($query) use ($request) {
-                    $query->where('name', 'like', '%' . $request->keywords . '%');
-                });
-        })
-        ->paginate($perPage);
- 
+            ->when($request->keywords, function ($query) use ($request) {
+                return $query->where('name', 'like', '%' . $request->keywords . '%')
+                    ->orWhereHas('propertyType', function ($query) use ($request) {
+                        $query->where('name', 'like', '%' . $request->keywords . '%');
+                    })
+                    ->orWhereHas('targetType', function ($query) use ($request) {
+                        $query->where('name', $request->keywords);
+                    });
+            })
+            ->paginate($perPage);
+
         return PropertyResource::collection($all_propertis);
     }
 
@@ -49,7 +52,7 @@ class AdminController extends Controller
         });
 
         $paginated_results = $companies->slice($offset, $perPage)->values();
-        
+
         return new LengthAwarePaginator(
             $paginated_results,
             $companies->count(),

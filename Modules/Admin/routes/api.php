@@ -19,3 +19,4 @@ Route::prefix('admin')->middleware(['auth:api'])->group(function () {
     Route::get('/companies', [AdminController::class, 'getAllCompanies']);
     Route::get('/companies/properties', [AdminController::class, 'getAllProperties']);
 });
+Route::get('/companies/websiteProperties', [AdminController::class, 'getAllProperties']);

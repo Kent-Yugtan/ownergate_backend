@@ -33,6 +33,16 @@ class CompanyNewsController extends Controller
         return NewsResource::collection($news);
     }
 
+    public function showAllNews(Request $request){
+        $perPage = $request->perPage ?? 10;
+
+        $news = CompanyNews::where('visibility', 1)
+                            ->orderBy('posted_at', 'desc')
+                            ->paginate($perPage);
+
+        return NewsResource::collection($news);
+    }
+
     /**
      * Store a newly created resource in storage.
      */
