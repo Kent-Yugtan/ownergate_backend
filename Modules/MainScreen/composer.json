@@ -1,0 +1,31 @@
+{
+    "name": "nwidart/mainscreen",
+    "description": "",
+    "authors": [
+        {
+            "name": "Nicolas Widart",
+            "email": "n.widart@gmail.com"
+        }
+    ],
+    "extra": {
+        "laravel": {
+            "providers": [],
+            "aliases": {
+
+            }
+        }
+    },
+    "autoload": {
+        "psr-4": {
+            "Modules\\MainScreen\\": "",
+            "Modules\\MainScreen\\App\\": "app/",
+            "Modules\\MainScreen\\Database\\Factories\\": "database/factories/",
+            "Modules\\MainScreen\\Database\\Seeders\\": "database/seeders/"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "Modules\\MainScreen\\Tests\\": "tests/"
+        }
+    }
+}

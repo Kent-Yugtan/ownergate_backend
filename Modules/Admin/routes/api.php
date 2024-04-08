@@ -3,6 +3,7 @@
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use Modules\Admin\App\Http\Controllers\AdminController;
+use Modules\Admin\App\Http\Controllers\DiscoverPropertiesController;
 
 /*
     |--------------------------------------------------------------------------
@@ -18,5 +19,11 @@ use Modules\Admin\App\Http\Controllers\AdminController;
 Route::prefix('admin')->middleware(['auth:api'])->group(function () {
     Route::get('/companies', [AdminController::class, 'getAllCompanies']);
     Route::get('/companies/properties', [AdminController::class, 'getAllProperties']);
+
+    Route::prefix('discover-properties')->middleware(['auth:api'])->group(function () {
+        Route::get('cities', [DiscoverPropertiesController::class, 'getAllPropertiesCities']);
+        Route::post('cities', [DiscoverPropertiesController::class, 'savePropertyCities']);
+        Route::post('cities/{city}/listing', [DiscoverPropertiesController::class, 'savePropertyListing']);
+    });
 });
 Route::get('/companies/websiteProperties', [AdminController::class, 'getAllProperties']);
