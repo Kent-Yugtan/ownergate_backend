@@ -57,4 +57,5 @@ class AdminController extends Controller
             $page,
         );
     }
+
 }

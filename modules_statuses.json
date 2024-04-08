@@ -9,5 +9,6 @@
     "Customer": true,
     "Admin": true,
     "Sample": true,
-    "CompanyPrivacy": true
+    "CompanyPrivacy": true,
+    "MainScreen": true
 }

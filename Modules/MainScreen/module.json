@@ -1,0 +1,11 @@
+{
+    "name": "MainScreen",
+    "alias": "mainscreen",
+    "description": "",
+    "keywords": [],
+    "priority": 0,
+    "providers": [
+        "Modules\\MainScreen\\App\\Providers\\MainScreenServiceProvider"
+    ],
+    "files": []
+}
