@@ -39,7 +39,7 @@ class AuthRepository extends BaseRepository implements AuthRepositoryInterface
             $account = $this->formatOGCode($request->email);
         }
 
-        if (Auth::attempt([$field => $request->email, 'password' => $request->password])) {
+        if (Auth::attempt([$field => $account, 'password' => $request->password])) {
             $token = Auth::user()->createToken('Auth Token')->accessToken;
             return $token;
         }
@@ -79,10 +79,8 @@ class AuthRepository extends BaseRepository implements AuthRepositoryInterface
             $company->users()->attach($user->id);
         }
 
-        if($user->has('company')){
-            $code = $this->generateOGCode($user);
-            $user->update(['og_code' => $code]);
-        }
+        $code = $this->generateOGCode($user);
+        $user->update(['og_code' => $code]);
 
         return $user;
     }
