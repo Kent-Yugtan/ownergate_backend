@@ -9,7 +9,7 @@ use Illuminate\Http\File;
 use Illuminate\Support\Str;
 use Modules\BaseRepository;
 use Illuminate\Http\Request;
-use App\Models\PasswordResetToken;
+use Modules\Auth\App\Models\PasswordResetToken;
 use Spatie\Permission\Models\Role;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Mail;
