@@ -131,4 +131,22 @@ class CompanyProperty extends Model
     {
         return $this->belongsToMany(CompanyEmployee::class, 'employee_properties', 'employee_id', 'property_id')->withPivot('access_code');
     }
+
+    public function scopeFilterPropertyType($query, $value)
+    {
+        return $query->when($value, function ($query) use ($value) {
+            return $query->whereHas('propertyType', function ($query) use ($value) {
+                $query->where('name', 'like', '%' . $value . '%');
+            });
+        });
+    }
+
+    public function scopeFilterTargetType($query, $value)
+    {
+        return $query->when($value, function ($query) use ($value) {
+            return $query->whereHas('targetType', function ($query) use ($value) {
+                $query->where('name', 'like', '%' . $value . '%');
+            });
+        });
+    }
 }

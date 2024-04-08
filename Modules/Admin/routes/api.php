@@ -21,6 +21,7 @@ Route::prefix('admin')->middleware(['auth:api'])->group(function () {
     Route::get('/companies/properties', [AdminController::class, 'getAllProperties']);
 
     Route::prefix('discover-properties')->middleware(['auth:api'])->group(function () {
+        Route::get('/', [DiscoverPropertiesController::class, 'index']);
         Route::get('cities', [DiscoverPropertiesController::class, 'getAllPropertiesCities']);
         Route::post('cities', [DiscoverPropertiesController::class, 'savePropertyCities']);
         Route::post('cities/{city}/listing', [DiscoverPropertiesController::class, 'savePropertyListing']);
