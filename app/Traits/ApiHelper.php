@@ -62,8 +62,7 @@ trait ApiHelper
                 break;
             
             case 'Owner':
-                $code = 'OG' . strtoupper(substr($user->profile->first_name, 0, 6));
-                $code = 'OW ' . implode(' ', str_split($code, 4)) . $id;
+                $code = $this->formatPartnerCode($user);
                 break;
 
             case 'Employee':
@@ -74,23 +73,19 @@ trait ApiHelper
                 }
                 break;
             case 'Developer':
-                $code = 'OG' . strtoupper(substr($user->profile->first_name, 0, 6));
-                $code = 'DE ' . implode(' ', str_split($code, 4)) . $id;
+                $code = $this->formatPartnerCode($user);
                 break;
 
             case 'Real Estate':
-                $code = 'OG' . strtoupper(substr($user->profile->first_name, 0, 6));
-                $code = 'RE ' . implode(' ', str_split($code, 4)) . $id;
+                $code = $this->formatPartnerCode($user);
                 break;
             
             case 'Vendor':
-                $code = 'OG' . strtoupper(substr($user->profile->first_name, 0, 6));
-                $code = 'VE ' . implode(' ', str_split($code, 4)) . $id;
+                $code = $this->formatPartnerCode($user);
                 break;
 
             case 'Agent':
-                $code = 'OG' . strtoupper(substr($user->profile->first_name, 0, 6));
-                $code = 'AG ' . implode(' ', str_split($code, 4)) . $id;
+                $code = $this->formatPartnerCode($user);
                 break;
 
             case 'Customer':
@@ -103,5 +98,34 @@ trait ApiHelper
         return $code;
     }
 
+    public function formatOGCode($code){
+        $code = preg_replace('/\s+/', '', $code);
+        
+        $type = substr($code, 0, 2);
+        $addmail = wordwrap(substr($code, 2), 4, ' ', true );
 
+        return strtoupper($type . ' ' . $addmail);
+    }
+
+    public function formatPartnerCode($user)
+    {
+        $role = $user->getRoleNames()->first();
+        $types = [
+            'Owner' => 'OW', 
+            'Developer' => 'DE', 
+            'Agent' => 'AG', 
+            'Real Estate' => 'RE', 
+            'Vendor' => 'VE'
+        ];
+        $code = $types[$role] . 'OG'. preg_replace('/\s+/', '', substr($user->company->company_name, 0, 6));
+        $id = '';
+
+        if(strlen($code) < 10){
+            $diff = 10 - strlen($code);
+            $id = substr(str_pad($user->company->id, $diff, '0', STR_PAD_LEFT), -$diff);
+        }
+
+        $code = $code . $id;
+        return $this->formatOGCode($code);
+    }
 }

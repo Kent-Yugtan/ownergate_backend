@@ -19,7 +19,8 @@ class UserResource extends JsonResource
             'name' => $this->name,
             'company' => new CompanyResource($this->userCompanies->first()),
             'profile' => new UserProfileResource($this->profile),
-            'role' => $this->getRoleNames()
+            'role' => $this->getRoleNames(),
+            'type' => $this->getRoleNames()->first()
         ]);
 
         // if($this->user_type_id === 2){

@@ -16,7 +16,7 @@ class RegisterRequest extends FormRequest
     public function rules()
     {
         $fields = [
-            'user_type' => 'required',
+            'role' => 'required',
             'first_name' => 'required',
             'last_name' => 'required',
             'email' => 'required|email|unique:users|confirmed',
@@ -30,7 +30,6 @@ class RegisterRequest extends FormRequest
         if($this->user_type == 'Admin') {
             $fields = array_merge($fields, [
                 'company_name' => 'required',
-                'company_email' => 'required|email',
                 'company_phone' => 'nullable',
                 'company_type_id' => 'required',
                 'company_website' => 'nullable',
