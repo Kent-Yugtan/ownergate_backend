@@ -58,4 +58,7 @@ Route::prefix('admin')->middleware(['auth:api'])->group(function () {
 
 Route::prefix('admin')->group(function () {
     Route::apiResource('company-types', CompanyTypeController::class);
+
+    // GET ALL NEWS
 });
+Route::get('showAllNews', [CompanyNewsController::class, 'showAllNews']);
