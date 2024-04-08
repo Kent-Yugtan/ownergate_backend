@@ -18,9 +18,13 @@ use Illuminate\Support\Facades\Storage;
 use Modules\Auth\Emails\VerifictionEmail;
 use Modules\Auth\Emails\ForgotPasswordEmail;
 use Modules\Auth\Repositories\Interfaces\AuthRepositoryInterface;
-
+use Modules\Auth\Http\Requests\RegisterRequest;
+use App\Traits\ApiHelper;
+ 
 class AuthRepository extends BaseRepository implements AuthRepositoryInterface
 {
+    use ApiHelper;
+
     public function __construct(User $model)
     {
         $this->model = $model;
@@ -28,8 +32,14 @@ class AuthRepository extends BaseRepository implements AuthRepositoryInterface
 
     public function login(Request $request)
     {
-        if (Auth::attempt($request->all())) {
+        $field = filter_var($request->email, FILTER_VALIDATE_EMAIL) ? 'email' : 'og_code';
+        $account = $request->email;
 
+        if($field == 'og_code'){
+            $account = $this->formatOGCode($request->email);
+        }
+
+        if (Auth::attempt([$field => $request->email, 'password' => $request->password])) {
             $token = Auth::user()->createToken('Auth Token')->accessToken;
             return $token;
         }
@@ -47,33 +57,33 @@ class AuthRepository extends BaseRepository implements AuthRepositoryInterface
         return $request->user();
     }
 
-    public function register(Request $request)
+    public function register($request)
     {
-        $role = Role::where('name', $request->user_type)->first();
-
-        if (!$role) {
-            abort(403, 'Invalid user type');
-        }
-
         $user = $this->model->create(array_merge($request->all(), [
-            'role_id' => $role->id,
             'verification_token' => Str::uuid(),
             'verification_date' => Carbon::now()->format('Y-m-d H:i:s'),
             'verification_code' => $this->generateRandomNumbers(6)
         ]));
 
-        if($request->user_typ == 'Admin') {
+        $user->profile()->create($request->only('first_name', 'last_name', 'phone'));
+        $user->assignRole($request->role);
+
+        if($request->role != 'Customer'){
             $company = $user->company()->create([
                 'company_name' => $request->company_name,
                 'phone' => $request->company_phone,
-                'company_type_id' => $request->company_type_id,
-                'email' => $request->company_email,
-                'website' => $request->company_website
+                'website' => $request->company_website,
+                'status' => 'inactive'
             ]);
 
-            $company->companyUsers()->attach($user->id, ['is_admin' => 1]);
+            $company->users()->attach($user->id);
         }
-    
+
+        if($user->has('company')){
+            $code = $this->generateOGCode($user);
+            $user->update(['og_code' => $code]);
+        }
+
         return $user;
     }
 

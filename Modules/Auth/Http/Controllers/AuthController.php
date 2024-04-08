@@ -41,7 +41,6 @@ class AuthController extends Controller
             $token = $this->authRepository->login($request);
             
             if($token) {
-
                 if(!$request->user()->email_verified_at) {
                     return $this->errorResponse([
                         'errCode' => 'email-not-verified',
