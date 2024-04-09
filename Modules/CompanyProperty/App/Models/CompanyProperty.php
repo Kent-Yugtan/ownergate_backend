@@ -150,6 +150,24 @@ class CompanyProperty extends Model
         });
     }
 
+    public function scopeSearchKeyword($q, $search)
+    {
+        return $q->where(function($q) use($search){
+            $q->orWhere('name', 'like', $search . '%')
+            ->orWhere('description', 'like', $search . '%')
+            ->orWhere(function($q) use($search){
+                $q->whereHas('company', function($q) use($search){
+                    $q->where('company_name', 'like', $search . '%');
+                });
+            });
+        });
+    }
+
+    public function scopeSearchPrice($q, $price)
+    {
+        return $q->whereBetween('value', $price);
+    }
+
     public static function search($search)
     {
         return self::when($search->type, function($q) use($search){
@@ -160,18 +178,10 @@ class CompanyProperty extends Model
             $q->filterTargetType($search->target_type);
         })->when($search->keyword, function($q) use($search){
             //name, description, company name
-            $q->where(function($q) use($search){
-                $q->orWhere('name', 'like', $search->keyword . '%')
-                ->orWhere('description', 'like', $search->keyword . '%')
-                ->orWhere(function($q) use($search){
-                    $q->whereHas('company', function($q) use($search){
-                        $q->where('company_name', 'like', $search->keyword . '%');
-                    });
-                });
-            });
+            $q->searchKeyword($search->keyword);
         })->when($search->price, function($q) use($search){
             // [1000, 10000]
-            $q->whereBetween('value', $search->price);
+            $q->searchPrice($search->price);
         })->when($search->sort, function($q) use($search){
             // ['price', 'desc'] || ['price', 'desc']
             // ['name', 'asc'] || ['name', 'desc']
