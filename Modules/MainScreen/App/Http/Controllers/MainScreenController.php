@@ -10,6 +10,9 @@ use Modules\MainScreen\App\Models\MainScreen;
 use Modules\MainScreen\Transformers\MainScreenResource;
 use Illuminate\Support\Facades\Storage;
 use App\Traits\ApiResponser;
+use Illuminate\Support\Facades\DB;
+use Modules\CompanyProperty\App\Models\CompanyProperty;
+use Modules\CompanyProperty\Transformers\PropertyResource;
 
 class MainScreenController extends Controller
 {
@@ -32,6 +35,7 @@ class MainScreenController extends Controller
      */
     public function store(Request $request)
     {
+        DB::beginTransaction();
         try {
             $settings = MainScreen::orderBy('id', 'desc')->first();
             $id = !is_null($settings) ? $settings->id : null;
@@ -48,8 +52,10 @@ class MainScreenController extends Controller
                 }
             }
 
+            DB::commit();
             return $this->successResponse(new MainScreenResource($settings), 'Settings has been saved.');
         } catch (\Exception $e) {
+            DB::rollBack();
             return $this->errorResponse($e->getMessage());
         }
     }
@@ -62,5 +68,17 @@ class MainScreenController extends Controller
         }
 
         $settings->update([$field => $path]);
+    }
+
+    public function getProperties(Request $request)
+    {
+        try {
+            $perPage = $request->perPage ?? 10;
+            $properties = CompanyProperty::search($request)->paginate($request->perPage);
+
+            return PropertyResource::collection($properties);
+        } catch (\Exception $e) {
+            return $this->errorResponse($e->getMessage());
+        }
     }
 }

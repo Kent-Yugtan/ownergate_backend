@@ -17,4 +17,7 @@ Route::prefix('admin')->group(function () {
     Route::resource('main-screen', MainScreenController::class)->only(['index', 'store'])->middleware(['auth:api']);
 });
 
-Route::get('public/main-screen', [MainScreenController::class, 'index']);
+Route::prefix('public')->group(function() {
+    Route::get('main-screen', [MainScreenController::class, 'index']);
+    Route::get('properties', [MainScreenController::class, 'getProperties']);
+});
