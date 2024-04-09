@@ -6,62 +6,61 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
+use Modules\MainScreen\App\Models\MainScreen;
+use Modules\MainScreen\Transformers\MainScreenResource;
+use Illuminate\Support\Facades\Storage;
+use App\Traits\ApiResponser;
 
 class MainScreenController extends Controller
 {
+    use ApiResponser;
     /**
      * Display a listing of the resource.
      */
     public function index()
     {
-        return view('mainscreen::index');
-    }
-
-    /**
-     * Show the form for creating a new resource.
-     */
-    public function create()
-    {
-        return view('mainscreen::create');
+        try {
+            $settings = MainScreen::orderBy('id', 'desc')->first();
+            return $this->successResponse(new MainScreenResource($settings), 'Settings has been retrieved.');
+        } catch (\Exception $e) {
+            return $this->errorResponse($e->getMessage());
+        }
     }
 
     /**
      * Store a newly created resource in storage.
      */
-    public function store(Request $request): RedirectResponse
+    public function store(Request $request)
     {
-        //
+        try {
+            $settings = MainScreen::orderBy('id', 'desc')->first();
+            $id = !is_null($settings) ? $settings->id : null;
+            
+            $settings = MainScreen::updateOrCreate(
+                ['id' => $id],
+                ['title' => $request->title]
+            );
+
+            $images = ['logo', 'banner'];
+            foreach($images as $field){
+                if($request->filled($field) || $request->hasFile($field)){
+                    $this->saveImagePath($request, $settings, $field);
+                }
+            }
+
+            return $this->successResponse(new MainScreenResource($settings), 'Settings has been saved.');
+        } catch (\Exception $e) {
+            return $this->errorResponse($e->getMessage());
+        }
     }
 
-    /**
-     * Show the specified resource.
-     */
-    public function show($id)
-    {
-        return view('mainscreen::show');
-    }
+    private function saveImagePath($request, $settings, $field){
+        $path = $request[$field];
 
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit($id)
-    {
-        return view('mainscreen::edit');
-    }
+        if(is_file($request[$field])){
+            $path = $request->file($field)->store('mainscreen');
+        }
 
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(Request $request, $id): RedirectResponse
-    {
-        //
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy($id)
-    {
-        //
+        $settings->update([$field => $path]);
     }
 }
