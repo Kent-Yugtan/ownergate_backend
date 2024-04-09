@@ -187,4 +187,9 @@ return [
         // 'Example' => App\Facades\Example::class,
     ])->toArray(),
 
+    'frontend_url' => env('FRONTEND_URL', 'http://localhost:3001'),
+    'test_email' => env('TEST_EMAIL', ''),
+    'resend_verification_email_limit' => env('RESEND_VERIFICATION_EMAIL_LIMIT', 10),
+    'password_reset_expiry' => env('PASSWORD_RESET_EXPIRY', 60),
+
 ];
