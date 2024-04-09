@@ -153,10 +153,13 @@ class CompanyProperty extends Model
     public static function search($search)
     {
         return self::when($search->type, function($q) use($search){
+            //villa, flat, etc.
             $q->filterPropertyType($search->type);
         })->when($search->target_type, function($q) use($search){
+            //sale, rent ...
             $q->filterTargetType($search->target_type);
         })->when($search->keyword, function($q) use($search){
+            //name, description, company name
             $q->where(function($q) use($search){
                 $q->orWhere('name', 'like', $search->keyword . '%')
                 ->orWhere('description', 'like', $search->keyword . '%')
@@ -166,6 +169,16 @@ class CompanyProperty extends Model
                     });
                 });
             });
+        })->when($search->price, function($q) use($search){
+            // [1000, 10000]
+            $q->whereBetween('value', $search->price);
+        })->when($search->sort, function($q) use($search){
+            // ['price', 'desc'] || ['price', 'desc']
+            // ['name', 'asc'] || ['name', 'desc']
+            // ['created_at', 'asc'] || ['created_at', 'desc']
+            $q->orderBy($search->sort[0], $search->sort[1]);
         });
     }
 }
+
+
