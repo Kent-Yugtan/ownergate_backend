@@ -149,4 +149,23 @@ class CompanyProperty extends Model
             });
         });
     }
+
+    public static function search($search)
+    {
+        return self::when($search->type, function($q) use($search){
+            $q->filterPropertyType($search->type);
+        })->when($search->target_type, function($q) use($search){
+            $q->filterTargetType($search->target_type);
+        })->when($search->keyword, function($q) use($search){
+            $q->where(function($q) use($search){
+                $q->orWhere('name', 'like', $search->keyword . '%')
+                ->orWhere('description', 'like', $search->keyword . '%')
+                ->orWhere(function($q) use($search){
+                    $q->whereHas('company', function($q) use($search){
+                        $q->where('company_name', 'like', $search->keyword . '%');
+                    });
+                });
+            });
+        });
+    }
 }
