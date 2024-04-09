@@ -2,7 +2,7 @@
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
-
+use Modules\MainScreen\App\Http\Controllers\MainScreenController;
 /*
     |--------------------------------------------------------------------------
     | API Routes
@@ -13,8 +13,8 @@ use Illuminate\Support\Facades\Route;
     | is assigned the "api" middleware group. Enjoy building your API!
     |
 */
-
-
-Route::prefix('main')->middleware(['auth:api'])->group(function () {
-    Route::get('discover-properties', [CompanyEmployeeController::class, 'removeAccess']);
+Route::prefix('admin')->group(function () {
+    Route::resource('main-screen', MainScreenController::class)->only(['index', 'store'])->middleware(['auth:api']);
 });
+
+Route::get('public/main-screen', [MainScreenController::class, 'index']);
