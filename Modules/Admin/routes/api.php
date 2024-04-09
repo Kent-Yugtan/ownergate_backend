@@ -25,6 +25,8 @@ Route::prefix('admin')->middleware(['auth:api'])->group(function () {
         Route::get('cities', [DiscoverPropertiesController::class, 'getAllPropertiesCities']);
         Route::post('cities', [DiscoverPropertiesController::class, 'savePropertyCities']);
         Route::post('cities/{city}/listing', [DiscoverPropertiesController::class, 'savePropertyListing']);
+        Route::delete('cities/{city}',[DiscoverPropertiesController::class, 'deleteCity']);
     });
 });
 Route::get('/companies/websiteProperties', [AdminController::class, 'getAllProperties']);
+Route::get('/companies/websiteCities', [DiscoverPropertiesController::class, 'index']);

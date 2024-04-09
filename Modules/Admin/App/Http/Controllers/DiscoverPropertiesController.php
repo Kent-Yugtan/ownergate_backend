@@ -32,7 +32,7 @@ class DiscoverPropertiesController extends Controller
                 ->filterTargetType($city->listing->target_type)
                 ->count();
             }
-
+            $res['id'] = $city->id;
             $res['country'] = $city->country;
             $res['city'] = $city->city;
             $res['image'] = $city->image;
@@ -44,6 +44,30 @@ class DiscoverPropertiesController extends Controller
 
         return $this->successresponse($data, 'Discover Properties');
     }
+
+    public function deleteCity(Request $request, $city) {
+        try {
+            DB::beginTransaction();
+    
+            $cityData = DiscoverProperty::find($city);
+            
+            if (!$cityData) {
+                throw new \Exception("City not found");
+            }
+    
+            Storage::delete($cityData->image);
+            $cityData->delete();
+    
+            DB::commit();
+    
+            return $this->successresponse($cityData, 'Discover Property has been successfully deleted.');
+        } catch (\Exception $e) {
+            DB::rollback();
+    
+            return $this->errorResponse(null, $e->getMessage());
+        }
+    }
+    
     
     public function getAllPropertiesCities(Request $request)
     {
