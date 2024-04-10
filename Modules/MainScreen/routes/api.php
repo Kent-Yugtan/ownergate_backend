@@ -18,6 +18,9 @@ Route::prefix('admin')->group(function () {
 });
 
 Route::prefix('public')->group(function() {
-    Route::get('main-screen', [MainScreenController::class, 'index']);
-    Route::get('properties', [MainScreenController::class, 'getProperties']);
+    Route::prefix('main-screen')->group(function(){
+        Route::get('/', [MainScreenController::class, 'index']);
+        Route::get('/filter-options', [MainScreenController::class, 'getFilterOptions']);
+        Route::get('/properties', [MainScreenController::class, 'getProperties']);
+    });
 });
