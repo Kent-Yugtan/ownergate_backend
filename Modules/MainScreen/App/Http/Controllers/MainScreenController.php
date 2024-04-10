@@ -15,6 +15,7 @@ use Modules\CompanyProperty\App\Models\CompanyProperty;
 use Modules\CompanyProperty\Transformers\PropertyResource;
 use Modules\CompanyProperty\App\Models\PropertyType;
 use Modules\CompanyProperty\App\Models\CategoryTargetType;
+use Modules\CompanyProperty\App\Models\Category;
 
 
 class MainScreenController extends Controller
@@ -91,13 +92,15 @@ class MainScreenController extends Controller
         $countries = CompanyProperty::select('country')->distinct()->orderBy('country')->get();
         $states = CompanyProperty::select('state')->distinct()->orderBy('state')->get();
         $cities = CompanyProperty::select('city')->distinct()->orderBy('city')->get();
+        $categories = Category::orderBy('name')->get();
 
         return [
             'types' => $types,
             'target_types' => $targetTypes,
             'countries' => $countries,
             'states' => $states,
-            'cities' => $cities
+            'cities' => $cities,
+            'categories' => $categories
         ];
     }
 }
