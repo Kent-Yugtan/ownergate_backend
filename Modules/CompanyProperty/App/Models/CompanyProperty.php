@@ -183,6 +183,11 @@ class CompanyProperty extends Model
         return $q->where('state', 'LIKE', $state);
     }
 
+    public function scopeCategory($q, $category)
+    {
+        return $q->where('category_id', $category);
+    }
+
     public static function search($search)
     {
         return self::when($search->type, function($q) use($search){
@@ -208,6 +213,8 @@ class CompanyProperty extends Model
             $q->state($search->state);
         })->when($search->city, function($q) use($search){
             $q->city($search->city);
+        })->when($search->category, function($q) use($search){
+            $q->category($search->category);
         });
     }
 }
