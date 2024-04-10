@@ -201,7 +201,7 @@ class CompanyProperty extends Model
             $q->searchKeyword($search->keyword);
         })->when($search->price, function($q) use($search){
             // [1000, 10000]
-            $q->searchPrice($search->price);
+            $q->searchPrice([0, $search->price]);
         })->when($search->sort, function($q) use($search){
             // ['price', 'desc'] || ['price', 'desc']
             // ['name', 'asc'] || ['name', 'desc']
