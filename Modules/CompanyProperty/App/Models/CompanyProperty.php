@@ -168,6 +168,21 @@ class CompanyProperty extends Model
         return $q->whereBetween('value', $price);
     }
 
+    public function scopeCountry($q, $country)
+    {
+        return $q->where('country', 'LIKE', $country);
+    }
+
+    public function scopeCity($q, $city)
+    {
+        return $q->where('city', 'LIKE', $city);
+    }
+
+    public function scopeState($q, $state)
+    {
+        return $q->where('state', 'LIKE', $state);
+    }
+
     public static function search($search)
     {
         return self::when($search->type, function($q) use($search){
@@ -187,6 +202,12 @@ class CompanyProperty extends Model
             // ['name', 'asc'] || ['name', 'desc']
             // ['created_at', 'asc'] || ['created_at', 'desc']
             $q->orderBy($search->sort[0], $search->sort[1]);
+        })->when($search->country, function($q) use($search){
+            $q->country($search->country);
+        })->when($search->state, function($q) use($search){
+            $q->state($search->state);
+        })->when($search->city, function($q) use($search){
+            $q->city($search->city);
         });
     }
 }

@@ -13,6 +13,9 @@ use App\Traits\ApiResponser;
 use Illuminate\Support\Facades\DB;
 use Modules\CompanyProperty\App\Models\CompanyProperty;
 use Modules\CompanyProperty\Transformers\PropertyResource;
+use Modules\CompanyProperty\App\Models\PropertyType;
+use Modules\CompanyProperty\App\Models\CategoryTargetType;
+
 
 class MainScreenController extends Controller
 {
@@ -80,5 +83,21 @@ class MainScreenController extends Controller
         } catch (\Exception $e) {
             return $this->errorResponse($e->getMessage());
         }
+    }
+
+    public function getFilterOptions(){
+        $types = PropertyType::orderBy('name')->get();
+        $targetTypes = CategoryTargetType::orderBy('name')->get();
+        $countries = CompanyProperty::select('country')->distinct()->orderBy('country')->get();
+        $states = CompanyProperty::select('state')->distinct()->orderBy('state')->get();
+        $cities = CompanyProperty::select('city')->distinct()->orderBy('city')->get();
+
+        return [
+            'types' => $types,
+            'target_types' => $targetTypes,
+            'countries' => $countries,
+            'states' => $states,
+            'cities' => $cities
+        ];
     }
 }
