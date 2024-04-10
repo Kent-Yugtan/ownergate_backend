@@ -88,7 +88,7 @@ class MainScreenController extends Controller
 
     public function getFilterOptions(){
         $types = PropertyType::orderBy('name')->get();
-        $targetTypes = CategoryTargetType::orderBy('name')->get();
+        $targetTypes = CategoryTargetType::select('name')->distinct()->orderBy('name')->get();
         $countries = CompanyProperty::select('country')->distinct()->orderBy('country')->get();
         $states = CompanyProperty::select('state')->distinct()->orderBy('state')->get();
         $cities = CompanyProperty::select('city')->distinct()->orderBy('city')->get();
