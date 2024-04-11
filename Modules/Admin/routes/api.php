@@ -19,6 +19,7 @@ use Modules\Admin\App\Http\Controllers\DiscoverPropertiesController;
 Route::prefix('admin')->middleware(['auth:api'])->group(function () {
     Route::get('/companies', [AdminController::class, 'getAllCompanies']);
     Route::get('/companies/properties', [AdminController::class, 'getAllProperties']);
+    Route::get('/sections', [AdminController::class, 'getSections']);
 
     Route::prefix('discover-properties')->middleware(['auth:api'])->group(function () {
         Route::get('/', [DiscoverPropertiesController::class, 'index']);
