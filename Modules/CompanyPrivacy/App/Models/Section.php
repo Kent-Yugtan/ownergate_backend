@@ -10,6 +10,7 @@ class Section extends Model
      * The attributes that are mass assignable.
      */
     protected $fillable = [
-        'name'
+        'name',
+        'module_name'
     ];
 }

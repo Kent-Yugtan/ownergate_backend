@@ -10,5 +10,6 @@
     "Admin": true,
     "Sample": true,
     "CompanyPrivacy": true,
-    "MainScreen": true
+    "MainScreen": true,
+    "PropertyPrivacy": true
 }

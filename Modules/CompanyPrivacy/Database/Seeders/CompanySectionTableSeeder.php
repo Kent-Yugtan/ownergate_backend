@@ -13,40 +13,142 @@ class CompanySectionTableSeeder extends Seeder
     public function run(): void
     {
         $sections = [
-            ['name' => 'Profile Picture'],
-            ['name' => 'Cover Photo'],
-            ['name' => 'Account Business Name'],
-            ['name' => 'Email'],
-            ['name' => 'Phone Number'],
-            ['name' => 'Website'],
-            ['name' => 'Gender'],
-            ['name' => 'Date of Birth'],
-            ['name' => 'Nationality'],
-            ['name' => 'National ID Number'],
-            ['name' => 'License Number'],
-            ['name' => 'Expiry Date'],
-            ['name' => 'Permissions'],
-            ['name' => 'Other'],
-            ['name' => 'Country'],
-            ['name' => 'Provice/State'],
-            ['name' => 'City'],
-            ['name' => 'Postal/Zip Code'],
-            ['name' => 'Address'],
-            ['name' => 'AddMail'],
-            ['name' => 'Whatsapp'],
-            ['name' => 'Instagram'],
-            ['name' => 'Facebook'],
-            ['name' => 'X'],
-            ['name' => 'YouTube'],
-            ['name' => 'WeChat'],
-            ['name' => 'Telegram'],
-            ['name' => 'About'],
-            ['name' => 'Mission & Vission & Values'],
-            ['name' => 'Management'],
-            ['name' => 'Breaking News'],
-            ['name' => 'Services'],
-            ['name' => 'Locations'],
-            ['name' => 'Licenses & Permissions']
+            [
+                'name' => 'Profile Picture',
+                'module_name' => 'Company'
+            ],
+            [
+                'name' => 'Cover Photo',
+                'module_name' => 'Company'
+            ],
+            [
+                'name' => 'Account Business Name',
+                'module_name' => 'Company'
+            ],
+            [
+                'name' => 'Email',
+                'module_name' => 'Company'
+            ],
+            [
+                'name' => 'Phone Number',
+                'module_name' => 'Company'
+            ],
+            [
+                'name' => 'Website',
+                'module_name' => 'Company'
+            ],
+            [
+                'name' => 'Gender',
+                'module_name' => 'Company'
+            ],
+            [
+                'name' => 'Date of Birth',
+                'module_name' => 'Company'
+            ],
+            [
+                'name' => 'Nationality',
+                'module_name' => 'Company'
+            ],
+            [
+                'name' => 'National ID Number',
+                'module_name' => 'Company'
+            ],
+            [
+                'name' => 'License Number',
+                'module_name' => 'Company'
+            ],
+            [
+                'name' => 'Expiry Date',
+                'module_name' => 'Company'
+            ],
+            [
+                'name' => 'Permissions',
+                'module_name' => 'Company'
+            ],
+            [
+                'name' => 'Other',
+                'module_name' => 'Company'
+            ],
+            [
+                'name' => 'Country',
+                'module_name' => 'Company'
+            ],
+            [
+                'name' => 'Provice/State',
+                'module_name' => 'Company'
+            ],
+            [
+                'name' => 'City',
+                'module_name' => 'Company'
+            ],
+            [
+                'name' => 'Postal/Zip Code',
+                'module_name' => 'Company'
+            ],
+            [
+                'name' => 'Address',
+                'module_name' => 'Company'
+            ],
+            [
+                'name' => 'AddMail',
+                'module_name' => 'Company'
+            ],
+            [
+                'name' => 'Whatsapp',
+                'module_name' => 'Company'
+            ],
+            [
+                'name' => 'Instagram',
+                'module_name' => 'Company'
+            ],
+            [
+                'name' => 'Facebook',
+                'module_name' => 'Company'
+            ],
+            [
+                'name' => 'X',
+                'module_name' => 'Company'
+            ],
+            [
+                'name' => 'YouTube',
+                'module_name' => 'Company'
+            ],
+            [
+                'name' => 'WeChat',
+                'module_name' => 'Company'
+            ],
+            [
+                'name' => 'Telegram',
+                'module_name' => 'Company'
+            ],
+            [
+                'name' => 'About',
+                'module_name' => 'Company'
+            ],
+            [
+                'name' => 'Mission & Vission & Values',
+                'module_name' => 'Company'
+            ],
+            [
+                'name' => 'Management',
+                'module_name' => 'Company'
+            ],
+            [
+                'name' => 'Breaking News',
+                'module_name' => 'Company'
+            ],
+            [
+                'name' => 'Services',
+                'module_name' => 'Company'
+            ],
+            [
+                'name' => 'Locations',
+                'module_name' => 'Company'
+            ],
+            [
+                'name' => 'Licenses & Permissions',
+                'module_name' => 'Company'
+            ]
             
         ];
 
