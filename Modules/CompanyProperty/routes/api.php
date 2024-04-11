@@ -52,13 +52,14 @@ Route::prefix('admin')->middleware(['auth:api'])->group(function () {
         Route::post('/virtual-spots', [PropertyMediaController::class, 'saveVirtualSpots']);
         Route::post('/photos', [PropertyMediaController::class, 'savePhotos']);
     });
+    Route::get('company/ogcode-properties', [CompanyPropertyController::class, 'getOGCodeProperties']);
+});
 
+Route::prefix('main')->group(function () {
+    Route::get('property/get-utilities', [PropertyFeatureController::class, 'getUtilities']);
     Route::get('property/category-types', [PropertyFeatureController::class, 'getCategories']);
     Route::get('property/get-overviews', [PropertyFeatureController::class, 'getOverviews']);
     Route::get('property/get-details', [PropertyFeatureController::class, 'getDetails']);
     Route::get('property/get-features', [PropertyFeatureController::class, 'getFeatures']);
     Route::get('property/get-amenities', [PropertyFeatureController::class, 'getAmenities']);
-    Route::get('property/get-utilities', [PropertyFeatureController::class, 'getUtilities']);
-
-    Route::get('company/ogcode-properties', [CompanyPropertyController::class, 'getOGCodeProperties']);
 });
