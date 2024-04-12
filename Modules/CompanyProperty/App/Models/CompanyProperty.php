@@ -4,6 +4,7 @@ namespace Modules\CompanyProperty\App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Modules\Company\App\Models\Company;
+use Modules\CompanyPrivacy\App\Models\Section;
 use Modules\CompanyProperty\App\Models\Detail;
 use Modules\CompanyProperty\App\Models\Amenity;
 use Modules\CompanyProperty\App\Models\Feature;
@@ -15,9 +16,9 @@ use Modules\CompanyProperty\App\Models\PropertyPlan;
 use Modules\CompanyProperty\App\Models\PropertyType;
 use Modules\CompanyProperty\App\Models\PropertyMedia;
 use Modules\CompanyProperty\App\Models\UnitalityField;
+use Modules\CompanyEmployee\App\Models\CompanyEmployee;
 use Modules\CompanyProperty\App\Models\CategoryTargetType;
 use Modules\CompanyProperty\App\Models\PropertyWhatsNearby;
-use Modules\CompanyEmployee\App\Models\CompanyEmployee;
 use Modules\CompanyProperty\App\Models\PropertyAddressDetail;
 use Modules\CompanyProperty\App\Models\PropertyAdditionalRemark;
 
@@ -130,6 +131,11 @@ class CompanyProperty extends Model
     public function employee()
     {
         return $this->belongsToMany(CompanyEmployee::class, 'employee_properties', 'employee_id', 'property_id')->withPivot('access_code');
+    }
+
+    public function privacies()
+    {
+        return $this->belongsToMany(Section::class, 'property_privacies', 'property_id', 'section_id')->withTimestamps();
     }
 
     public function scopeFilterPropertyType($query, $value)

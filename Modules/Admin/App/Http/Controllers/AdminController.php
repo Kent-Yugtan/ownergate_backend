@@ -7,6 +7,7 @@ use Illuminate\Http\Response;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\RedirectResponse;
 use Modules\Company\App\Models\Company;
+use Modules\CompanyPrivacy\App\Models\Section;
 use Illuminate\Pagination\LengthAwarePaginator;
 use Modules\CompanyProperty\App\Models\CompanyProperty;
 use Modules\CompanyProperty\Transformers\PropertyResource;
@@ -61,4 +62,15 @@ class AdminController extends Controller
         );
     }
 
+    public function getSections(Request $request)
+    {
+        $perPage = $request->perPage ?? 10;
+        $module_name = $request->module_name ?? null;
+        
+        return Section::when($module_name, function ($query) use ($module_name) {
+            return $query->where('module_name', $module_name);
+        })
+        ->paginate($perPage);
+    }
+    
 }

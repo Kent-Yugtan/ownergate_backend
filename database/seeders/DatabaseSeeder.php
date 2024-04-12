@@ -15,6 +15,7 @@ use Modules\CompanyProperty\Database\Seeders\UtilitiesTableSeeder;
 use Modules\Inventory\Database\Seeders\InventoryForeignTableSeeder;
 use Modules\CompanyProperty\Database\Seeders\PropertyTypeTableSeeder;
 use Modules\CompanyPrivacy\Database\Seeders\CompanySectionTableSeeder;
+use Modules\PropertyPrivacy\Database\Seeders\PropertySectionTableSeeder;
 use Modules\CompanyProperty\Database\Seeders\CompanyPropertyDatabaseSeeder;
 
 class DatabaseSeeder extends Seeder
@@ -36,5 +37,6 @@ class DatabaseSeeder extends Seeder
         $this->call(CompanyPropertyDatabaseSeeder::class);
         $this->call(InventoryForeignTableSeeder::class);
         $this->call(InventoryDatabaseSeeder::class);
+        $this->call(PropertySectionTableSeeder::class);
     }
 }

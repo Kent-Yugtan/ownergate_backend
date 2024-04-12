@@ -1,0 +1,11 @@
+{
+    "name": "PropertyPrivacy",
+    "alias": "propertyprivacy",
+    "description": "",
+    "keywords": [],
+    "priority": 0,
+    "providers": [
+        "Modules\\PropertyPrivacy\\App\\Providers\\PropertyPrivacyServiceProvider"
+    ],
+    "files": []
+}
