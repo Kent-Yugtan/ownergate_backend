@@ -35,6 +35,14 @@ class PropertyResource extends JsonResource
             'company_name' => $this->company->company_name,
             'company_ogcode' => $this->company->owner->og_code,
             'property_type' => $this->propertyType,
+            'privacies' => $this->privacies->map(function ($privacy) {
+                return [
+                    'id' => $privacy->id,
+                    'name' => $privacy->name,
+                    'module_name' => $privacy->module_name,
+                    'section_id' => $privacy->pivot->section_id,
+                ];
+            }),
             'target_type' => $this->targetType,
             'remark' => $this->remark,
             'logo' => $this->logo,
