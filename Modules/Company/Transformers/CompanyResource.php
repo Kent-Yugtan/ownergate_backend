@@ -47,7 +47,15 @@ class CompanyResource extends JsonResource
             'type' => new CompanyTypeResource($this->type),
             'owner' => $this->owner,
             'owner_profile' => $this->owner->profile,
-            'type' => $this->owner->getRoleNames()->first()
+            'type' => $this->owner->getRoleNames()->first(),
+            'privacies' => $this->privacies->map(function ($privacy) {
+                return [
+                    'id' => $privacy->id,
+                    'name' => $privacy->name,
+                    'module_name' => $privacy->module_name,
+                    'section_id' => $privacy->pivot->section_id,
+                ];
+            }),
         ]);
     }
 }
