@@ -12,6 +12,7 @@ use Illuminate\Support\Facades\Storage;
 use App\Traits\ApiResponser;
 use Illuminate\Support\Facades\DB;
 use Modules\Company\App\Models\Company;
+use Modules\Company\Transformers\CompanyResource;
 use Modules\CompanyProperty\App\Models\Amenity;
 use Modules\CompanyProperty\App\Models\CompanyProperty;
 use Modules\CompanyProperty\Transformers\PropertyResource;
@@ -123,4 +124,26 @@ class MainScreenController extends Controller
             'maxPrice' => $highestValue,
         ];
     }
+
+    public function getCompanyLocations(Request $request){
+        try{
+            $perPage = $request->perPage ?? 10;
+            $companyLocations = Company::paginate($perPage);
+
+            return CompanyResource::collection($companyLocations);
+        } catch (\Exception $e) {
+            return $this->errorResponse($e->getMessage());
+        }
+    }
+
+    public function getPropertyHasAddress(Request $request){
+        try{
+            $perPage = $request->perPage ?? 10;
+            $properties = CompanyProperty::has('address')->paginate($perPage);
+            return PropertyResource::collection($properties);
+        } catch (\Exception $e) {
+            return $this->errorResponse($e->getMessage());
+        }
+    }
+
 }

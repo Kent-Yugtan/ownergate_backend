@@ -22,5 +22,7 @@ Route::prefix('public')->group(function() {
         Route::get('/', [MainScreenController::class, 'index']);
         Route::get('/filter-options', [MainScreenController::class, 'getFilterOptions']);
         Route::get('/properties', [MainScreenController::class, 'getProperties']);
+        Route::get('/company-locations', [MainScreenController::class , 'getCompanyLocations']);
+        Route::get('/property-has-address', [MainScreenController::class , 'getPropertyHasAddress']);
     });
 });
