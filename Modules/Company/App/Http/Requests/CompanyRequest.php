@@ -7,9 +7,11 @@ use Illuminate\Contracts\Validation\Validator;
 use Illuminate\Http\Exceptions\HttpResponseException;
 use App\Models\User;
 use Modules\Company\App\Models\Company;
+use App\Traits\ApiHelper;
 
 class CompanyRequest extends FormRequest
 {
+    use ApiHelper;
     /**
      * Get the validation rules that apply to the request.
      */
@@ -34,7 +36,7 @@ class CompanyRequest extends FormRequest
             'wechat_url' => 'nullable',
             'telegram_url' => 'nullable',
             'phone' => 'nullable',
-            'email' => 'required',
+            'email' => 'required|unique:users',
             'gender' => 'nullable',
             'dob' => 'nullable',
             'nationality' => 'nullable',
@@ -56,12 +58,12 @@ class CompanyRequest extends FormRequest
 
     public function createOrUpdateAdminUser()
     {
-        if($this->missing('id')){
+        if ($this->id === "null") {
             $user = User::create([
                 'email' => $this->email,
                 'password' => bcrypt('1234567')
             ]);
-    
+
             $user->assignRole($this->role);
             $user->markEmailAsVerified();
 
@@ -81,9 +83,9 @@ class CompanyRequest extends FormRequest
                 'postal_or_zipcode' => $this->postal_or_zipcode,
                 'address' => $this->address,
             ]);
-            
+
             return $user;
-        }else{
+        } else {
             $user = Company::where('id', $this->id)->first()->owner;
             $user->syncRoles([$this->role]);
 
@@ -116,7 +118,8 @@ class CompanyRequest extends FormRequest
         return true;
     }
 
-    protected function failedValidation(Validator $validator) {
+    protected function failedValidation(Validator $validator)
+    {
         throw new HttpResponseException(response()->json($validator->errors(), 422));
     }
 }

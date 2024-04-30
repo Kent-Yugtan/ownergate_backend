@@ -42,15 +42,14 @@ class CompanyController extends Controller
     public function addAttachment(Company $company, Request $request)
     {
         try {
-            if($request->filled('bulk')){
+            if ($request->filled('bulk')) {
                 $attachment = $this->companyRepository->uploadAttachments($company, $request);
-                return $this->successresponse(AttachmentResource::collection($company->attachments), 'The Attachment has been uploaded successfully.'); 
-            }else{
+                return $this->successresponse(AttachmentResource::collection($company->attachments), 'The Attachment has been uploaded successfully.');
+            } else {
                 $payload = $request->all();
                 $attachment = $this->companyRepository->addAttachment($company, $payload);
                 return $this->successresponse(new AttachmentResource($attachment), 'The Attachment has been uploaded successfully.');
             }
-            
         } catch (Exception $e) {
             return $this->errorResponse(null, $e->getMessage());
         }
@@ -65,7 +64,7 @@ class CompanyController extends Controller
             return $this->errorResponse(null, $e->getMessage());
         }
     }
-    
+
     public function getAttachments(Company $company, Request $request)
     {
         try {
@@ -108,7 +107,7 @@ class CompanyController extends Controller
             return $this->errorResponse(null, $e->getMessage());
         }
     }
-    
+
     public function changeStatus(Company $company, Request $request)
     {
         try {
@@ -118,7 +117,6 @@ class CompanyController extends Controller
             DB::commit();
 
             return $this->successresponse($account, 'The status of account has been changed successfully.');
-       
         } catch (Exception $e) {
             DB::rollback();
             return $this->errorResponse(null, $e->getMessage());
@@ -134,7 +132,6 @@ class CompanyController extends Controller
             DB::commit();
 
             return $this->successresponse($account, 'The privacy of account has been changed successfully.');
-
         } catch (Exception $e) {
             DB::rollback();
             return $this->errorResponse(null, $e->getMessage());
@@ -142,12 +139,13 @@ class CompanyController extends Controller
     }
 
     public function saveCompany(CompanyRequest $request)
-    {   
+    {
         DB::beginTransaction();
         try {
             $user = $request->createOrUpdateAdminUser();
             $profile = $this->companyRepository->updateOrCreate($request, $user);
-
+            $code = $this->generateOGCode($user);
+            $user->update(['og_code' => $code]);
             DB::commit();
             return $this->successresponse(new CompanyResource($profile), 'Company has been saved.');
         } catch (\Exception $e) {
@@ -156,7 +154,8 @@ class CompanyController extends Controller
         }
     }
 
-    public function lists(Request $request){
+    public function lists(Request $request)
+    {
         try {
             $companies = $this->companyRepository->lists($request);
             return CompanyResource::collection($companies);
@@ -178,5 +177,4 @@ class CompanyController extends Controller
             return $this->errorResponse(null, $e->getMessage());
         }
     }
-
 }
