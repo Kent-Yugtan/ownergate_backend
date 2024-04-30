@@ -10,11 +10,13 @@ use Modules\Company\Database\Seeders\CategoryTableSeeder;
 use Modules\Company\Database\Seeders\CompanyDatabaseSeeder;
 use Modules\CompanyProperty\Database\Seeders\DetailTableSeeder;
 use Modules\Inventory\Database\Seeders\InventoryDatabaseSeeder;
+use Modules\MainScreen\Database\Seeders\MainScreenDatabaseSeeder;
 use Modules\CompanyProperty\Database\Seeders\AmenitiesTableSeeder;
 use Modules\CompanyProperty\Database\Seeders\UtilitiesTableSeeder;
 use Modules\Inventory\Database\Seeders\InventoryForeignTableSeeder;
 use Modules\CompanyProperty\Database\Seeders\PropertyTypeTableSeeder;
 use Modules\CompanyPrivacy\Database\Seeders\CompanySectionTableSeeder;
+use Modules\MainScreenPrivacy\Database\Seeders\MainScreenSectionSeeder;
 use Modules\PropertyPrivacy\Database\Seeders\PropertySectionTableSeeder;
 use Modules\CompanyProperty\Database\Seeders\CompanyPropertyDatabaseSeeder;
 
@@ -38,5 +40,7 @@ class DatabaseSeeder extends Seeder
         $this->call(InventoryForeignTableSeeder::class);
         $this->call(InventoryDatabaseSeeder::class);
         $this->call(PropertySectionTableSeeder::class);
+        $this->call(MainScreenDatabaseSeeder::class);
+        $this->call(MainScreenSectionSeeder::class);
     }
 }

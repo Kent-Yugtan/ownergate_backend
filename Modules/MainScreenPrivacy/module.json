@@ -1,0 +1,11 @@
+{
+    "name": "MainScreenPrivacy",
+    "alias": "mainscreenprivacy",
+    "description": "",
+    "keywords": [],
+    "priority": 0,
+    "providers": [
+        "Modules\\MainScreenPrivacy\\App\\Providers\\MainScreenPrivacyServiceProvider"
+    ],
+    "files": []
+}

@@ -4,6 +4,7 @@ namespace Modules\MainScreen\App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Modules\CompanyPrivacy\App\Models\Section;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Modules\MainScreen\Database\factories\MainScreenFactory;
 
@@ -24,5 +25,10 @@ class MainScreen extends Model
     protected static function newFactory(): MainScreenFactory
     {
         //return MainScreenFactory::new();
+    }
+
+    public function privacies()
+    {
+        return $this->belongsToMany(Section::class, 'main_screen_privacies', 'main_screen_id', 'section_id')->withTimestamps();
     }
 }

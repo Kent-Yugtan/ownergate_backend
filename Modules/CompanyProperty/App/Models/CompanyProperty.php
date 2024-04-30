@@ -24,7 +24,6 @@ use Modules\CompanyProperty\App\Models\PropertyAdditionalRemark;
 
 class CompanyProperty extends Model
 {
-
     protected $fillable = [
         'company_id',
         'category_id',
@@ -158,11 +157,11 @@ class CompanyProperty extends Model
 
     public function scopeSearchKeyword($q, $search)
     {
-        return $q->where(function($q) use($search){
+        return $q->where(function ($q) use ($search) {
             $q->orWhere('name', 'like', $search . '%')
             ->orWhere('description', 'like', $search . '%')
-            ->orWhere(function($q) use($search){
-                $q->whereHas('company', function($q) use($search){
+            ->orWhere(function ($q) use ($search) {
+                $q->whereHas('company', function ($q) use ($search) {
                     $q->where('company_name', 'like', $search . '%');
                 });
             });
@@ -196,33 +195,31 @@ class CompanyProperty extends Model
 
     public static function search($search)
     {
-        return self::when($search->type, function($q) use($search){
+        return self::when($search->type, function ($q) use ($search) {
             //villa, flat, etc.
             $q->filterPropertyType($search->type);
-        })->when($search->target_type, function($q) use($search){
+        })->when($search->target_type, function ($q) use ($search) {
             //sale, rent ...
             $q->filterTargetType($search->target_type);
-        })->when($search->keyword, function($q) use($search){
+        })->when($search->keyword, function ($q) use ($search) {
             //name, description, company name
             $q->searchKeyword($search->keyword);
-        })->when($search->price && $search->price > 0, function($q) use($search){
+        })->when($search->price && $search->price > 0, function ($q) use ($search) {
             // [1000, 10000]
             $q->searchPrice([0, $search->price]);
-        })->when($search->sort, function($q) use($search){
+        })->when($search->sort, function ($q) use ($search) {
             // ['price', 'desc'] || ['price', 'desc']
             // ['name', 'asc'] || ['name', 'desc']
             // ['created_at', 'asc'] || ['created_at', 'desc']
             $q->orderBy($search->sort[0], $search->sort[1]);
-        })->when($search->country, function($q) use($search){
+        })->when($search->country, function ($q) use ($search) {
             $q->country($search->country);
-        })->when($search->state, function($q) use($search){
+        })->when($search->state, function ($q) use ($search) {
             $q->state($search->state);
-        })->when($search->city, function($q) use($search){
+        })->when($search->city, function ($q) use ($search) {
             $q->city($search->city);
-        })->when($search->category, function($q) use($search){
+        })->when($search->category, function ($q) use ($search) {
             $q->category($search->category);
         });
     }
 }
-
-

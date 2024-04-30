@@ -11,5 +11,6 @@
     "Sample": true,
     "CompanyPrivacy": true,
     "MainScreen": true,
-    "PropertyPrivacy": true
+    "PropertyPrivacy": true,
+    "MainScreenPrivacy": true
 }

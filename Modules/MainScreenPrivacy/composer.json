@@ -1,0 +1,31 @@
+{
+    "name": "nwidart/mainscreenprivacy",
+    "description": "",
+    "authors": [
+        {
+            "name": "Nicolas Widart",
+            "email": "n.widart@gmail.com"
+        }
+    ],
+    "extra": {
+        "laravel": {
+            "providers": [],
+            "aliases": {
+
+            }
+        }
+    },
+    "autoload": {
+        "psr-4": {
+            "Modules\\MainScreenPrivacy\\": "",
+            "Modules\\MainScreenPrivacy\\App\\": "app/",
+            "Modules\\MainScreenPrivacy\\Database\\Factories\\": "database/factories/",
+            "Modules\\MainScreenPrivacy\\Database\\Seeders\\": "database/seeders/"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "Modules\\MainScreenPrivacy\\Tests\\": "tests/"
+        }
+    }
+}
