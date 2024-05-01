@@ -17,7 +17,7 @@ class CompanyRequest extends FormRequest
      */
     public function rules(): array
     {
-        return [
+        $rules = [
             'id' => 'nullable',
             'role' => 'required',
             'company_name' => 'required',
@@ -36,7 +36,7 @@ class CompanyRequest extends FormRequest
             'wechat_url' => 'nullable',
             'telegram_url' => 'nullable',
             'phone' => 'nullable',
-            'email' => 'required|unique:users',
+            'email' => 'required',
             'gender' => 'nullable',
             'dob' => 'nullable',
             'nationality' => 'nullable',
@@ -54,6 +54,17 @@ class CompanyRequest extends FormRequest
             'locations' => 'nullable',
             'attachments' => 'nullable',
         ];
+
+
+        // If there is no id or id is 'null', add the unique rule for email
+        if ($this->id === null || $this->id === 'null') {
+            $rules['email'] .= '|unique:users';
+        } else {
+            // Add a rule to ignore the current user's email when updating
+            $rules['email'] .= '|unique:users,email,' . $this->id;
+        }
+
+        return $rules;
     }
 
     public function createOrUpdateAdminUser()
@@ -87,6 +98,8 @@ class CompanyRequest extends FormRequest
             return $user;
         } else {
             $user = Company::where('id', $this->id)->first()->owner;
+            $user->email = $this->email;
+            $user->save();
             $user->syncRoles([$this->role]);
 
             $user->profile()->update([
