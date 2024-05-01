@@ -36,7 +36,8 @@ class CustomerRepository extends BaseRepository implements CustomerRepositoryInt
     public function updateStatus($id, $request)
     {
         $customer = User::withTrashed()->find($id);
-        
+        $notes = $request->notes ?? null;
+
         if($request->status == 'active') {
             $customer->restore();
         }
@@ -45,9 +46,6 @@ class CustomerRepository extends BaseRepository implements CustomerRepositoryInt
             $customer->delete();
         }
 
-        if ($request->notes) {
-            $customer->update(['notes' => $request->notes]);
-        }
-        
+        $customer->update(['notes' => $notes]);
     }
 }
