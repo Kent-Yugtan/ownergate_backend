@@ -72,6 +72,7 @@ class User extends Authenticatable
         'verification_token',
         'verification_date',
         'verification_code',
+        'notes',
     ];
 
     public function getNameAttribute()
