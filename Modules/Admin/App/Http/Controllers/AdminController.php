@@ -20,7 +20,7 @@ class AdminController extends Controller
 
         $all_propertis = CompanyProperty::when($request->owner_id, function ($query) use ($request) {
             return $query->whereHas('company', function ($query) use ($request) {
-                $query->where('owner_id', $request->owner_id);
+                $query->where('id', $request->owner_id);
             });
         })
             ->when($request->keywords, function ($query) use ($request) {
