@@ -193,6 +193,70 @@ class CompanyProperty extends Model
         return $q->where('category_id', $category);
     }
 
+    public function scopeFilterAmenity($query, $value)
+    {
+        return $query->when($value, function ($query) use ($value) {
+            return $query->whereHas('amenities', function ($querty) use ($value) {
+                $querty->where('name', 'like', '%' . $value . '%');
+            });
+        });
+    }
+
+    public function scopeFilterFeature($query, $value)
+    {
+        return $query->when($value, function ($query) use ($value) {
+            return $query->whereHas('features', function ($querty) use ($value) {
+                $querty->where('name', 'like', '%' . $value . '%');
+            });
+        });
+    }
+
+    public function scopeFilterPropertyBy($query, $value)
+    {
+        return $query->when($value, function ($query) use ($value) {
+            return $query->whereHas('company', function ($querty) use ($value) {
+                $querty->where('company_name', 'like', '%' . $value . '%');
+            });
+        });
+    }
+
+    public function scopeFilterSize($query, $value)
+    {
+        return $query->when($value, function ($query) use ($value) {
+            $query->whereHas('details', function ($subQuery) use ($value) {
+                $subQuery->where('value', 'like', '%' . $value . '%')
+                    ->where('detail_id', 5);
+            });
+        });
+    }
+
+    public function scopeFilterBBK($query, $beds, $baths, $kitchens)
+    {
+        return $query->where(function ($subQuery) use ($beds, $baths, $kitchens) {
+            if ($beds) {
+                $subQuery->whereHas('details', function ($detailsQuery) use ($beds) {
+                    $detailsQuery->where('value', $beds)
+                                 ->where('detail_id', 11);
+                });
+            }
+            
+            if ($baths) {
+                $subQuery->orWhereHas('details', function ($detailsQuery) use ($baths) {
+                    $detailsQuery->where('value', $baths)
+                                 ->where('detail_id', 14);
+                });
+            }
+    
+            // if ($kitchens) {
+            //     $subQuery->orWhereHas('details', function ($detailsQuery) use ($kitchens) {
+            //         $detailsQuery->where('value', $kitchens)
+            //                      ->where('detail_id', XX); // Adjust XX with the correct detail_id for kitchens
+            //     });
+            // }
+        });
+    }
+    
+
     public static function search($search)
     {
         return self::when($search->type, function ($q) use ($search) {
@@ -204,9 +268,9 @@ class CompanyProperty extends Model
         })->when($search->keyword, function ($q) use ($search) {
             //name, description, company name
             $q->searchKeyword($search->keyword);
-        })->when($search->price && $search->price > 0, function ($q) use ($search) {
+        })->when($search->minPrice && $search->maxPrice, function ($q) use ($search) {
             // [1000, 10000]
-            $q->searchPrice([0, $search->price]);
+            $q->searchPrice([$search->minPrice, $search->maxPrice]);
         })->when($search->sort, function ($q) use ($search) {
             // ['price', 'desc'] || ['price', 'desc']
             // ['name', 'asc'] || ['name', 'desc']
@@ -220,6 +284,16 @@ class CompanyProperty extends Model
             $q->city($search->city);
         })->when($search->category, function ($q) use ($search) {
             $q->category($search->category);
+        })->when($search->amenities, function ($q) use ($search) {
+            $q->filterAmenity($search->amenities);
+        })->when($search->features, function ($q) use ($search) {
+            $q->filterFeature($search->features);
+        })->when($search->property_by, function ($q) use ($search) {
+            $q->filterPropertyBy($search->property_by);
+        })->when($search->size, function ($q) use ($search) {
+            $q->filterSize($search->size);
+        })->when($search->beds || $search->baths || $search->kitchens, function ($q) use ($search) {
+            $q->filterBBK($search->beds, $search->baths, $search->kitchens);
         });
     }
 }

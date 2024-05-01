@@ -7,15 +7,17 @@ use Illuminate\Contracts\Validation\Validator;
 use Illuminate\Http\Exceptions\HttpResponseException;
 use App\Models\User;
 use Modules\Company\App\Models\Company;
+use App\Traits\ApiHelper;
 
 class CompanyRequest extends FormRequest
 {
+    use ApiHelper;
     /**
      * Get the validation rules that apply to the request.
      */
     public function rules(): array
     {
-        return [
+        $rules = [
             'id' => 'nullable',
             'role' => 'required',
             'company_name' => 'required',
@@ -52,16 +54,27 @@ class CompanyRequest extends FormRequest
             'locations' => 'nullable',
             'attachments' => 'nullable',
         ];
+
+
+        // If there is no id or id is 'null', add the unique rule for email
+        if ($this->id === null || $this->id === 'null') {
+            $rules['email'] .= '|unique:users';
+        } else {
+            // Add a rule to ignore the current user's email when updating
+            $rules['email'] .= '|unique:users,email,' . $this->id;
+        }
+
+        return $rules;
     }
 
     public function createOrUpdateAdminUser()
     {
-        if($this->missing('id')){
+        if ($this->id === "null") {
             $user = User::create([
                 'email' => $this->email,
                 'password' => bcrypt('1234567')
             ]);
-    
+
             $user->assignRole($this->role);
             $user->markEmailAsVerified();
 
@@ -81,10 +94,12 @@ class CompanyRequest extends FormRequest
                 'postal_or_zipcode' => $this->postal_or_zipcode,
                 'address' => $this->address,
             ]);
-            
+
             return $user;
-        }else{
+        } else {
             $user = Company::where('id', $this->id)->first()->owner;
+            $user->email = $this->email;
+            $user->save();
             $user->syncRoles([$this->role]);
 
             $user->profile()->update([
@@ -116,7 +131,8 @@ class CompanyRequest extends FormRequest
         return true;
     }
 
-    protected function failedValidation(Validator $validator) {
+    protected function failedValidation(Validator $validator)
+    {
         throw new HttpResponseException(response()->json($validator->errors(), 422));
     }
 }

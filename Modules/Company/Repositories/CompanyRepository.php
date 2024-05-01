@@ -47,12 +47,12 @@ class CompanyRepository extends BaseRepository implements CompanyRepositoryInter
 
     public function uploadAttachments(Company $company, $payload)
     {
-        if($payload->filled('attachments')){
-            foreach($payload->attachments as $attachment){
+        if ($payload->filled('attachments')) {
+            foreach ($payload->attachments as $attachment) {
                 $uniqueFilename = 'attachment' . date('Ymd') . rand(0, 9999) . '.' . $attachment['file']->guessExtension();
-    
+
                 $path = $attachment['file']->storeAs('company/attachment/' . $company->id . '/', $uniqueFilename);
-    
+
                 $attachment = $company->attachments()->create([
                     "name" => $attachment['name'],
                     "path" => $path,
@@ -104,7 +104,7 @@ class CompanyRepository extends BaseRepository implements CompanyRepositoryInter
         $data = $request->all();
         $isUpdate = $request->filled('id');
 
-        if(!$isUpdate){
+        if (!$isUpdate) {
             $data = array_merge($data, [
                 'addmail' => $this->generateOGCode($user)
             ]);
@@ -114,7 +114,7 @@ class CompanyRepository extends BaseRepository implements CompanyRepositoryInter
             'owner_id' => $user->id
         ], $data);
 
-        if(!$isUpdate){
+        if (!$isUpdate) {
             $profile->users()->attach($user->id);
         }
 
@@ -343,15 +343,16 @@ class CompanyRepository extends BaseRepository implements CompanyRepositoryInter
             $q->whereHas('owner', function ($q) use ($request) {
                 $q->where('og_code', $request->id);
             });
-        })->when('keyword', function($q) use($request) {
-            $q->where('company_name', 'LIKE', $request->keyword.'%');
+        })->when('keyword', function ($q) use ($request) {
+            $q->where('company_name', 'LIKE', $request->keyword . '%');
         })->paginate($perPage);
 
         return $companies;
     }
 
-    public function updateStatus($company, $request){
-        $company->update(['note' => $request->note, 'status' => $request->status ]);
+    public function updateStatus($company, $request)
+    {
+        $company->update(['note' => $request->note, 'status' => $request->status]);
         return $company;
     }
 }
