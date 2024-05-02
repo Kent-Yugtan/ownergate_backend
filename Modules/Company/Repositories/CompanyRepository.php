@@ -173,6 +173,7 @@ class CompanyRepository extends BaseRepository implements CompanyRepositoryInter
         return $this->saveOrEdit($company, 'news', $request->news, [
             'title',
             'description',
+            'image_path',
             'posted_at',
             'visibility'
         ]);
