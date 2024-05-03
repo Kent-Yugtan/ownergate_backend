@@ -123,6 +123,7 @@ class CompanyPropertyController extends Controller
 
             $validatedData = $request->validate([
                 'category_id' => 'required',
+                'company_id' => 'required',
                 'type_id' => 'required',
                 'target_type_id' => 'required',
                 'source_property_id' => 'nullable',
