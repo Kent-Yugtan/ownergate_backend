@@ -11,6 +11,7 @@ use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Storage;
 use Modules\Company\App\Models\Company;
 use Illuminate\Contracts\Support\Renderable;
+use Modules\CompanyProperty\Transformers\PropertyResource;
 use Modules\CompanyProperty\Transformers\PropertyMediaResource;
 use Modules\CompanyProperty\App\Http\Requests\StoreMediaRequest;
 
@@ -96,7 +97,7 @@ class PropertyMediaController extends Controller
                 
                 DB::commit();
 
-                return $this->SuccessResponse(new PropertyMediaResource($media), 'Property Photos has been saved.');
+                return $this->SuccessResponse(new PropertyResource($property), 'Property Photos has been saved.');
             }
 
             return false;
