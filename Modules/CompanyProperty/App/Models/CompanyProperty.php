@@ -296,4 +296,8 @@ class CompanyProperty extends Model
             $q->filterBBK($search->beds, $search->baths, $search->kitchens);
         });
     }
+
+    public static function isValidCoordinate($coord) {
+        return is_numeric($coord);
+    }
 }

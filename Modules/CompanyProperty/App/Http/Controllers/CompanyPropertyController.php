@@ -48,7 +48,7 @@ class CompanyPropertyController extends Controller
                 'status' => 'required',
                 'notes' => 'nullable',
             ]);
-
+            // return $request->property_id;
             $property = $company->properties()->updateOrCreate(
                 [
                     'id' => $request->property_id

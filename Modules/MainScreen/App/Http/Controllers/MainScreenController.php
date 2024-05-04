@@ -21,6 +21,7 @@ use Modules\CompanyProperty\App\Models\CategoryTargetType;
 use Modules\CompanyProperty\App\Models\Category;
 use Modules\CompanyProperty\App\Models\Feature;
 use Modules\CompanyProperty\App\Models\PropertyDetail;
+use Illuminate\Pagination\LengthAwarePaginator;
 
 class MainScreenController extends Controller
 {
@@ -139,11 +140,22 @@ class MainScreenController extends Controller
     public function getPropertyHasAddress(Request $request){
         try{
             $perPage = $request->perPage ?? 10;
-            $properties = CompanyProperty::has('address')->paginate($perPage);
-            return PropertyResource::collection($properties);
+            $validProperties = [];
+            $properties = CompanyProperty::all();
+            foreach($properties as $property){
+                if($property->isValidCoordinate($property->longitude) && $property->isValidCoordinate($property->latitude)){
+                    $validProperties[] = $property;
+                }
+            }
+            // Paginate manually
+            $currentPage = LengthAwarePaginator::resolveCurrentPage();
+            $currentItems = array_slice($validProperties, ($currentPage - 1) * $perPage, $perPage);
+            $paginatedValidProperties = new LengthAwarePaginator($currentItems, count($validProperties), $perPage);
+
+            return PropertyResource::collection($paginatedValidProperties);
+
         } catch (\Exception $e) {
             return $this->errorResponse($e->getMessage());
         }
     }
-
 }
