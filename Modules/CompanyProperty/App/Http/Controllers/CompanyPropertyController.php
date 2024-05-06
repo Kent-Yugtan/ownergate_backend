@@ -55,6 +55,7 @@ class CompanyPropertyController extends Controller
                 ],
                 $validatedData
             );
+            DB::commit();
 
             return $this->successresponse(new PropertyResource($property), 'Property company logo has been updated.');
         } catch (\Exception $e) {
@@ -514,6 +515,7 @@ class CompanyPropertyController extends Controller
 
             $validatedData = $request->validate([
                 'property_id' => 'nullable',
+                'plans.*.id' => 'nullable',
                 'plans.*.name' => 'required',
                 'plans.*.photo' => 'required',
             ]);
@@ -523,7 +525,7 @@ class CompanyPropertyController extends Controller
             foreach ($validatedData['plans'] as $data) {
                 if (is_file($data['photo'])) {
 
-                    $plan = $property->plans()->where('name', $data['name'])->whereNotNull('photo')->first();
+                    $plan = $property->plans()->where('id', $data['id'])->whereNotNull('photo')->first();
 
                     if ($plan && $plan->photo) {
                         Storage::delete($plan->photo);
@@ -532,10 +534,11 @@ class CompanyPropertyController extends Controller
                     $path = $data['photo']->store('company/' . $company->id . '/properties/' . $property->id . '/plans');
 
                     $property->plans()->updateOrCreate([
+                        'id' => $data['id'],
                         'property_id' => $request->property_id,
-                        'name' => $data['name'],
                     ], [
-                        'photo' => $path
+                        'photo' => $path,
+                        'name' => $data['name'],
                     ]);
 
                     DB::commit();
