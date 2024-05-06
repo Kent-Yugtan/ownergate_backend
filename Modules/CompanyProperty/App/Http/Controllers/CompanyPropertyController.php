@@ -48,7 +48,7 @@ class CompanyPropertyController extends Controller
                 'status' => 'required',
                 'notes' => 'nullable',
             ]);
-
+            // return $request->property_id;
             $property = $company->properties()->updateOrCreate(
                 [
                     'id' => $request->property_id
@@ -123,6 +123,7 @@ class CompanyPropertyController extends Controller
 
             $validatedData = $request->validate([
                 'category_id' => 'required',
+                'company_id' => 'required',
                 'type_id' => 'required',
                 'target_type_id' => 'required',
                 'source_property_id' => 'nullable',

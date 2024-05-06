@@ -155,6 +155,7 @@ class CompanyRepository extends BaseRepository implements CompanyRepositoryInter
         return $this->saveOrEdit($company, 'managements', $request->managements, [
             'name',
             'position',
+            'image_path',
             'phone_number',
             'visibility'
         ]);
@@ -173,6 +174,7 @@ class CompanyRepository extends BaseRepository implements CompanyRepositoryInter
         return $this->saveOrEdit($company, 'news', $request->news, [
             'title',
             'description',
+            'image_path',
             'posted_at',
             'visibility'
         ]);

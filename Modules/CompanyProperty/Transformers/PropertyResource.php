@@ -92,6 +92,8 @@ class PropertyResource extends JsonResource
                     'access_code' => $this->pivot->access_code ?? null,
                 ];
             }),
+            'status' => $this->status,
+            'notes' => $this->notes,
             // 'download_company_logo' => $this->company_logo ? route('storage.download', ['file' => $this->company_logo]) : null,
             // 'download_poster' => $this->poster ? route('storage.download', ['file' => $this->poster]) : null,
             // 'amenities_group' => $this->getGroupAmenities(),
