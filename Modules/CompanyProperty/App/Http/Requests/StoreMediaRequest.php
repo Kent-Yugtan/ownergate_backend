@@ -17,6 +17,7 @@ class StoreMediaRequest extends FormRequest
             'property_id' => 'nullable',
             'name' => 'nullable',
             'description' => 'nullable',
+            'area' => 'nullable',
             'type' => 'required',
             'media' => 'required',
             'media.*.media_path_id'  => 'nullable',
