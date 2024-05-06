@@ -53,6 +53,12 @@ Route::prefix('admin')->middleware(['auth:api'])->group(function () {
         Route::post('/photos', [PropertyMediaController::class, 'savePhotos']);
     });
     Route::get('company/ogcode-properties', [CompanyPropertyController::class, 'getOGCodeProperties']);
+
+    Route::prefix('medias')->group(function () {
+        Route::delete('/{media}', [PropertyMediaController::class, 'deleteMedia'])->scopeBindings();
+        Route::delete('/{media}/paths/{path}', [PropertyMediaController::class, 'deletePhoto'])->scopeBindings();
+    });
+
 });
 
 Route::prefix('main')->group(function () {

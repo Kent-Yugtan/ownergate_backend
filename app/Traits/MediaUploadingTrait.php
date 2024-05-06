@@ -14,7 +14,7 @@ trait MediaUploadingTrait
         $property_media = $property->medias()->updateOrCreate([
             'name' => $validatedData['name'] ?? null,
             'description' => $validatedData['description'] ?? null,
-            'area' => $validatedData['area'],
+            'area' => $validatedData['area'] ?? null,
             'type' => $validatedData['type'],
         ]);
 
