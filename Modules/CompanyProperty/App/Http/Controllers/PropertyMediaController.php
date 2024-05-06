@@ -33,7 +33,7 @@ class PropertyMediaController extends Controller
                 
                 DB::commit();
 
-                return $this->SuccessResponse(new PropertyMediaResource($media), 'Property Full Video has been saved.');
+                return $this->SuccessResponse(new PropertyResource($property), 'Property Full Video has been saved.');
             }
         } catch (\Exception $e) {
             DB::rollBack();
@@ -53,7 +53,7 @@ class PropertyMediaController extends Controller
                 
                 DB::commit();
 
-                return $this->SuccessResponse(new PropertyMediaResource($media), 'Property 360 Virtual Tour has been saved.');
+                return $this->SuccessResponse(new PropertyResource($property), 'Property 360 Virtual Tour has been saved.');
             }
 
             return false;
@@ -75,7 +75,7 @@ class PropertyMediaController extends Controller
                 
                 DB::commit();
 
-                return $this->SuccessResponse(new PropertyMediaResource($media), 'Property Virtual Spots has been saved.');
+                return $this->SuccessResponse(new PropertyResource($property), 'Property Virtual Spots has been saved.');
             }
 
             return false;

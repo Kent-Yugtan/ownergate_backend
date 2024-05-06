@@ -78,6 +78,7 @@ class PropertyResource extends JsonResource
             'address_details' => $this->addressDetails,
             'plans' => $this->plans->map(function ($plan) {
                 return [
+                    'id' => $plan->id,
                     'name' => $plan->name,
                     'photo' => $plan->photo,
                     'download_photo' => $plan->photo ? route('storage.download', ['file' => $plan->photo]) : null,
