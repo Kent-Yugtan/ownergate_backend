@@ -48,13 +48,13 @@ class CompanyPropertyController extends Controller
                 'status' => 'required',
                 'notes' => 'nullable',
             ]);
-
             $property = $company->properties()->updateOrCreate(
                 [
                     'id' => $request->property_id
                 ],
                 $validatedData
             );
+            DB::commit();
 
             return $this->successresponse(new PropertyResource($property), 'Property company logo has been updated.');
         } catch (\Exception $e) {
