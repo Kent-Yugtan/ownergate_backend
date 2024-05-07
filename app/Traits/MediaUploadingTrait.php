@@ -18,6 +18,18 @@ trait MediaUploadingTrait
             'type' => $validatedData['type'],
         ]);
 
+        if($validatedData['type'] === '360 Virtual Tour' || $validatedData['type'] === '360 Virtual Spots'){
+            if(!is_null($property_media)) {
+                $existingPaths = $property_media->paths;
+                foreach($existingPaths as $path) {
+                    if ($path) {
+                        Storage::delete($path->path);
+                        $path->delete();
+                    }
+                }
+            }
+        }
+
         foreach ($validatedData['media'] as $key => $media) {
             if(is_file($media['file'])) {
                 $media_path = null;
