@@ -123,13 +123,15 @@ class PropertyMediaController extends Controller
     {
         try {
             DB::beginTransaction();
-    
-            Storage::delete($path->path);
+
+            $property = $media->property;
+            
+            
             $path->delete();
     
             DB::commit();
     
-            return $this->successresponse('Successfully deleted.');
+            return $this->successresponse(new PropertyResource($property), 'Successfully deleted.');
         } catch (\Exception $e) {
             DB::rollback();
     
@@ -141,12 +143,20 @@ class PropertyMediaController extends Controller
     {
         try {
             DB::beginTransaction();
+
+            $property = $media->property;
+
+            foreach ($media->paths as $path) {
+                if ($path->path) {
+                    Storage::delete($path->path);
+                }
+            }
     
             $media->delete();
     
             DB::commit();
     
-            return $this->successresponse('Successfully deleted.');
+            return $this->successresponse(new PropertyResource($property), 'Successfully deleted.');
         } catch (\Exception $e) {
             DB::rollback();
     
