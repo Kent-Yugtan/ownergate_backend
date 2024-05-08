@@ -3,6 +3,7 @@
 namespace Modules\CompanyProperty\App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Modules\CompanyProperty\App\Models\CompanyProperty;
 
 class PropertyPlan extends Model
 {
@@ -11,4 +12,10 @@ class PropertyPlan extends Model
         'name',
         'photo',
     ];
+
+    public function property()
+    {
+        return $this->belongsTo(CompanyProperty::class);
+    }
+
 }

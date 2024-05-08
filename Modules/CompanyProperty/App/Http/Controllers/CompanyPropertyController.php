@@ -17,6 +17,7 @@ use Modules\CompanyProperty\App\Models\Feature;
 use Modules\CompanyProperty\App\Models\Utility;
 use Modules\CompanyProperty\App\Models\Category;
 use Modules\CompanyProperty\App\Models\Overview;
+use Modules\CompanyProperty\App\Models\PropertyPlan;
 use Modules\CompanyProperty\App\Models\PropertyType;
 use Modules\CompanyProperty\App\Models\CompanyProperty;
 use Modules\CompanyProperty\Transformers\PropertyResource;
@@ -524,8 +525,9 @@ class CompanyPropertyController extends Controller
 
             foreach ($validatedData['plans'] as $data) {
                 if (is_file($data['photo'])) {
+                    $plan_id = $data['id'] ?? null;
 
-                    $plan = $property->plans()->where('id', $data['id'])->whereNotNull('photo')->first();
+                    $plan = $property->plans()->where('id', $plan_id)->whereNotNull('photo')->first();
 
                     if ($plan && $plan->photo) {
                         Storage::delete($plan->photo);
@@ -534,7 +536,7 @@ class CompanyPropertyController extends Controller
                     $path = $data['photo']->store('company/' . $company->id . '/properties/' . $property->id . '/plans');
 
                     $property->plans()->updateOrCreate([
-                        'id' => $data['id'],
+                        'id' => $plan_id,
                         'property_id' => $request->property_id,
                     ], [
                         'photo' => $path,
@@ -548,6 +550,25 @@ class CompanyPropertyController extends Controller
             return $this->successresponse(new PropertyResource($property), 'Property plans has been updated.');
         } catch (\Exception $e) {
             DB::rollBack();
+            return $this->errorResponse(null, $e->getMessage());
+        }
+    }
+
+    public function deletePlan(Request $request, CompanyProperty $property, PropertyPlan $plan)
+    {
+        try {
+            DB::beginTransaction();
+
+            if ($plan->photo) {
+                Storage::delete($plan->photo);
+                $plan->delete();
+            }
+            
+            DB::commit();
+            
+            return $this->successresponse(new PropertyResource($property), 'Property plan has been deleted.');
+        } catch (Exception $e) {
+            DB::rollback();
             return $this->errorResponse(null, $e->getMessage());
         }
     }

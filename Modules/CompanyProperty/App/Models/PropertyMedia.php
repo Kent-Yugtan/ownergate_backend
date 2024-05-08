@@ -18,6 +18,11 @@ class PropertyMedia extends Model
     {
         return $this->hasMany(PropertyMediaPath::class, 'media_id');
     }
+
+    public function property()
+    {
+        return $this->belongsTo(CompanyProperty::class, 'property_id');
+    }
     
 
 }

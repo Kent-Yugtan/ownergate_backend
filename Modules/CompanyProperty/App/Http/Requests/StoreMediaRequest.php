@@ -15,11 +15,11 @@ class StoreMediaRequest extends FormRequest
     {
         $rules = [
             'property_id' => 'nullable',
+            'media_id' => 'nullable',
             'name' => 'nullable',
             'description' => 'nullable',
             'area' => 'nullable',
             'type' => 'required',
-            'media' => 'required',
             'media.*.media_path_id'  => 'nullable',
         ];
 
