@@ -64,16 +64,32 @@ class EmployeeRepository extends BaseRepository implements EmployeeRepositoryInt
 
     public function updateInfo(Request $request, $id)
     {
-        $requestData = $request->json()->all();
         $employee = $this->model::find($id);
-        $employee->fill($request->all())->save();
-        // $employee->update($requestData);
-        if ($request->has('user')) {
-            $employee->user()->update($request->input('user'));
-        }
+
         if (isset($request->attachments)) {
             $this->updateAttachments($employee, $request->attachments);
         }
+
+        // Get the fillable fields of the profile model
+        $fillableFields = $employee->profile->getFillable();
+
+        // Filter the request data to include only the fillable fields
+        $profileData = $request->only($fillableFields);
+
+        // Update profile data
+        $employee->profile->fill($profileData);
+        $employee->profile->save();
+
+        $fillableFieldsUser = $employee->user->getFillable();
+        $userData = $request->only($fillableFieldsUser);
+
+        // Update user data
+        $employee->user->fill($userData);
+        $employee->user->save();
+
+        // Update employee data
+        $employee->fill($request->all())->save();
+
         return $employee;
     }
 

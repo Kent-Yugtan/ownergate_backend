@@ -32,6 +32,5 @@ Route::prefix('admin')->middleware(['auth:api'])->group(function () {
         Route::post('/{employee}/properties', [CompanyEmployeeController::class, 'saveProperties']);
         Route::put('/{employee}/properties/{property}', [CompanyEmployeeController::class, 'updateProperty']);
         Route::delete('/{employee}/properties/{property}', [CompanyEmployeeController::class, 'destroyProperty']);
-        
     });
 });

@@ -176,7 +176,7 @@ class CompanyEmployeeController extends Controller
             ]);
 
             $og_code = $this->generateOGCode($employee->user);
-            
+
             $employee->user()->update([
                 'og_code' => $og_code
             ]);
@@ -194,7 +194,7 @@ class CompanyEmployeeController extends Controller
 
     public function updateProperty(Request $request, CompanyEmployee $employee, EmployeeProperty $property)
     {
-        try{
+        try {
             DB::beginTransaction();
 
             $validatedData = $request->validate([
@@ -204,7 +204,7 @@ class CompanyEmployeeController extends Controller
             $updateAccessCode = $property->update(['access_code' => $validatedData['access_code']]);
 
             DB::commit();
-            
+
             return $this->successresponse($updateAccessCode, 'Employee Access Code has been updated successfully.');
         } catch (\Exception $e) {
             DB::rollBack();
