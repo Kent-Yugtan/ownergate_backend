@@ -26,9 +26,16 @@ class EmployeeRepository extends BaseRepository implements EmployeeRepositoryInt
 
     public function AddNew(Request $request)
     {
-        $createUser = User::firstOrCreate([
-            'email' => $request->email
-        ], ['email_verified_at' => now(), 'password' => $request->first_name . $request->last_name]);
+        $validatedData = $request->validate([
+            'email' => 'required|unique:users'
+        ]);
+        $createUser = User::create(array_merge(
+            $validatedData,
+            [
+                'email_verified_at' => now(),
+                'password' => $request->first_name . $request->last_name
+            ]
+        ));
 
         $profile = $createUser->profile()->updateOrCreate([
             'user_id' => $createUser->id,
@@ -79,6 +86,11 @@ class EmployeeRepository extends BaseRepository implements EmployeeRepositoryInt
         // Update profile data
         $employee->profile->fill($profileData);
         $employee->profile->save();
+
+        // Validate user email
+        $request->validate([
+            'email' => 'required|unique:users,email,'.$employee->user->id
+        ]);
 
         $fillableFieldsUser = $employee->user->getFillable();
         $userData = $request->only($fillableFieldsUser);
