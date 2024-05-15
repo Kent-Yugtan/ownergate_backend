@@ -132,6 +132,9 @@ class CompanyPropertyController extends Controller
                 'currency' => 'required',
                 'value' => 'required',
                 'name' => 'required',
+                'country' => 'required',
+                'state' => 'required',
+                'city' => 'required',
             ]);
 
             $property = $company->properties()->updateOrCreate(
@@ -293,7 +296,7 @@ class CompanyPropertyController extends Controller
                 'amenities' => 'required',
                 'amenities.*' => 'required|exists:amenities,id',
             ]);
-            
+
             $property = $company->createOrGetProperty($request->property_id);
 
             $property->amenities()->sync($validatedData['amenities']);
@@ -480,7 +483,7 @@ class CompanyPropertyController extends Controller
         }
     }
 
-    
+
 
     public function saveMapLocation(Request $request, Company $company)
     {
@@ -563,9 +566,9 @@ class CompanyPropertyController extends Controller
                 Storage::delete($plan->photo);
                 $plan->delete();
             }
-            
+
             DB::commit();
-            
+
             return $this->successresponse(new PropertyResource($property), 'Property plan has been deleted.');
         } catch (Exception $e) {
             DB::rollback();
@@ -581,18 +584,18 @@ class CompanyPropertyController extends Controller
 
                 $company =  Company::with('properties')
                     ->whereHas('owner', function ($query) use ($request) {
-                        $query->where('og_code', 'like', '%'. $request->keyword .'%');
+                        $query->where('og_code', 'like', '%' . $request->keyword . '%');
                     })
                     ->orWhere('company_name', 'like', '%' . $request->keyword . '%')
                     ->first();
-    
+
                 if ($company) {
                     $properties = $company->properties()->paginate($perPage);
 
                     return PropertyResource::collection($properties);
                 }
             }
-            
+
             return $this->errorResponse(null, 'No result found');
         } catch (Exception $e) {
             DB::rollback();

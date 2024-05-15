@@ -341,12 +341,14 @@ class CompanyRepository extends BaseRepository implements CompanyRepositoryInter
     public function lists($request)
     {
         $perPage = $request->perPage ?? 10;
-        $companies = $this->model->withTrashed()->when($request->id, function ($q) use ($request) {
-            $q->whereHas('owner', function ($q) use ($request) {
+        $companies = $this->model->withTrashed()->whereHas('owner', function ($q) use ($request) {
+            $q->whereHas('role', function ($q) {
+                $q->where('name', '!=', 'Admin')->where('name', '!=', 'Customer');
+            })->when($request->id, function ($q) use ($request) {
                 $q->where('og_code', $request->id);
             });
         })->when('keyword', function ($q) use ($request) {
-            $q->where('company_name', 'LIKE', $request->keyword . '%');
+            $q->where('company_name', 'LIKE', '%' . $request->keyword . '%');
         })->paginate($perPage);
 
         return $companies;

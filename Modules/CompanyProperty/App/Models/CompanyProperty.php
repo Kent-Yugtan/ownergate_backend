@@ -275,7 +275,14 @@ class CompanyProperty extends Model
             // ['price', 'desc'] || ['price', 'desc']
             // ['name', 'asc'] || ['name', 'desc']
             // ['created_at', 'asc'] || ['created_at', 'desc']
-            $q->orderBy($search->sort[0], $search->sort[1]);
+            // $q->orderBy($search->sort[0], $search->sort[1]);
+
+            $sortFieldName = $search->sort[0];
+            $softDirection = $search->sort[1];
+            if($sortFieldName == "price"){
+                $sortFieldName = "value";
+            }
+            return $q->orderBy($sortFieldName, $softDirection);
         })->when($search->country, function ($q) use ($search) {
             $q->country($search->country);
         })->when($search->state, function ($q) use ($search) {

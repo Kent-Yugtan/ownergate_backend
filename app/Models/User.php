@@ -23,6 +23,7 @@ use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Modules\Auth\App\Models\Role;
 
 /**
  * Class User
@@ -171,5 +172,10 @@ class User extends Authenticatable
     public function employeeAccount()
     {
         return $this->hasOne(CompanyEmployee::class, 'user_id');
+    }
+
+    public function role()
+    {
+        return $this->belongsToMany(Role::class, 'model_has_roles', 'model_id', 'role_id');
     }
 }
