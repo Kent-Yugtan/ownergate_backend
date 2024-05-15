@@ -17,12 +17,14 @@ use Modules\Auth\Http\Requests\ResetPasswordRequest;
 use Modules\Auth\Http\Requests\CompleteProfileRequest;
 use Modules\Auth\Http\Requests\ChangePasswordRequest;
 use Modules\Auth\Repositories\Interfaces\AuthRepositoryInterface;
+use Modules\Auth\Repositories\Interfaces\UserRepositoryInterface;
 
 class AuthController extends Controller
 {
     use ApiResponser;
 
     private $authRepository;
+    private $userRepo;
     private $errors = [
         'reset-password-token-err' => 'Reset Password Token is invalid.',
         'reset-password-expired' => 'Reset Password Request has been expired.',
@@ -30,9 +32,10 @@ class AuthController extends Controller
         'user-not-found' => 'User not found.',
     ];
 
-    public function __construct(AuthRepositoryInterface $authRepository)
+    public function __construct(AuthRepositoryInterface $authRepository, UserRepositoryInterface $userRepo)
     {
         $this->authRepository = $authRepository;
+        $this->userRepo = $userRepo;
     }
 
     public function login(LoginRequest $request)
@@ -153,7 +156,7 @@ class AuthController extends Controller
     {
         DB::beginTransaction();
         try {
-            $user = $this->authRepository->updateProfile($request);
+            $user = $this->userRepo->updateProfile($request);
             
             DB::commit();
 

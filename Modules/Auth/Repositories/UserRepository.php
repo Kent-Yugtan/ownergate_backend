@@ -9,6 +9,7 @@ use App\Models\User;
 use Modules\Auth\Entities\UserProfile;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\Hash;
 
 class UserRepository extends BaseRepository implements UserRepositoryInterface
 {
