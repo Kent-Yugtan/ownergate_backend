@@ -33,7 +33,8 @@ class CompanyNewsController extends Controller
         return NewsResource::collection($news);
     }
 
-    public function showAllNews(Request $request){
+    public function showAllNews(Request $request)
+    {
         $perPage = $request->perPage ?? 10;
 
         $news = CompanyNews::where('visibility', 1)
@@ -70,7 +71,7 @@ class CompanyNewsController extends Controller
     public function destroy(Company $company, CompanyNews $news)
     {
         try {
-            if (!auth()->user()->company->is($company)) {
+            if (!auth()->user()->hasRole('Admin') && !auth()->user()->company->is($company)) {
                 abort(403, 'Unauthorized action.');
             }
 
