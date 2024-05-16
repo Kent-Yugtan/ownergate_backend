@@ -37,9 +37,8 @@ class CompanyNewsController extends Controller
     {
         $perPage = $request->perPage ?? 10;
 
-        $news = CompanyNews::where('visibility', 1)
-                            ->orderBy('posted_at', 'desc')
-                            ->paginate($perPage);
+        $news = CompanyNews::orderBy('posted_at', 'desc')
+            ->paginate($perPage);
 
         return NewsResource::collection($news);
     }
@@ -53,7 +52,7 @@ class CompanyNewsController extends Controller
             DB::beginTransaction();
 
             $news = $this->companyRepository->saveNews($request, $company);
-            
+
             DB::commit();
 
             if ($news instanceof \Illuminate\Pagination\LengthAwarePaginator) {
