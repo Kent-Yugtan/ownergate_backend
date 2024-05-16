@@ -30,6 +30,11 @@ class UserRepository extends BaseRepository implements UserRepositoryInterface
         {
             $this->uploadPhoto($user, $request->avatar, 'avatar');
         }
+
+        if($request->missing('avatar'))
+        {
+            $user->profile->update(['avatar'=> null]);
+        }
         
         if($request->filled('old_password') && $request->filled('password') && $request->filled('password_confirmation'))
         {
@@ -54,8 +59,7 @@ class UserRepository extends BaseRepository implements UserRepositoryInterface
             }
 
             $path = $file->store('user/' . $user->id);
+            $user->profile->update([$key => $path]);
         }
-
-        $user->profile->update([$key => $path]);
     }
 }
