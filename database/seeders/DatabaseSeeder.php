@@ -19,6 +19,7 @@ use Modules\CompanyPrivacy\Database\Seeders\CompanySectionTableSeeder;
 use Modules\MainScreenPrivacy\Database\Seeders\MainScreenSectionSeeder;
 use Modules\PropertyPrivacy\Database\Seeders\PropertySectionTableSeeder;
 use Modules\CompanyProperty\Database\Seeders\CompanyPropertyDatabaseSeeder;
+use Modules\MainScreenPrivacy\Database\Seeders\MainScreenPrivacyDatabaseSeeder;
 
 class DatabaseSeeder extends Seeder
 {
@@ -42,5 +43,6 @@ class DatabaseSeeder extends Seeder
         $this->call(PropertySectionTableSeeder::class);
         $this->call(MainScreenDatabaseSeeder::class);
         $this->call(MainScreenSectionSeeder::class);
+        $this->call(MainScreenPrivacyDatabaseSeeder::class);
     }
 }
