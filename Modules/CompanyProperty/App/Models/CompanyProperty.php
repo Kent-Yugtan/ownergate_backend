@@ -268,8 +268,7 @@ class CompanyProperty extends Model
         })->when($search->keyword, function ($q) use ($search) {
             //name, description, company name
             $q->searchKeyword($search->keyword);
-        })->when($search->minPrice && $search->maxPrice, function ($q) use ($search) {
-            // [1000, 10000]
+        })->when($search->minPrice <= $search->maxPrice, function ($q) use ($search) {
             $q->searchPrice([$search->minPrice, $search->maxPrice]);
         })->when($search->sort, function ($q) use ($search) {
             // ['price', 'desc'] || ['price', 'desc']
