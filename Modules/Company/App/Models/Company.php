@@ -65,6 +65,8 @@ class Company extends Model
             }
         } else {
             $property = $this->properties()->create();
+            $sections = Section::where('module_name', 'Property')->pluck('id')->toArray();
+            $property->privacies()->syncWithoutDetaching($sections);
         }
 
         return $property;
