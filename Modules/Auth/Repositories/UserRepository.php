@@ -24,7 +24,7 @@ class UserRepository extends BaseRepository implements UserRepositoryInterface
 
         $user->profile()->updateOrCreate([
             'user_id' => $user->id
-        ], $request->all());
+        ], $request->except('avatar'));
 
         if ($request->has('avatar')) 
         {
