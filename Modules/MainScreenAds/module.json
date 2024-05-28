@@ -1,0 +1,11 @@
+{
+    "name": "MainScreenAds",
+    "alias": "mainscreenads",
+    "description": "",
+    "keywords": [],
+    "priority": 0,
+    "providers": [
+        "Modules\\MainScreenAds\\App\\Providers\\MainScreenAdsServiceProvider"
+    ],
+    "files": []
+}

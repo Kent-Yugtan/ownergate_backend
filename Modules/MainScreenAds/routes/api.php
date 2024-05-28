@@ -2,7 +2,7 @@
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
-use Modules\MainScreenPrivacy\App\Http\Controllers\MainScreenPrivacyController;
+use Modules\MainScreenAds\App\Http\Controllers\MainScreenAdsController;
 
 /*
     |--------------------------------------------------------------------------
@@ -16,9 +16,9 @@ use Modules\MainScreenPrivacy\App\Http\Controllers\MainScreenPrivacyController;
 */
 
 Route::prefix('admin')->middleware(['auth:api'])->group(function () {
-    Route::prefix('main-screen/{main_screen}/privacies')->group(function () {
-        Route::get('/', [MainScreenPrivacyController::class, 'index']);
-        Route::post('/', [MainScreenPrivacyController::class, 'store']);
+    Route::prefix('main-screen/{main_screen}/ads')->group(function () {
+        Route::get('/', [MainScreenAdsController::class, 'index']);
+        Route::post('/', [MainScreenAdsController::class, 'store']);
+        
     });
 });
-
