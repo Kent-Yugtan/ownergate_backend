@@ -4,9 +4,12 @@ namespace Modules\MainScreenAds\App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
+use Illuminate\Support\Facades\DB;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\RedirectResponse;
+use Modules\Inventory\App\Models\Inventory;
 use Modules\MainScreen\App\Models\MainScreen;
+use Modules\MainScreenAds\Transformers\MainScreenAdsResource;
 use Modules\MainScreenAds\App\Http\Requests\MainScreenAdsRequest;
 
 class MainScreenAdsController extends Controller
@@ -14,35 +17,48 @@ class MainScreenAdsController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(Request $request, MainScreen $main_screen)
     {
-        return view('mainscreenads::index');
+        if ($request->has('status')) {
+            
+        }
     }
 
-    /**
-     * Show the form for creating a new resource.
-     */
-    public function create()
+    public function getAllAvailableAds(MainScreen $main_screen)
     {
-        return view('mainscreenads::create');
+        return Inventory::whereHas('type', function ($query) {
+            $query->where('item_name', 'Ads');
+        })
+        ->where(function ($query) {
+            $query->whereHas('ads', function ($query) {
+                $query->where('status', 'inactive');
+            })
+            ->orWhereDoesntHave('ads');
+        })
+        ->get()
+        ->map(function ($item) {
+            return [
+                'ads_id' => $item->id,
+                'item_id' => $item->item_id
+            ];
+        });
     }
 
     /**
      * Store a newly created resource in storage.
      */
-    public function store(MainScreenAdsRequest $request, MainScreen $main_screen): RedirectResponse
+    public function store(MainScreenAdsRequest $request, MainScreen $main_screen)
     {
         try {
-            $request->save($main_screen);
-            // if ($request->filled('bulk')) {
-            //     $attachment = $this->companyRepository->uploadAttachments($company, $request);
-            //     return $this->successresponse(AttachmentResource::collection($company->attachments), 'The Attachment has been uploaded successfully.');
-            // } else {
-            //     $payload = $request->all();
-            //     $attachment = $this->companyRepository->addAttachment($company, $payload);
-            //     return $this->successresponse(new AttachmentResource($attachment), 'The Attachment has been uploaded successfully.');
-            // }
+            DB::beginTransaction();
+
+            $ads = $request->save($main_screen);
+            
+            DB::commit();
+
+            return MainScreenAdsResource::collection($main_screen->ads);
         } catch (Exception $e) {
+            DB::rollback();
             return $this->errorResponse(null, $e->getMessage());
         }
     }

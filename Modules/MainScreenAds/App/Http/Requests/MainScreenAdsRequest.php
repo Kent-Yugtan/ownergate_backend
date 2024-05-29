@@ -3,6 +3,7 @@
 namespace Modules\MainScreenAds\App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
+use Modules\MainScreen\App\Models\MainScreen;
 use Illuminate\Contracts\Validation\Validator;
 use Illuminate\Http\Exceptions\HttpResponseException;
 
@@ -30,7 +31,9 @@ class MainScreenAdsRequest extends FormRequest
 
     public function save(MainScreen $main_screen)
     {
-        $main_screen->ads()->create($this->all());
+        return $main_screen->ads()->updateOrCreate([
+            'ads_id' => $this->ads_id
+        ], $this->all());
     }
 
     protected function failedValidation(Validator $validator)

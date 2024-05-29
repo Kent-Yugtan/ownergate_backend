@@ -4,6 +4,7 @@ namespace Modules\Inventory\App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Modules\Inventory\App\Models\InventoryType;
+use Modules\MainScreenAds\App\Models\MainScreenAds;
 use Modules\Inventory\App\Models\InventoryAttachment;
 
 class Inventory extends Model
@@ -41,5 +42,10 @@ class Inventory extends Model
     public function type()
     {
         return $this->belongsTo(InventoryType::class, 'inventory_type_id');
+    }
+
+    public function ads()
+    {
+        return $this->hasMany(MainScreenAds::class, 'ads_id');
     }
 }

@@ -19,6 +19,7 @@ Route::prefix('admin')->middleware(['auth:api'])->group(function () {
     Route::prefix('main-screen/{main_screen}/ads')->group(function () {
         Route::get('/', [MainScreenAdsController::class, 'index']);
         Route::post('/', [MainScreenAdsController::class, 'store']);
-        
+
+        Route::get('/available', [MainScreenAdsController::class, 'getAllAvailableAds']);
     });
 });
