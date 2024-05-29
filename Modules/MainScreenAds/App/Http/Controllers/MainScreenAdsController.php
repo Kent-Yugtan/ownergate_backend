@@ -19,9 +19,7 @@ class MainScreenAdsController extends Controller
      */
     public function index(Request $request, MainScreen $main_screen)
     {
-        if ($request->has('status')) {
-            
-        }
+        return MainScreenAdsResource::collection($main_screen->ads);
     }
 
     public function getAllAvailableAds(MainScreen $main_screen)
