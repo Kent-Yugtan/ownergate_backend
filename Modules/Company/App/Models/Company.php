@@ -65,7 +65,6 @@ class Company extends Model
                 abort(403, 'Unauthorized action.');
             }
         } else {
-            
             $property = $this->properties()->create();
 
             $this->updateOgCode($property);
