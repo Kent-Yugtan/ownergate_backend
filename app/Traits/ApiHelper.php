@@ -134,5 +134,13 @@ trait ApiHelper
         return substr(str_pad($id, $digits, '0', STR_PAD_LEFT), -$digits);
     }
 
+    function generateUniqueCode($prefix, $length = 3) {
+        $letters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+        $randomLetters = substr(str_shuffle($letters), 0, 2); // Generate 2 random letters
+        $randomOG = substr($prefix, 2); // Extract "OG" from the prefix
+        $randomString = substr(str_shuffle(str_repeat($x = '0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ', ceil(($length - 2) / strlen($x)))), 1, $length - 2); // Generate random alphanumeric characters
+        
+        return strtoupper($prefix . $randomLetters . ' ' . $randomOG . $randomString);
+    }
     
 }

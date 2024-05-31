@@ -123,10 +123,13 @@ class Company extends Model
 
     public function updateOgCode($property): void
     {
-        $id = $this->addZeroFormat($property->id, 4);
-        $owner_og_code = $this->owner->og_code;
-        $property_og_code = $owner_og_code . ' ' . 'PR' . $id;
+        $prefix = 'OG';
+        $uniqueCode = $this->generateUniqueCode($prefix, 6);
 
-        $property->update(['og_code' => $property_og_code]);
+        while (CompanyProperty::where('og_code', $uniqueCode)->exists()) {
+            $uniqueCode = $this->generateUniqueCode($prefix, 6);
+        }
+
+        $property->update(['og_code' => $uniqueCode]);
     }
 }
