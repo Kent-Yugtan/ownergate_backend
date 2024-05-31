@@ -122,10 +122,17 @@ trait ApiHelper
 
         if(strlen($code) < 10){
             $diff = 10 - strlen($code);
-            $id = substr(str_pad($user->company->id, $diff, '0', STR_PAD_LEFT), -$diff);
+            $id = $this->addZeroFormat($user->company->id, $diff);
         }
 
         $code = $code . $id;
         return $this->formatOGCode($code);
     }
+
+    public function addZeroFormat($id, $digits = 4)
+    {
+        return substr(str_pad($id, $digits, '0', STR_PAD_LEFT), -$digits);
+    }
+
+    
 }

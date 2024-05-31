@@ -24,10 +24,11 @@ class CompanyPropertyDatabaseSeeder extends Seeder
         for ($i = 0; $i < 30; $i++) {
             $category = Category::inRandomOrder()->where('name', '!=', 'Others')->first();
             $target_type = CategoryTargetType::inRandomOrder()->where('category_id', $category->id)->first();
-
+            $company = Company::inRandomOrder()->first();
+            
             $property = CompanyProperty::create([
                 'status'    => $statuses[array_rand($statuses)],
-                'company_id' => Company::inRandomOrder()->first()->id,
+                'company_id' => $company->id,
                 'category_id' => $category->id,
                 'target_type_id' => $target_type->id,
                 'type_id' => PropertyType::inRandomOrder()->first()->id,
@@ -55,6 +56,8 @@ class CompanyPropertyDatabaseSeeder extends Seeder
                 // 'description'   => $faker->realText(50),
                 // 'slug' => Str::slug($name . ' ' . $i, '-')
             ]);
+
+            $company->updateOgCode($property);
 
             for ($a = 1; $a <= 3; $a++) {
                 $property->details()->attach(Detail::inRandomOrder()->first()->id, [
