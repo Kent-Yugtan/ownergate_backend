@@ -11,6 +11,16 @@ class MainScreenAdsResource extends JsonResource
      */
     public function toArray($request): array
     {
-        return parent::toArray($request);
+        $image = null;
+
+        if (count($this->inventory->attachments)) {
+            $image = $this->inventory->attachments->first()->path;
+        }
+
+        $request = collect(parent::toArray($request))->except(['inventory', 'created_at', 'updated_at'])->toArray();
+        
+        return array_merge($request, [
+            'image' => !is_null($image) && $image !== 'null' ? route('storage.image', ['file' => $image]) : null,
+        ]);
     }
 }
