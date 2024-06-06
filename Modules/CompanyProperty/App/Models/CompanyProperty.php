@@ -25,6 +25,7 @@ use Modules\CompanyProperty\App\Models\PropertyAdditionalRemark;
 class CompanyProperty extends Model
 {
     protected $fillable = [
+        'og_code',
         'company_id',
         'category_id',
         'type_id',

@@ -3,9 +3,10 @@
 namespace Modules\Company\App\Models;
 
 use App\Models\User;
+use App\Traits\ApiHelper;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\SoftDeletes;
 use Modules\Company\App\Models\CompanyNews;
+use Illuminate\Database\Eloquent\SoftDeletes;
 use Modules\Company\App\Models\CompanyService;
 use Modules\CompanyPrivacy\App\Models\Section;
 use Modules\Company\App\Models\CompanyLocation;
@@ -16,7 +17,7 @@ use Modules\CompanyProperty\App\Models\CompanyProperty;
 
 class Company extends Model
 {
-    use SoftDeletes;
+    use SoftDeletes, ApiHelper;
 
     protected $dates = ['deleted_at'];
 
@@ -65,6 +66,9 @@ class Company extends Model
             }
         } else {
             $property = $this->properties()->create();
+
+            $this->updateOgCode($property);
+            
             $sections = Section::where('module_name', 'Property')->pluck('id')->toArray();
             $property->privacies()->syncWithoutDetaching($sections);
         }
@@ -117,4 +121,15 @@ class Company extends Model
         return $this->belongsToMany(Section::class, 'company_privacies', 'company_id', 'section_id');
     }
 
+    public function updateOgCode($property): void
+    {
+        $prefix = 'OG';
+        $uniqueCode = $this->generateUniqueCode($prefix, 6);
+
+        while (CompanyProperty::where('og_code', $uniqueCode)->exists()) {
+            $uniqueCode = $this->generateUniqueCode($prefix, 6);
+        }
+
+        $property->update(['og_code' => $uniqueCode]);
+    }
 }

@@ -56,6 +56,9 @@ class CompanyPropertyController extends Controller
                 ],
                 $validatedData
             );
+
+            $company->updateOgCode($property);
+            
             DB::commit();
 
             return $this->successresponse(new PropertyResource($property), 'Property company logo has been updated.');
@@ -144,6 +147,8 @@ class CompanyPropertyController extends Controller
                 $validatedData
             );
 
+            $company->updateOgCode($property);
+
             DB::commit();
 
             return $this->successresponse(new PropertyResource($property), 'Property value has been updated.');
@@ -176,6 +181,8 @@ class CompanyPropertyController extends Controller
                 $validatedData
             );
 
+            $company->updateOgCode($property);
+
             DB::commit();
 
             return $this->successresponse(new PropertyResource($property), 'Property source has been updated.');
@@ -200,6 +207,8 @@ class CompanyPropertyController extends Controller
                 ],
                 $validatedData
             );
+
+            $company->updateOgCode($property);
 
             DB::commit();
 
