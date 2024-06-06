@@ -1,0 +1,31 @@
+{
+    "name": "nwidart/mainscreenads",
+    "description": "",
+    "authors": [
+        {
+            "name": "Nicolas Widart",
+            "email": "n.widart@gmail.com"
+        }
+    ],
+    "extra": {
+        "laravel": {
+            "providers": [],
+            "aliases": {
+
+            }
+        }
+    },
+    "autoload": {
+        "psr-4": {
+            "Modules\\MainScreenAds\\": "",
+            "Modules\\MainScreenAds\\App\\": "app/",
+            "Modules\\MainScreenAds\\Database\\Factories\\": "database/factories/",
+            "Modules\\MainScreenAds\\Database\\Seeders\\": "database/seeders/"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "Modules\\MainScreenAds\\Tests\\": "tests/"
+        }
+    }
+}
