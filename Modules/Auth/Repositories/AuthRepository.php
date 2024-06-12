@@ -313,7 +313,7 @@ class AuthRepository extends BaseRepository implements AuthRepositoryInterface
         $token = $reset->token;
         $code = $reset->code;
 
-
+        return $token;
         $mail = Mail::to($to)->send((new ForgotPasswordEmail(['code' => $code, 'token' => $token, 'name' => $user->first_name])));
         return $mail;
     }

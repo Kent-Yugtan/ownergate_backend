@@ -17,6 +17,7 @@ class SaveProfileRequest extends FormRequest
             'first_name' => 'required',
             'last_name' => 'required',
             'phone' => 'required|numeric',
+            'password' => 'sometimes|required|string|min:8|confirmed',
             'avatar' => [
                 'nullable', function ($attribute, $value, $fail) {
                     if(self::hasFile($attribute)){
