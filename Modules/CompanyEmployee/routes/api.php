@@ -34,3 +34,4 @@ Route::prefix('admin')->middleware(['auth:api'])->group(function () {
         Route::delete('/{employee}/properties/{property}', [CompanyEmployeeController::class, 'destroyProperty']);
     });
 });
+
