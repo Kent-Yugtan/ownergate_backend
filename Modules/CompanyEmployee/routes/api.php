@@ -2,6 +2,7 @@
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
+use Modules\CompanyEmployee\App\Http\Controllers\AccountEmployeeController;
 use Modules\CompanyEmployee\App\Http\Controllers\CompanyEmployeeController;
 
 /*
@@ -34,3 +35,12 @@ Route::prefix('admin')->middleware(['auth:api'])->group(function () {
         Route::delete('/{employee}/properties/{property}', [CompanyEmployeeController::class, 'destroyProperty']);
     });
 });
+
+Route::prefix('account')
+    ->middleware(['auth:api'])
+    ->name('api.')
+    ->group(function () {
+        Route::prefix('company')->group(function () {
+            Route::get('employees', [AccountEmployeeController::class, 'list']);
+        });
+    });
