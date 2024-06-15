@@ -26,6 +26,8 @@ class ChangePasswordRequest extends FormRequest
             $rules = [
                 'permission_period' => [
                     'required_without:official_contract', function ($attribute, $value, $fail) {
+                        $value = json_decode($value, true);
+                        
                         if ($value['from'] > $value['to']) {
                             $fail('Start date must not greater than end date');
                         }
