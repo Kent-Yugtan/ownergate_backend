@@ -207,22 +207,18 @@ class EmployeeRepository extends BaseRepository implements EmployeeRepositoryInt
     public function changePassword(ChangePasswordRequest $request, CompanyEmployee $employee)
     {
         $result = null;
+        $permission_period = isset($request->permission_period) ?? null;
+        $official_contract = isset($request->official_contract) ?? null;
         
         if (isset($request->password) && $request->password) {
             $result = $employee->user->update(['password' => $request->password]);
         }
-        
-        if (isset($request->permission_type) && $request->permission_type) {
-            $employee->update(['permission_type' => $request->permission_type]);
-        }
 
-        if (isset($request->permission_period) && $request->permission_period) {
-            $employee->update(['password_period' => $request->permission_period]);
-        }
-
-        if (isset($request->official_contract) && $request->official_contract) {
-            $employee->update(['official_contract' => $request->official_contract]);
-        }
+        $employee->update([
+            'permission_type' => $request->permission_type,
+            'permission_period' => $permission_period,
+            'official_contract' => $official_contract
+        ]);
 
         return $result;
     }
