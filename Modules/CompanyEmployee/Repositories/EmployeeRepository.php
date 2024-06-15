@@ -214,7 +214,7 @@ class EmployeeRepository extends BaseRepository implements EmployeeRepositoryInt
             $result = $employee->user->update(['password' => $request->password]);
         }
 
-        $employee->update([
+        $result = $employee->update([
             'permission_type' => $request->permission_type,
             'permission_period' => $permission_period,
             'official_contract' => $official_contract
