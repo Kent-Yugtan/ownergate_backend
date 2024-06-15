@@ -26,11 +26,8 @@ class ChangePasswordRequest extends FormRequest
             $rules = [
                 'permission_period' => [
                     'required_without:official_contract', function ($attribute, $value, $fail) {
-                        $jsonString = str_replace('\\', '', $value);
-                        
-                        $value = json_decode($jsonString, true);
-                        
-                        $value = $value[0];
+                        $value = $this->formatJson($value);
+
                         if ($value['from'] > $value['to']) {
                             $fail('Start date must not greater than end date');
                         }
@@ -43,6 +40,8 @@ class ChangePasswordRequest extends FormRequest
             $rules = [
                 'official_contract' => [
                     'required_without:permission_period', function ($attribute, $value, $fail) {
+                        $value = $this->formatJson($value);
+                        
                         if ($value['from'] > $value['to']) {
                             $fail('Start date must not greater than end date');
                         }
@@ -79,6 +78,15 @@ class ChangePasswordRequest extends FormRequest
         //     },
         // ],
         // ];
+    }
+
+    public function formatJson($value)
+    {
+        $jsonString = str_replace('\\', '', $value);
+        
+        $value = json_decode($jsonString, true);
+        
+        return $value[0];
     }
 
     /**
