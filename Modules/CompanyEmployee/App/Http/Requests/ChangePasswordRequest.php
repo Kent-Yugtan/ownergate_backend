@@ -15,7 +15,7 @@ class ChangePasswordRequest extends FormRequest
     public function rules(): array
     {
         $rules = [];
-
+        
         if ($this->password) {
             $rules = [
                 'password' => 'required|string|min:8|confirmed'
@@ -26,10 +26,11 @@ class ChangePasswordRequest extends FormRequest
             $rules = [
                 'permission_period' => [
                     'required_without:official_contract', function ($attribute, $value, $fail) {
-                        $value = json_decode($value, true);
-                        $value = json_decode($value, true);
-                        $value = $value[0];
+                        $jsonString = str_replace('\\', '', $value);
                         
+                        $value = json_decode($jsonString, true);
+                        
+                        $value = $value[0];
                         if ($value['from'] > $value['to']) {
                             $fail('Start date must not greater than end date');
                         }
