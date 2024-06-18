@@ -35,3 +35,12 @@ Route::prefix('admin')->middleware(['auth:api'])->group(function () {
     });
 });
 
+Route::prefix('account')
+    ->middleware(['auth:api'])
+    ->name('api.')
+    ->group(function() {
+        Route::prefix('company')->group(function(){
+            Route::post('{employee}/accessProperties', [CompanyEmployeeController::class,'addAccessProperties']);
+        });
+    });
+

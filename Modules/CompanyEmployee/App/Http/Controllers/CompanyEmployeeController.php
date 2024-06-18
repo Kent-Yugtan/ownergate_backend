@@ -192,6 +192,48 @@ class CompanyEmployeeController extends Controller
         }
     }
 
+    public function addAccessProperties(Request $request, CompanyEmployee $employee){
+        try {
+            DB::beginTransaction();
+            $perPage = $request->perPage ?? 10;
+
+            $validatedData = $request->validate([
+                'company_id' => 'required',
+                'properties' => 'required|array',
+                'properties.*.id' => 'required|exists:company_properties,id,company_id,' . $request->company_id,
+                'properties.*.access_code' => 'nullable',
+            ]);
+
+            $formatted_data = [];
+            foreach($validatedData['properties'] as $item){
+                $exists = $employee->properties()->wherePivot('property_id', $item['id'])->exists();
+                if(!$exists){
+                    $formatted_data[$item['id']] = ['access_code' => $item['access_code']];
+                }
+            }
+
+            $employee->properties()->attach($formatted_data);
+
+            $employee->update([
+                'company_id' => $request->company_id
+            ]);
+
+            $og_code = $this->generateOGCode($employee->user);
+
+            $employee->user()->update([
+                'og_code' => $og_code
+            ]);
+
+            $employee_properties = $employee->properties()->paginate($perPage);
+
+            DB::commit();
+            return PropertyResource::collection($employee_properties);
+        } catch (\Exception $e) {
+            DB::rollBack();
+            return $this->errorResponse(null, $e->getMessage());
+        }
+    }
+
     public function updateProperty(Request $request, CompanyEmployee $employee, EmployeeProperty $property)
     {
         try {
