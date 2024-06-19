@@ -192,7 +192,8 @@ class CompanyEmployeeController extends Controller
         }
     }
 
-    public function addAccessProperties(Request $request, CompanyEmployee $employee){
+    public function addAccessProperties(Request $request, CompanyEmployee $employee)
+    {
         try {
             DB::beginTransaction();
             $perPage = $request->perPage ?? 10;
@@ -205,10 +206,23 @@ class CompanyEmployeeController extends Controller
             ]);
 
             $formatted_data = [];
-            foreach($validatedData['properties'] as $item){
+            $id_exists = [];
+
+            foreach($validatedData['properties'] as $item) {
                 $exists = $employee->properties()->wherePivot('property_id', $item['id'])->exists();
-                if(!$exists){
+                
+                if(!$exists) {
                     $formatted_data[$item['id']] = ['access_code' => $item['access_code']];
+                } else {
+                    $id_exists[] = $item['id'];
+                }
+            }
+
+            if (count($id_exists)) {
+                if (count($id_exists) > 1) {
+                    abort(401, "These ID's " . json_encode($id_exists) . " are already exists.");
+                } else {
+                    abort(401, "These ID " . json_encode($id_exists) . " is already exists.");
                 }
             }
 
