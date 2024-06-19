@@ -34,3 +34,12 @@ Route::prefix('admin')->middleware(['auth:api'])->group(function () {
         Route::delete('/{employee}/properties/{property}', [CompanyEmployeeController::class, 'destroyProperty']);
     });
 });
+
+Route::prefix('account')
+    ->middleware(['auth:api'])
+    ->name('api.')
+    ->group(function () {
+        Route::prefix('employee')->group(function () {
+            Route::post('/{employee}/accessProperties', [CompanyEmployeeController::class,'addAccessProperties']);
+        });
+    });
