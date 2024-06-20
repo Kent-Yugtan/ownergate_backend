@@ -5,6 +5,7 @@ use Illuminate\Support\Facades\Route;
 use Modules\CompanyProperty\App\Http\Controllers\PropertyMediaController;
 use Modules\CompanyProperty\App\Http\Controllers\CompanyPropertyController;
 use Modules\CompanyProperty\App\Http\Controllers\PropertyFeatureController;
+use Modules\CompanyProperty\App\Http\Controllers\AccountPropertyController;
 
 /*
     |--------------------------------------------------------------------------
@@ -63,8 +64,6 @@ Route::prefix('admin')->middleware(['auth:api'])->group(function () {
     Route::prefix('properties/{property}/plans')->group(function () {
         Route::delete('/{plan}', [CompanyPropertyController::class, 'deletePlan'])->scopeBindings();
     });
-    
-
 });
 
 Route::prefix('main')->group(function () {
@@ -75,3 +74,12 @@ Route::prefix('main')->group(function () {
     Route::get('property/get-features', [PropertyFeatureController::class, 'getFeatures']);
     Route::get('property/get-amenities', [PropertyFeatureController::class, 'getAmenities']);
 });
+
+Route::prefix('account')
+    ->middleware(['auth:api'])
+    ->name('api.')
+    ->group(function () {
+        Route::prefix('company')->group(function () {
+            Route::get('properties', [AccountPropertyController::class, 'list']);
+        });
+    });

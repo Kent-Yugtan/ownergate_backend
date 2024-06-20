@@ -42,5 +42,9 @@ Route::prefix('account')
     ->group(function () {
         Route::prefix('company')->group(function () {
             Route::get('employees', [AccountEmployeeController::class, 'list']);
+        });  
+        
+        Route::prefix('employee')->group(function () {
+            Route::post('/{employee}/accessProperties', [CompanyEmployeeController::class,'addAccessProperties']);
         });
     });
