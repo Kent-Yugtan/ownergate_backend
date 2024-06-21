@@ -2,6 +2,7 @@
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
+use Modules\CompanyEmployee\App\Http\Controllers\AccountEmployeeController;
 use Modules\CompanyEmployee\App\Http\Controllers\CompanyEmployeeController;
 
 /*
@@ -39,6 +40,10 @@ Route::prefix('account')
     ->middleware(['auth:api'])
     ->name('api.')
     ->group(function () {
+        Route::prefix('company')->group(function () {
+            Route::get('employees', [AccountEmployeeController::class, 'list']);
+        });  
+        
         Route::prefix('employee')->group(function () {
             Route::post('/{employee}/accessProperties', [CompanyEmployeeController::class,'addAccessProperties']);
         });
