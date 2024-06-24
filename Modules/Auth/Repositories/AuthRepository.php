@@ -5,11 +5,11 @@ namespace Modules\Auth\Repositories;
 use Socialite;
 use Carbon\Carbon;
 use App\Models\User;
+use App\Traits\ApiHelper;
 use Illuminate\Http\File;
 use Illuminate\Support\Str;
 use Modules\BaseRepository;
 use Illuminate\Http\Request;
-use Modules\Auth\App\Models\PasswordResetToken;
 use Spatie\Permission\Models\Role;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Mail;
@@ -17,9 +17,10 @@ use Modules\Company\Entities\Company;
 use Illuminate\Support\Facades\Storage;
 use Modules\Auth\Emails\VerifictionEmail;
 use Modules\Auth\Emails\ForgotPasswordEmail;
-use Modules\Auth\Repositories\Interfaces\AuthRepositoryInterface;
+use Modules\Auth\App\Models\PasswordResetToken;
 use Modules\Auth\Http\Requests\RegisterRequest;
-use App\Traits\ApiHelper;
+use Modules\CompanyEmployee\App\Models\CompanyEmployee;
+use Modules\Auth\Repositories\Interfaces\AuthRepositoryInterface;
  
 class AuthRepository extends BaseRepository implements AuthRepositoryInterface
 {
@@ -39,7 +40,13 @@ class AuthRepository extends BaseRepository implements AuthRepositoryInterface
             $account = $this->formatOGCode($request->email);
         }
 
-        if (Auth::attempt([$field => $account, 'password' => $request->password])) {
+        $credentials = [$field => $account, 'password' => $request->password];
+
+        if (Auth::attempt($credentials)) {
+            if (!$this->validateEmployee($request)) {
+                return false;
+            }
+
             $token = Auth::user()->createToken('Auth Token')->accessToken;
             return $token;
         }
@@ -407,5 +414,28 @@ class AuthRepository extends BaseRepository implements AuthRepositoryInterface
         ]);
 
         return ['data' => $user, 'status' => true];
+    }
+
+    private function validateEmployee($request)
+    {
+        if (Auth::user()->hasRole('Employee') && !$request->filled('company_addmail')) {
+            return false;
+        }
+
+        if ($request->filled('company_addmail')) {
+            $user = Auth::user();
+
+            $employee = CompanyEmployee::whereHas('company.owner', function($q) use ($request) {
+                $q->where('og_code', $request->company_addmail);
+            })
+            ->where('user_id', $user->id)
+            ->first();
+
+            if (!$employee) {
+                return false;
+            }
+        }
+
+        return true;
     }
 }
