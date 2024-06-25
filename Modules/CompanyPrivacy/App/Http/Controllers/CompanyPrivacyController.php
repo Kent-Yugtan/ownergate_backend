@@ -3,6 +3,7 @@
 namespace Modules\CompanyPrivacy\App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use App\Traits\ApiResponser;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\DB;
 use App\Http\Controllers\Controller;
@@ -13,12 +14,18 @@ use Modules\CompanyPrivacy\App\Http\Requests\CompanyPrivacyRequest;
 
 class CompanyPrivacyController extends Controller
 {
+    use ApiResponser;
     /**
      * Display a listing of the resource.
      */
     public function index(Company $company)
     {
+        if (!auth()->user()->company->is($company)) {
+            return $this->errorResponse(null, 'Unauthorized action.');
+        }
+
         return CompanyPrivacyResource::collection($company->privacies);
+
     }
 
 
@@ -28,6 +35,9 @@ class CompanyPrivacyController extends Controller
     public function store(CompanyPrivacyRequest $request, Company $company)
     {
         try {
+            if (!auth()->user()->company->is($company)) {
+                return $this->errorResponse(null, 'Unauthorized action.');
+            }
             DB::beginTransaction();
 
             $privacies = $request->save($company);
