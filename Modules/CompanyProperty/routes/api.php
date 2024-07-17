@@ -6,6 +6,7 @@ use Modules\CompanyProperty\App\Http\Controllers\PropertyMediaController;
 use Modules\CompanyProperty\App\Http\Controllers\CompanyPropertyController;
 use Modules\CompanyProperty\App\Http\Controllers\PropertyFeatureController;
 use Modules\CompanyProperty\App\Http\Controllers\AccountPropertyController;
+use Modules\companyproperty\App\Http\Controllers\PropertySettingController;
 
 /*
     |--------------------------------------------------------------------------
@@ -21,6 +22,12 @@ use Modules\CompanyProperty\App\Http\Controllers\AccountPropertyController;
 // Route::middleware(['auth:sanctum'])->prefix('v1')->name('api.')->group(function () {
 //     Route::get('companyproperty', fn (Request $request) => $request->user())->name('companyproperty');
 // });
+
+Route::prefix('property')->middleware(['auth:api'])->group(function () {
+        Route::get('/settings', [PropertySettingController::class, 'getAvailiableSettings']);
+        Route::get('/{property}/settings', [PropertySettingController::class, 'getPropertySettings']);
+        Route::post('/{property}/settings', [PropertySettingController::class, 'savePropertySettings']);
+});
 
 Route::prefix('admin')->middleware(['auth:api'])->group(function () {
     Route::prefix('company/{company}/properties')->group(function () {
@@ -47,7 +54,7 @@ Route::prefix('admin')->middleware(['auth:api'])->group(function () {
         Route::post('/map-location', [CompanyPropertyController::class, 'saveMapLocation']);
         Route::post('/view-live', [CompanyPropertyController::class, 'saveWhatsNearby']);
         Route::post('/plans', [CompanyPropertyController::class, 'savePlans']);
-        
+
 
         Route::post('/full-video', [PropertyMediaController::class, 'saveFullVideo']);
         Route::post('/360-virtual-tour', [PropertyMediaController::class, 'saveVirtualTour']);

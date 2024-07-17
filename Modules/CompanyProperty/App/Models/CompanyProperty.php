@@ -21,6 +21,8 @@ use Modules\CompanyProperty\App\Models\CategoryTargetType;
 use Modules\CompanyProperty\App\Models\PropertyWhatsNearby;
 use Modules\CompanyProperty\App\Models\PropertyAddressDetail;
 use Modules\CompanyProperty\App\Models\PropertyAdditionalRemark;
+use Modules\CompanyProperty\App\Models\PropertySelectedSetting;
+use Modules\CompanyProperty\App\Models\PropertyAvailableSetting;
 
 class CompanyProperty extends Model
 {
@@ -138,6 +140,14 @@ class CompanyProperty extends Model
         return $this->belongsToMany(Section::class, 'property_privacies', 'property_id', 'section_id')->withTimestamps();
     }
 
+    public function selected_settings(){
+        return $this->hasMany(PropertySelectedSetting::class, 'property_id');
+    }
+
+    public function available_settings(){
+        return $this->hasManyThrough(PropertyAvailableSetting::class, PropertySelectedSetting::class, 'property_id', 'id', 'id', 'selected_settings_id');
+    }
+
     public function scopeFilterPropertyType($query, $value)
     {
         return $query->when($value, function ($query) use ($value) {
@@ -240,14 +250,14 @@ class CompanyProperty extends Model
                                  ->where('detail_id', 11);
                 });
             }
-            
+
             if ($baths) {
                 $subQuery->orWhereHas('details', function ($detailsQuery) use ($baths) {
                     $detailsQuery->where('value', $baths)
                                  ->where('detail_id', 14);
                 });
             }
-    
+
             // if ($kitchens) {
             //     $subQuery->orWhereHas('details', function ($detailsQuery) use ($kitchens) {
             //         $detailsQuery->where('value', $kitchens)
@@ -256,7 +266,7 @@ class CompanyProperty extends Model
             // }
         });
     }
-    
+
 
     public static function search($search)
     {
