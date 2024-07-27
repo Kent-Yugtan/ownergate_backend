@@ -50,20 +50,20 @@ class CompanyRequestService
 
         $query = CompanyRequest::query();
 
-        if (!empty($filters['keyword'])) {
-            $query->where('request_id_code', 'like', '%' . $filters['keyword'] . '%')
-                ->orWhere('request_name', 'like', '%' . $filters['keyword'] . '%')
-                ->orWhere('status', 'like', '%' . $filters['keyword'] . '%')
-                ->orWhere('category', 'like', '%' . $filters['keyword'] . '%')
-                ->orWhere('note', 'like', '%' . $filters['keyword'] . '%');
-        }
-
         if (!empty($filters['request_id'])) {
             $query->where('request_number', 'like', '%' . $filters['request_id'] . '%');
         }
         
         if (!empty($filters['date_from']) && !empty($filters['date_to'])) {
             $query->whereBetween('request_date', [$filters['date_from'], $filters['date_to']]);
+        }
+
+        if (!empty($filters['keyword'])) {
+            $query->where('request_id_code', 'like', '%' . $filters['keyword'] . '%')
+                ->orWhere('request_name', 'like', '%' . $filters['keyword'] . '%')
+                ->orWhere('status', 'like', '%' . $filters['keyword'] . '%')
+                ->orWhere('category', 'like', '%' . $filters['keyword'] . '%')
+                ->orWhere('note', 'like', '%' . $filters['keyword'] . '%');
         }
 
         return $query->paginate($perPage);
