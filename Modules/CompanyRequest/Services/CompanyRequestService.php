@@ -13,6 +13,13 @@ class CompanyRequestService
         return auth()->user()->company->companyRequests()->paginate($perPage);
     }
 
+    public function employeeRequests()
+    {
+        $perPage = request()->perPage ?? 10;
+
+        return auth()->user()->employeeRequests()->paginate($perPage);
+    }
+
     public function storeRequest(array $data)
     {
         return auth()->user()->company->companyRequests()->create($data);

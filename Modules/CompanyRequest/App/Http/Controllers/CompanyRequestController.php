@@ -98,4 +98,15 @@ class CompanyRequestController extends Controller
             return response()->json(['error' => $e->getMessage()], 500);
         }
     }
+
+    public function getEmployeeRequests(Request $request)
+    {
+        try {
+            $companyRequests = $this->companyRequestService->employeeRequests();
+
+            return CompanyRequestResource::Collection($companyRequests);
+        } catch (Exception $e) {
+            return response()->json(['error' => $e->getMessage()], 500);
+        }
+    }
 }

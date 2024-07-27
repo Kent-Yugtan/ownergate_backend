@@ -21,7 +21,6 @@ class CompanyPrivacyController extends Controller
         return CompanyPrivacyResource::collection($company->privacies);
     }
 
-
     /**
      * Store a newly created resource in storage.
      */

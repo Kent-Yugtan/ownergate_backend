@@ -24,4 +24,8 @@ Route::prefix('account')
         ]);
 
         Route::get('/requests/search', [CompanyRequestController::class, 'search']);
+
+        Route::get('/requests/employee', [CompanyRequestController::class, 'getEmployeeRequests']);
+
+        
     });
