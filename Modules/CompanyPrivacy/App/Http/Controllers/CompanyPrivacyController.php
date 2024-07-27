@@ -18,7 +18,12 @@ class CompanyPrivacyController extends Controller
      */
     public function index(Company $company)
     {
+        if (!auth()->user()->company->is($company)) {
+            abort(403, 'Unauthorized action.');
+        }
+
         return CompanyPrivacyResource::collection($company->privacies);
+
     }
 
 
@@ -28,6 +33,9 @@ class CompanyPrivacyController extends Controller
     public function store(CompanyPrivacyRequest $request, Company $company)
     {
         try {
+            if (!auth()->user()->company->is($company)) {
+                abort(403, 'Unauthorized action.');
+            }
             DB::beginTransaction();
 
             $privacies = $request->save($company);
