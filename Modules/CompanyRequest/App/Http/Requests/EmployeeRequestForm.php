@@ -6,7 +6,7 @@ use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Contracts\Validation\Validator;
 use Illuminate\Http\Exceptions\HttpResponseException;
 
-class CompanyRequestForm extends FormRequest
+class EmployeeRequestForm extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -21,18 +21,11 @@ class CompanyRequestForm extends FormRequest
      */
     public function rules(): array
     {
-        if ($this->has('_method')) {
-            return [
-                'status' => 'required'
-            ];
-        }
-
         return [
-            'request_id_code' => 'required',
             'request_name' => 'required',
             'request_number' => 'required',
-            'status' => 'required',
-            'com_pre' => 'required',
+            'commission_percentage' => 'required',
+            'commission_notes' => 'required',
             'category' => 'required',
             'request_date' => 'required',
             'request_time_from' => 'required',

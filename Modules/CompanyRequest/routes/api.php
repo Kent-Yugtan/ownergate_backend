@@ -3,6 +3,7 @@
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use Modules\CompanyRequest\App\Http\Controllers\CompanyRequestController;
+use Modules\CompanyRequest\App\Http\Controllers\EmployeeRequestController;
 
 /*
     |--------------------------------------------------------------------------
@@ -19,13 +20,23 @@ Route::prefix('account')
     ->middleware(['auth:api'])
     ->name('api.')
     ->group(function () {
-        Route::apiResource('/requests', CompanyRequestController::class)->only([
-            'index', 'store', 'update'
-        ]);
+        Route::prefix('requests')->group(function () {
+            Route::get('/', [CompanyRequestController::class, 'getCompanyRequests']);
 
-        Route::get('/requests/search', [CompanyRequestController::class, 'search']);
+            Route::patch('/{companyRequest}', [CompanyRequestController::class, 'updateRequest']);
 
-        Route::get('/requests/employee', [CompanyRequestController::class, 'getEmployeeRequests']);
+            Route::delete('/{companyRequest}', [CompanyRequestController::class, 'delete']);
 
-        
+            Route::get('/search', [CompanyRequestController::class, 'search']);
+
+            Route::prefix('employee')->group(function () {
+                Route::get('/', [EmployeeRequestController::class, 'getEmployeeRequests']);
+
+                Route::get('/preview-property', [EmployeeRequestController::class, 'previewProperty']);
+
+                Route::get('/search', [EmployeeRequestController::class, 'search']);
+
+                Route::post('/send-request', [EmployeeRequestController::class, 'sendRequest']);
+            });
+        });
     });

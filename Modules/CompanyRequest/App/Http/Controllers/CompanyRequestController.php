@@ -27,35 +27,11 @@ class CompanyRequestController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function getCompanyRequests()
     {
-        $companyRequests = $this->companyRequestService->allRequest();
+        $companyRequests = $this->companyRequestService->companyRequests();
 
         return CompanyRequestResource::Collection($companyRequests);
-    }
-
-    /**
-     * Store a newly created resource in storage.
-     */
-    public function store(CompanyRequestForm $request)
-    {
-        try {
-            DB::beginTransaction();
-            
-            $companyRequest = $this->companyRequestService->storeRequest($request->all());
-
-            DB::commit();
-
-            return $this->successresponse(new CompanyRequestResource($companyRequest), 'Request has been added.');
-        } catch (QueryException $exception) {
-            // Check for unique constraint violation (SQLSTATE 23000, Error Code 1062)
-            if ($exception->errorInfo[1] == 1062) {
-                throw new UniqueConstraintViolationException('Duplicate entry detected for the given keys.');
-            }
-
-            // Handle other query exceptions
-            throw new UniqueConstraintViolationException('Database error.', 500);
-        }
     }
 
     /**
@@ -70,20 +46,41 @@ class CompanyRequestController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(CompanyRequestForm $dataRequest, CompanyRequest $request)
+    public function updateRequest(Request $request, CompanyRequest $companyRequest)
     {
         try {
             DB::beginTransaction();
 
-            $companyRequest = $this->companyRequestService->updateRequest($request, $dataRequest->all());
+            $validatedData = $request->validate([
+                '_method' => 'required',
+                'status' => 'required'
+            ]);
+
+            $companyRequest = $this->companyRequestService->updateRequest($companyRequest, $validatedData);
 
             DB::commit();
             
             return new CompanyRequestResource($companyRequest);
         } catch (Exception $e) {
-            return response()->json(['error' => $e->getMessage()], 500);
+            return $this->errorResponse(null, $e->getMessage());
         }
+    }
 
+   
+    public function delete(CompanyRequest $companyRequest)
+    {
+        try {
+            DB::beginTransaction();
+
+            $this->companyRequestService->deleteRequest($companyRequest);
+
+            DB::commit();
+            
+            return new CompanyRequestResource($companyRequest);
+        } catch (Exception $e) {
+            dd('ss');
+            return $this->errorResponse(null, $e->getMessage());
+        }
     }
 
     public function search(Request $request)
@@ -92,17 +89,6 @@ class CompanyRequestController extends Controller
             $filters = $request->all();
             
             $companyRequests = $this->companyRequestService->searchRequests($filters);
-
-            return CompanyRequestResource::Collection($companyRequests);
-        } catch (Exception $e) {
-            return response()->json(['error' => $e->getMessage()], 500);
-        }
-    }
-
-    public function getEmployeeRequests(Request $request)
-    {
-        try {
-            $companyRequests = $this->companyRequestService->employeeRequests();
 
             return CompanyRequestResource::Collection($companyRequests);
         } catch (Exception $e) {

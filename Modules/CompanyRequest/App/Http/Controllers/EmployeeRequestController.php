@@ -8,8 +8,12 @@ use Illuminate\Http\Response;
 use Illuminate\Support\Facades\DB;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\RedirectResponse;
+use Illuminate\Database\QueryException;
+use App\Exceptions\UniqueConstraintViolationException;
+use Modules\CompanyProperty\Transformers\PropertyResource;
 use Modules\CompanyRequest\Services\CompanyRequestService;
 use Modules\CompanyRequest\Transformers\CompanyRequestResource;
+use Modules\CompanyRequest\App\Http\Requests\EmployeeRequestForm;
 
 class EmployeeRequestController extends Controller
 {
@@ -23,17 +27,28 @@ class EmployeeRequestController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function getEmployeeRequests()
     {
-        $companyRequests = $this->companyRequestService->allRequest();
+        $companyRequests = $this->companyRequestService->employeeRequests();
 
         return CompanyRequestResource::Collection($companyRequests);
     }
 
+    public function previewProperty()
+    {
+        $property = $this->companyRequestService->previewProperty();
+
+        if (!$property) {
+            abort(403, 'Cannot find property');
+        }
+
+        return new PropertyResource($property);
+    }
+    
     /**
      * Store a newly created resource in storage.
      */
-    public function store(Request $request)
+    public function sendRequest(EmployeeRequestForm $request)
     {
         try {
             DB::beginTransaction();
@@ -43,10 +58,16 @@ class EmployeeRequestController extends Controller
             DB::commit();
 
             return $this->successresponse(new CompanyRequestResource($companyRequest), 'Request has been added.');
-        } catch (Exception $e) {
+        } catch (QueryException $e) {
             DB::rollback();
 
-            return $this->errorResponse(null, $e->getMessage());
+            // Check for unique constraint violation (SQLSTATE 23000, Error Code 1062)
+            if ($e->errorInfo[1] == 1062) {
+                throw new UniqueConstraintViolationException('Duplicate entry detected for the given keys.');
+            }
+
+            // Handle other query exceptions
+            throw new UniqueConstraintViolationException('Database error.', 500);
         }
     }
 

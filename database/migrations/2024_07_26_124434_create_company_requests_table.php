@@ -19,7 +19,8 @@ return new class extends Migration {
             $table->string('request_name');
             $table->string('request_number');
             $table->string('status');
-            $table->string('com_pre');
+            $table->string('commission_percentage');
+            $table->string('commission_notes');
             $table->string('category');
             $table->date('request_date');
             $table->time('request_time_from');
