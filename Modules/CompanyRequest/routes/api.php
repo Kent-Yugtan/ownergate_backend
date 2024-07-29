@@ -23,6 +23,8 @@ Route::prefix('account')
         Route::prefix('requests')->group(function () {
             Route::get('/', [CompanyRequestController::class, 'getCompanyRequests']);
 
+            Route::get('/pending', [CompanyRequestController::class, 'getCompanyPendingRequests']);
+
             Route::patch('/{companyRequest}', [CompanyRequestController::class, 'updateRequest']);
 
             Route::delete('/{companyRequest}', [CompanyRequestController::class, 'delete']);

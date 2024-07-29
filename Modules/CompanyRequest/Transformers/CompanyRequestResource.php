@@ -3,6 +3,7 @@
 namespace Modules\CompanyRequest\Transformers;
 
 use Illuminate\Http\Resources\Json\JsonResource;
+use Modules\CompanyProperty\Transformers\PropertyResource;
 
 class CompanyRequestResource extends JsonResource
 {
@@ -11,6 +12,8 @@ class CompanyRequestResource extends JsonResource
      */
     public function toArray($request): array
     {
-        return parent::toArray($request);
+        return array_merge(parent::toArray($request), [
+            'property' => new PropertyResource($this->property)
+        ]);
     }
 }

@@ -24,9 +24,7 @@ class CompanyRequestController extends Controller
         $this->companyRequestService = $companyRequestService;
     }
     
-    /**
-     * Display a listing of the resource.
-     */
+    
     public function getCompanyRequests()
     {
         $companyRequests = $this->companyRequestService->companyRequests();
@@ -34,18 +32,13 @@ class CompanyRequestController extends Controller
         return CompanyRequestResource::Collection($companyRequests);
     }
 
-    /**
-     * Show the specified resource.
-     */
-    public function show($id)
+    public function getCompanyPendingRequests()
     {
-        return view('companyrequest::show');
+        $companyRequests = $this->companyRequestService->companyPendingRequests();
+        
+        return CompanyRequestResource::Collection($companyRequests);
     }
 
-    
-    /**
-     * Update the specified resource in storage.
-     */
     public function updateRequest(Request $request, CompanyRequest $companyRequest)
     {
         try {
@@ -66,7 +59,6 @@ class CompanyRequestController extends Controller
         }
     }
 
-   
     public function delete(CompanyRequest $companyRequest)
     {
         try {

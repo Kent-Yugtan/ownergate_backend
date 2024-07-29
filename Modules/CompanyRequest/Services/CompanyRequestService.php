@@ -3,6 +3,7 @@
 namespace Modules\CompanyRequest\Services;
 
 use Modules\CompanyRequest\App\Models\CompanyRequest;
+use Modules\CompanyProperty\App\Models\CompanyProperty;
 use Modules\CompanyProperty\Transformers\PropertyResource;
 
 class CompanyRequestService
@@ -12,14 +13,23 @@ class CompanyRequestService
         if (!auth()->user()->company) {
             abort(403, 'Unauthorized action.');
         }
-        $status = request()->status ?? null;
-        $perPage = request()->perPage ?? 10;
 
-        if ($status) {
-            return auth()->user()->company->companyRequests()->where('status', $status)->paginate($perPage);
-        }
+        $perPage = request()->perPage ?? 10;
         
         return auth()->user()->company->companyRequests()->where('status', '!=', 'Pending')->paginate($perPage);
+    }
+
+    public function companyPendingRequests()
+    {
+        $user = auth()->user();
+        
+        if (!$user->company || !$user->hasRole('Owner')) {
+            abort(403, 'Unauthorized action.');
+        }
+
+        $perPage = request()->perPage ?? 10;
+
+        return $user->company->companyRequests()->where('status', 'Pending')->paginate($perPage);
     }
 
     public function previewProperty()
@@ -60,26 +70,33 @@ class CompanyRequestService
     public function searchRequests(array $filters)
     {
         $perPage = request()->perPage ?? 10;
+        $user =auth()->user();
+        
+        $companyRequestQuery  = null;
 
-        $query = CompanyRequest::query();
+        if ($user->hasRole('Employee')) {
+            $companyRequestQuery  = $user->employeeAccount->company->companyRequests();
+        } elseif ($user->hasRole('Owner')) {
+            $companyRequestQuery  = $user->company->companyRequests();
+        }
 
         if (!empty($filters['request_id_code'])) {
-            $query->where('request_id_code', 'like', '%' . $filters['request_id_code'] . '%');
+            $companyRequestQuery->where('request_id_code', 'like', '%' . $filters['request_id_code'] . '%');
         }
         
         if (!empty($filters['date_from']) && !empty($filters['date_to'])) {
-            $query->whereBetween('request_date', [$filters['date_from'], $filters['date_to']]);
+            $companyRequestQuery->whereBetween('request_date', [$filters['date_from'], $filters['date_to']]);
         }
 
         if (!empty($filters['keyword'])) {
-            $query->where('request_id_code', 'like', '%' . $filters['keyword'] . '%')
+            $companyRequestQuery->where('request_id_code', 'like', '%' . $filters['keyword'] . '%')
                 ->orWhere('request_name', 'like', '%' . $filters['keyword'] . '%')
                 ->orWhere('status', 'like', '%' . $filters['keyword'] . '%')
                 ->orWhere('category', 'like', '%' . $filters['keyword'] . '%')
                 ->orWhere('note', 'like', '%' . $filters['keyword'] . '%');
         }
 
-        return $query->paginate($perPage);
+        return $companyRequestQuery->paginate($perPage);
     }
 
     public function employeeRequests()
@@ -92,6 +109,16 @@ class CompanyRequestService
     public function storeRequest(array $data)
     {
         $user = auth()->user();
+        $property = CompanyProperty::findOrFail($data['property_id']);
+        $company = $user->employeeAccount->company;
+
+        if (!auth()->user()->hasRole('Employee')) {
+            abort(403, 'Unauthorized action.');
+        }
+
+        if (!$company->properties->contains($property)) {
+            abort(403, 'Unauthorized action.');
+        }
 
         $data['request_id_code'] = $this->generateUniqueCode('OGRE');
         $data['company_id'] = $user->employeeAccount->company_id;
