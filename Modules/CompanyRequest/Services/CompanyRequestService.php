@@ -91,6 +91,10 @@ class CompanyRequestService
             $companyRequestQuery  = $user->company->companyRequests();
         }
 
+        if (!empty($filters['status']) && $filters['status'] === 'Pending') {
+            $companyRequestQuery->where('status', 'Pending');
+        }
+
         if (!empty($filters['request_id_code'])) {
             $companyRequestQuery->where('request_id_code', 'like', '%' . $filters['request_id_code'] . '%');
         }

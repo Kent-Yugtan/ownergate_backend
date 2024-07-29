@@ -31,6 +31,8 @@ Route::prefix('account')
 
             Route::get('/search', [CompanyRequestController::class, 'search']);
 
+            Route::get('/search-pending', [CompanyRequestController::class, 'searchPending']);
+
             Route::prefix('employee')->group(function () {
                 Route::get('/', [EmployeeRequestController::class, 'getEmployeeRequests']);
 

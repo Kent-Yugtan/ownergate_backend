@@ -87,4 +87,18 @@ class CompanyRequestController extends Controller
             return response()->json(['error' => $e->getMessage()], 500);
         }
     }
+
+    public function searchPending(Request $request)
+    {
+        try {
+            $filters = $request->all();
+            $filters['status'] = 'Pending';
+            
+            $companyRequests = $this->companyRequestService->searchRequests($filters);
+
+            return CompanyRequestResource::Collection($companyRequests);
+        } catch (Exception $e) {
+            return response()->json(['error' => $e->getMessage()], 500);
+        }
+    }
 }
