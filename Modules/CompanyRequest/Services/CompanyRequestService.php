@@ -22,7 +22,7 @@ class CompanyRequestService
     public function companyPendingRequests()
     {
         $user = auth()->user();
-        
+
         if (!$user->company || !$user->hasRole('Owner')) {
             abort(403, 'Unauthorized action.');
         }
@@ -57,14 +57,25 @@ class CompanyRequestService
     {
         $user = auth()->user();
 
-        $companyRequest = $companyRequest->where('status', 'Pending')->first();
+        $requests = null;
+        
+        if ($user->hasRole('Employee')) {
+            $requests  = $user->employeeRequests;
+        } elseif ($user->hasRole('Owner')) {
+            $requests  = $user->company->companyRequests;
+        }
+        
+        if (!$requests || !$companyRequest) {
+            abort(403, 'Unauthorized action.');
+        }
 
-        if (!$user->company->companyRequests->contains($companyRequest) || !$companyRequest) {
-            // The company owns the request
+        if (!$requests->contains($companyRequest)) {
             abort(403, 'Unauthorized action.');
         }
 
         $companyRequest->delete();
+
+        return $requests;
     }
 
     public function searchRequests(array $filters)
@@ -75,7 +86,7 @@ class CompanyRequestService
         $companyRequestQuery  = null;
 
         if ($user->hasRole('Employee')) {
-            $companyRequestQuery  = $user->employeeAccount->company->companyRequests();
+            $companyRequestQuery  = $user->employeeRequests();
         } elseif ($user->hasRole('Owner')) {
             $companyRequestQuery  = $user->company->companyRequests();
         }

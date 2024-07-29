@@ -9,6 +9,7 @@ use Illuminate\Support\Facades\DB;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Database\QueryException;
+use Modules\CompanyRequest\App\Models\CompanyRequest;
 use App\Exceptions\UniqueConstraintViolationException;
 use Modules\CompanyProperty\Transformers\PropertyResource;
 use Modules\CompanyRequest\Services\CompanyRequestService;
@@ -81,6 +82,26 @@ class EmployeeRequestController extends Controller
             return CompanyRequestResource::Collection($companyRequests);
         } catch (Exception $e) {
             return response()->json(['error' => $e->getMessage()], 500);
+        }
+    }
+
+    public function delete(CompanyRequest $employeeRequest)
+    {
+        try {
+            DB::beginTransaction();
+
+            if ($employeeRequest->status !== 'Pending') {
+                abort(403, 'Unauthorized action.');
+            }
+
+            $requests = $this->companyRequestService->deleteRequest($employeeRequest);
+
+            DB::commit();
+
+            return CompanyRequestResource::Collection($requests);
+        } catch (Exception $e) {
+            dd('ss');
+            return $this->errorResponse(null, $e->getMessage());
         }
     }
 }

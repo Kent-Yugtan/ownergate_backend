@@ -39,6 +39,8 @@ Route::prefix('account')
                 Route::get('/search', [EmployeeRequestController::class, 'search']);
 
                 Route::post('/send-request', [EmployeeRequestController::class, 'sendRequest']);
+
+                Route::delete('/{employeeRequest}', [EmployeeRequestController::class, 'delete']);
             });
         });
     });
