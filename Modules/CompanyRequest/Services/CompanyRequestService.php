@@ -94,7 +94,9 @@ class CompanyRequestService
         if (!empty($filters['status']) && $filters['status'] === 'Pending') {
             $companyRequestQuery->where('status', 'Pending');
         } else {
-            $companyRequestQuery->where('status', '!=', 'Pending');
+            if ($user->hasRole('Owner')) {
+                $companyRequestQuery->where('status', '!=', 'Pending');
+            }
         }
 
         if (!empty($filters['request_id_code'])) {
