@@ -16,7 +16,7 @@ return new class extends Migration
             $table->unsignedBigInteger('property_id');
             $table->unsignedBigInteger('selected_settings_id');
 
-            $table->foreign('property_id')->references('id')->on('company_properties');
+            $table->foreign('property_id')->references('id')->on('company_properties')->onUpdate('cascade')->onDelete('cascade');
             $table->foreign('selected_settings_id')->references('id')->on('property_available_settings');
             $table->softDeletes();
             $table->timestamps();
