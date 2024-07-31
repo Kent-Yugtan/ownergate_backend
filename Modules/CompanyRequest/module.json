@@ -1,0 +1,11 @@
+{
+    "name": "CompanyRequest",
+    "alias": "companyrequest",
+    "description": "",
+    "keywords": [],
+    "priority": 0,
+    "providers": [
+        "Modules\\CompanyRequest\\App\\Providers\\CompanyRequestServiceProvider"
+    ],
+    "files": []
+}

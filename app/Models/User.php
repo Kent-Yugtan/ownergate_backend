@@ -6,6 +6,7 @@ use Carbon\Carbon;
 use App\Models\User;
 use Illuminate\Support\Str;
 use Modules\Agent\Entities\Agent;
+use Modules\Auth\App\Models\Role;
 use Modules\Owner\Entities\Owner;
 use Laravel\Passport\HasApiTokens;
 use Modules\Vendor\Entities\Vendor;
@@ -13,17 +14,17 @@ use Modules\Auth\Entities\UserProfile;
 use Spatie\Permission\Traits\HasRoles;
 use Modules\Company\App\Models\Company;
 use Modules\Customer\Entities\Customer;
-use Modules\CompanyEmployee\App\Models\CompanyEmployee;
-use Modules\Dashboard\App\Models\Shortcut;
 use Illuminate\Notifications\Notifiable;
+use Modules\Dashboard\App\Models\Shortcut;
 use Modules\Inventory\App\Models\Inventory;
 use Illuminate\Database\Eloquent\Collection;
+use Illuminate\Database\Eloquent\SoftDeletes;
 use Modules\Customer\Entities\CustomerDocument;
 use Illuminate\Database\Eloquent\Casts\Attribute;
+use Modules\CompanyRequest\App\Models\CompanyRequest;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
-use Illuminate\Database\Eloquent\SoftDeletes;
-use Modules\Auth\App\Models\Role;
+use Modules\CompanyEmployee\App\Models\CompanyEmployee;
 
 /**
  * Class User
@@ -108,6 +109,10 @@ class User extends Authenticatable
         return $this->belongsTo(UserType::class);
     }
 
+    public function employeeRequests()
+    {
+        return $this->hasMany(CompanyRequest::class, 'employee_id');
+    }
 
     public function Vendors()
     {
