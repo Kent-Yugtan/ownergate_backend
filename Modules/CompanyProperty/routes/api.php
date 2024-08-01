@@ -24,9 +24,9 @@ use Modules\companyproperty\App\Http\Controllers\PropertySettingController;
 // });
 
 Route::prefix('property')->middleware(['auth:api'])->group(function () {
-        Route::get('/settings', [PropertySettingController::class, 'getAvailiableSettings']);
-        Route::get('/{property}/settings', [PropertySettingController::class, 'getPropertySettings']);
-        Route::post('/{property}/settings', [PropertySettingController::class, 'savePropertySettings']);
+    Route::get('/settings', [PropertySettingController::class, 'getAvailiableSettings']);
+    Route::get('/{property}/settings', [PropertySettingController::class, 'getPropertySettings']);
+    Route::post('/{property}/settings', [PropertySettingController::class, 'savePropertySettings']);
 });
 
 Route::prefix('admin')->middleware(['auth:api'])->group(function () {
@@ -88,5 +88,17 @@ Route::prefix('account')
     ->group(function () {
         Route::prefix('company')->group(function () {
             Route::get('properties', [AccountPropertyController::class, 'list']);
+        });
+
+        Route::prefix('source-level')->group(function () {
+            Route::get('properties', [AccountPropertyController::class, 'getSourceProperties']);
+
+            Route::get('buildings', [AccountPropertyController::class, 'searchBuilding']);
+
+            Route::get('units', [AccountPropertyController::class, 'searchUnits']);
+
+            Route::get('spots', [AccountPropertyController::class, 'searchSpots']);
+
+            Route::patch('properties/{property}/update', [AccountPropertyController::class, 'updatePropertySourceLevel']);
         });
     });
