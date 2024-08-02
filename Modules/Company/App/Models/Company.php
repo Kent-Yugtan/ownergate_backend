@@ -13,6 +13,7 @@ use Modules\Company\App\Models\CompanyLocation;
 use Modules\Company\App\Models\CompanyAttachment;
 use Modules\Company\App\Models\CompanyManagement;
 use Modules\CompanyPrivacy\App\Models\CompanyPrivacy;
+use Modules\CompanyRequest\App\Models\CompanyRequest;
 use Modules\CompanyProperty\App\Models\CompanyProperty;
 use Modules\CompanyProperty\App\Models\Group;
 class Company extends Model
@@ -79,6 +80,11 @@ class Company extends Model
     public function properties()
     {
         return $this->hasMany(CompanyProperty::class);
+    }
+
+    public function companyRequests()
+    {
+        return $this->hasMany(CompanyRequest::class);
     }
 
     public function getPropertiesIdsAttribute()

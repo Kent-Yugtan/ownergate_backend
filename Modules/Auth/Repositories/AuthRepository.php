@@ -21,7 +21,7 @@ use Modules\Auth\App\Models\PasswordResetToken;
 use Modules\Auth\Http\Requests\RegisterRequest;
 use Modules\CompanyEmployee\App\Models\CompanyEmployee;
 use Modules\Auth\Repositories\Interfaces\AuthRepositoryInterface;
- 
+
 class AuthRepository extends BaseRepository implements AuthRepositoryInterface
 {
     use ApiHelper;
@@ -36,7 +36,7 @@ class AuthRepository extends BaseRepository implements AuthRepositoryInterface
         $field = filter_var($request->email, FILTER_VALIDATE_EMAIL) ? 'email' : 'og_code';
         $account = $request->email;
 
-        if($field == 'og_code'){
+        if($field == 'og_code') {
             $account = $this->formatOGCode($request->email);
         }
 
@@ -75,7 +75,7 @@ class AuthRepository extends BaseRepository implements AuthRepositoryInterface
         $user->profile()->create($request->only('first_name', 'last_name', 'phone'));
         $user->assignRole($request->role);
 
-        if($request->role != 'Customer'){
+        if($request->role != 'Customer') {
             $company = $user->company()->create([
                 'company_name' => $request->company_name,
                 'phone' => $request->company_phone,
@@ -425,12 +425,12 @@ class AuthRepository extends BaseRepository implements AuthRepositoryInterface
         if ($request->filled('company_addmail')) {
             $user = Auth::user();
 
-            $employee = CompanyEmployee::whereHas('company.owner', function($q) use ($request) {
+            $employee = CompanyEmployee::whereHas('company.owner', function ($q) use ($request) {
                 $q->where('og_code', $request->company_addmail);
             })
             ->where('user_id', $user->id)
             ->first();
-
+            
             if (!$employee) {
                 return false;
             }

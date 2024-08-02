@@ -1,0 +1,107 @@
+<?php
+
+namespace Modules\CompanyRequest\App\Http\Controllers;
+
+use App\Traits\ApiResponser;
+use Illuminate\Http\Request;
+use Illuminate\Http\Response;
+use Illuminate\Support\Facades\DB;
+use App\Http\Controllers\Controller;
+use Illuminate\Http\RedirectResponse;
+use Illuminate\Database\QueryException;
+use Modules\CompanyRequest\App\Models\CompanyRequest;
+use App\Exceptions\UniqueConstraintViolationException;
+use Modules\CompanyProperty\Transformers\PropertyResource;
+use Modules\CompanyRequest\Services\CompanyRequestService;
+use Modules\CompanyRequest\Transformers\CompanyRequestResource;
+use Modules\CompanyRequest\App\Http\Requests\EmployeeRequestForm;
+
+class EmployeeRequestController extends Controller
+{
+    use ApiResponser;
+
+    public function __construct(CompanyRequestService $companyRequestService)
+    {
+        $this->companyRequestService = $companyRequestService;
+    }
+    
+    /**
+     * Display a listing of the resource.
+     */
+    public function getEmployeeRequests()
+    {
+        $companyRequests = $this->companyRequestService->employeeRequests();
+
+        return CompanyRequestResource::Collection($companyRequests);
+    }
+
+    public function previewProperty()
+    {
+        $property = $this->companyRequestService->previewProperty();
+
+        if (!$property) {
+            abort(403, 'Cannot find property');
+        }
+
+        return new PropertyResource($property);
+    }
+    
+    /**
+     * Store a newly created resource in storage.
+     */
+    public function sendRequest(EmployeeRequestForm $request)
+    {
+        try {
+            DB::beginTransaction();
+
+            $companyRequest = $this->companyRequestService->storeRequest($request->all());
+
+            DB::commit();
+
+            return $this->successresponse(new CompanyRequestResource($companyRequest), 'Request has been added.');
+        } catch (QueryException $e) {
+            DB::rollback();
+
+            // Check for unique constraint violation (SQLSTATE 23000, Error Code 1062)
+            if ($e->errorInfo[1] == 1062) {
+                throw new UniqueConstraintViolationException('Duplicate entry detected for the given keys.');
+            }
+
+            // Handle other query exceptions
+            throw new UniqueConstraintViolationException('Database error.', 500);
+        }
+    }
+
+    public function search(Request $request)
+    {
+        try {
+            $filters = $request->all();
+
+            $companyRequests = $this->companyRequestService->searchRequests($filters);
+
+            return CompanyRequestResource::Collection($companyRequests);
+        } catch (Exception $e) {
+            return response()->json(['error' => $e->getMessage()], 500);
+        }
+    }
+
+    public function delete(CompanyRequest $employeeRequest)
+    {
+        try {
+            DB::beginTransaction();
+
+            if ($employeeRequest->status !== 'Pending') {
+                abort(403, 'Unauthorized action.');
+            }
+
+            $requests = $this->companyRequestService->deleteRequest($employeeRequest);
+
+            DB::commit();
+
+            return CompanyRequestResource::Collection($requests);
+        } catch (Exception $e) {
+            dd('ss');
+            return $this->errorResponse(null, $e->getMessage());
+        }
+    }
+}
