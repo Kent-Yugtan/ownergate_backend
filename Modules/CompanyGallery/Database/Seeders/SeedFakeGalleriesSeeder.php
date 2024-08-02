@@ -15,18 +15,126 @@ class SeedFakeGalleriesSeeder extends Seeder
         // $this->call([]);
         DB::table('galleries')->insert([
             [
-                'property_id' => 'CP123',  // Should match an existing `og_code` in `company_properties` table
-                'assigned_to' => 'OG123',  // Should match an existing `og_code` in `users` table
-                'maintained_by' => 'OG456', // Should match an existing `og_code` in `users` table
-                'company_id' => 1, // Should match an existing `id` in `companies` table
+                'property_id' => 'PROP001',
+                'assigned_to' => 'SU123', // Corresponds to an og_code in users
+                'maintained_by' => 'SU456', // Corresponds to an og_code in users
+                'company_id' => 1, // Corresponds to an id in companies
+                'created_at' => now(),
+                'updated_at' => now(),
             ],
             [
-                'property_id' => 'CP456',
-                'assigned_to' => 'OG789',
-                'maintained_by' => 'OG012',
+                'property_id' => 'PROP002',
+                'assigned_to' => 'SU456',
+                'maintained_by' => 'SU123',
                 'company_id' => 1,
+                'created_at' => now(),
+                'updated_at' => now(),
             ],
-            // Add more entries as needed
+            [
+                'property_id' => 'PROP003',
+                'assigned_to' => 'SU123',
+                'maintained_by' => 'SU456',
+                'company_id' => 1,
+                'created_at' => now(),
+                'updated_at' => now(),
+            ],
+            [
+                'property_id' => 'PROP004',
+                'assigned_to' => 'SU456',
+                'maintained_by' => 'SU123',
+                'company_id' => 1,
+                'created_at' => now(),
+                'updated_at' => now(),
+            ],
+            [
+                'property_id' => 'PROP005',
+                'assigned_to' => 'SU123',
+                'maintained_by' => 'SU456',
+                'company_id' => 1,
+                'created_at' => now(),
+                'updated_at' => now(),
+            ],
+            [
+                'property_id' => 'PROP006',
+                'assigned_to' => 'SU456', // Corresponds to an og_code in users
+                'maintained_by' => 'SU123', // Corresponds to an og_code in users
+                'company_id' => 2, // Corresponds to an id in companies
+                'created_at' => now(),
+                'updated_at' => now(),
+            ],
+            [
+                'property_id' => 'PROP007',
+                'assigned_to' => 'SU123',
+                'maintained_by' => 'SU456',
+                'company_id' => 2,
+                'created_at' => now(),
+                'updated_at' => now(),
+            ],
+            [
+                'property_id' => 'PROP008',
+                'assigned_to' => 'SU456',
+                'maintained_by' => 'SU123',
+                'company_id' => 2,
+                'created_at' => now(),
+                'updated_at' => now(),
+            ],
+            [
+                'property_id' => 'PROP009',
+                'assigned_to' => 'SU123',
+                'maintained_by' => 'SU456',
+                'company_id' => 2,
+                'created_at' => now(),
+                'updated_at' => now(),
+            ],
+            [
+                'property_id' => 'PROP010',
+                'assigned_to' => 'SU456',
+                'maintained_by' => 'SU123',
+                'company_id' => 2,
+                'created_at' => now(),
+                'updated_at' => now(),
+            ],
+            [
+                'property_id' => 'PROP011',
+                'assigned_to' => 'SU123', // Corresponds to an og_code in users
+                'maintained_by' => 'SU456', // Corresponds to an og_code in users
+                'company_id' => 3, // Corresponds to an id in companies
+                'created_at' => now(),
+                'updated_at' => now(),
+            ],
+            [
+                'property_id' => 'PROP012',
+                'assigned_to' => 'SU456',
+                'maintained_by' => 'SU123',
+                'company_id' => 3,
+                'created_at' => now(),
+                'updated_at' => now(),
+            ],
+            [
+                'property_id' => 'PROP013',
+                'assigned_to' => 'SU123',
+                'maintained_by' => 'SU456',
+                'company_id' => 3,
+                'created_at' => now(),
+                'updated_at' => now(),
+            ],
+            [
+                'property_id' => 'PROP014',
+                'assigned_to' => 'SU456',
+                'maintained_by' => 'SU123',
+                'company_id' => 3,
+                'created_at' => now(),
+                'updated_at' => now(),
+            ],
+            [
+                'property_id' => 'PROP015',
+                'assigned_to' => 'SU123',
+                'maintained_by' => 'SU456',
+                'company_id' => 3,
+                'created_at' => now(),
+                'updated_at' => now(),
+            ],
+        
         ]);
     }
 }
