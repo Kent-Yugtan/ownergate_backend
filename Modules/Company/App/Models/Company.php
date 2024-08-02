@@ -14,7 +14,7 @@ use Modules\Company\App\Models\CompanyAttachment;
 use Modules\Company\App\Models\CompanyManagement;
 use Modules\CompanyPrivacy\App\Models\CompanyPrivacy;
 use Modules\CompanyProperty\App\Models\CompanyProperty;
-
+use Modules\CompanyProperty\App\Models\Group;
 class Company extends Model
 {
     use SoftDeletes, ApiHelper;
@@ -132,4 +132,10 @@ class Company extends Model
 
         $property->update(['og_code' => $uniqueCode]);
     }
+ 
+    public function groups()
+    {
+        return $this->hasMany(Group::class);
+    }
 }
+  
