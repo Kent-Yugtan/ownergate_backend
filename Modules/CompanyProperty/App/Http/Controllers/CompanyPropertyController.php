@@ -140,6 +140,7 @@ class CompanyPropertyController extends Controller
             $og_code = $request->og_code ?? null;
 
             if ($og_code) {
+                
                 $property_og_code = $company->properties()->where('og_code', $og_code)->first();
 
                 if ($property_og_code) {
@@ -155,7 +156,7 @@ class CompanyPropertyController extends Controller
             );
 
             $company->updateOgCode($property);
-
+            
             DB::commit();
 
             return $this->successresponse(new PropertyResource($property), 'Property value has been updated.');
