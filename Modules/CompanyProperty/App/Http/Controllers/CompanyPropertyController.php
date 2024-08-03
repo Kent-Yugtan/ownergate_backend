@@ -128,10 +128,8 @@ class CompanyPropertyController extends Controller
 
             $validatedData = $request->validate([
                 'category_id' => 'required',
-                'company_id' => 'required',
                 'type_id' => 'required',
                 'target_type_id' => 'required',
-                'source_property_id' => 'nullable',
                 'currency' => 'required',
                 'value' => 'required',
                 'name' => 'required',
@@ -139,6 +137,15 @@ class CompanyPropertyController extends Controller
                 'state' => 'required',
                 'city' => 'required',
             ]);
+            $og_code = $request->og_code ?? null;
+
+            if ($og_code) {
+                $property_og_code = $company->properties()->where('og_code', $og_code)->first();
+
+                if ($property_og_code) {
+                    $validatedData['source_property_id'] = $property_og_code->id;
+                }
+            }
 
             $property = $company->properties()->updateOrCreate(
                 [
