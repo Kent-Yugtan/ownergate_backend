@@ -136,7 +136,9 @@ class CompanyPropertyController extends Controller
                 'country' => 'required',
                 'state' => 'required',
                 'city' => 'required',
+                'area_sector_desctrict' => 'nullable',
             ]);
+
             $og_code = $request->og_code ?? null;
 
             if ($og_code) {
@@ -155,7 +157,9 @@ class CompanyPropertyController extends Controller
                 $validatedData
             );
 
-            $company->updateOgCode($property);
+            if(!$request->property_id){
+                $company->updateOgCode($property);
+            }
             
             DB::commit();
 
