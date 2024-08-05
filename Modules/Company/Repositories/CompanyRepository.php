@@ -343,7 +343,8 @@ class CompanyRepository extends BaseRepository implements CompanyRepositoryInter
         $perPage = $request->perPage ?? 10;
         $companies = $this->model->withTrashed()->whereHas('owner', function ($q) use ($request) {
             $q->whereHas('role', function ($q) {
-                $q->where('name', '!=', 'Admin')->where('name', '!=', 'Customer');
+                // $q->where('name', '!=', 'Admin')->where('name', '!=', 'Customer');
+                $q->where('name', '!=', 'Customer');
             })->when($request->id, function ($q) use ($request) {
                 $q->where('og_code', $request->id);
             });
