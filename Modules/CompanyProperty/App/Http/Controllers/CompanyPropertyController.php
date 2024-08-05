@@ -128,17 +128,27 @@ class CompanyPropertyController extends Controller
 
             $validatedData = $request->validate([
                 'category_id' => 'required',
-                'company_id' => 'required',
                 'type_id' => 'required',
                 'target_type_id' => 'required',
-                'source_property_id' => 'nullable',
                 'currency' => 'required',
                 'value' => 'required',
                 'name' => 'required',
                 'country' => 'required',
                 'state' => 'required',
                 'city' => 'required',
+                'area_sector_desctrict' => 'nullable',
             ]);
+
+            $og_code = $request->og_code ?? null;
+
+            if ($og_code) {
+                
+                $property_og_code = $company->properties()->where('og_code', $og_code)->first();
+
+                if ($property_og_code) {
+                    $validatedData['source_property_id'] = $property_og_code->id;
+                }
+            }
 
             $property = $company->properties()->updateOrCreate(
                 [
@@ -147,8 +157,10 @@ class CompanyPropertyController extends Controller
                 $validatedData
             );
 
-            $company->updateOgCode($property);
-
+            if(!$request->property_id){
+                $company->updateOgCode($property);
+            }
+            
             DB::commit();
 
             return $this->successresponse(new PropertyResource($property), 'Property value has been updated.');

@@ -65,6 +65,11 @@ class CompanyProperty extends Model
         return $this->belongsTo(CategoryTargetType::class);
     }
 
+    public function sourceProperty()
+    {
+        return $this->belongsTo(CompanyProperty::class, 'source_property_id');
+    }
+
     public function propertyType()
     {
         return $this->belongsTo(PropertyType::class, 'type_id');
@@ -140,11 +145,13 @@ class CompanyProperty extends Model
         return $this->belongsToMany(Section::class, 'property_privacies', 'property_id', 'section_id')->withTimestamps();
     }
 
-    public function selected_settings(){
+    public function selected_settings()
+    {
         return $this->hasMany(PropertySelectedSetting::class, 'property_id');
     }
 
-    public function available_settings(){
+    public function available_settings()
+    {
         return $this->hasManyThrough(PropertyAvailableSetting::class, PropertySelectedSetting::class, 'property_id', 'id', 'id', 'selected_settings_id');
     }
 
@@ -289,7 +296,7 @@ class CompanyProperty extends Model
 
             $sortFieldName = $search->sort[0];
             $softDirection = $search->sort[1];
-            if($sortFieldName == "price"){
+            if($sortFieldName == "price") {
                 $sortFieldName = "value";
             }
             return $q->orderBy($sortFieldName, $softDirection);
@@ -314,7 +321,8 @@ class CompanyProperty extends Model
         });
     }
 
-    public static function isValidCoordinate($coord) {
+    public static function isValidCoordinate($coord)
+    {
         return is_numeric($coord);
     }
 }
