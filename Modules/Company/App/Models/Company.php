@@ -16,6 +16,7 @@ use Modules\CompanyPrivacy\App\Models\CompanyPrivacy;
 use Modules\CompanyRequest\App\Models\CompanyRequest;
 use Modules\CompanyProperty\App\Models\CompanyProperty;
 use Modules\CompanyProperty\App\Models\Group;
+use Modules\CompanyGallery\App\Models\Gallery;
 class Company extends Model
 {
     use SoftDeletes, ApiHelper;
@@ -142,6 +143,11 @@ class Company extends Model
     public function groups()
     {
         return $this->hasMany(Group::class);
+    }
+
+    public function galleries()
+    {
+        return $this->hasMany(Gallery::class, 'company_id');
     }
 }
   

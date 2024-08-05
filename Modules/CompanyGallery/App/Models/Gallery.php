@@ -6,6 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Modules\CompanyGallery\Database\factories\GalleryFactory;
 use Modules\CompanyProperty\App\Models\CompanyProperty;
+use App\Models\User;
 
 class Gallery extends Model
 {
@@ -23,6 +24,16 @@ class Gallery extends Model
 
     public function companyProperty()
     {
-        return $this->belongsTo(CompanyProperty::class, 'property_id', 'og_code');
+        return $this->belongsTo(CompanyProperty::class, 'property_id', 'id');
+    }
+
+    public function getAssignTo()
+    {
+        return $this->belongsTo(User::class, 'assigned_to', 'id');
+    }
+
+    public function getMaintainBy()
+    {
+        return $this->belongsTo(User::class, 'maintained_by', 'id');
     }
 }

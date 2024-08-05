@@ -26,13 +26,11 @@ class CompanyGalleryController extends Controller
 
  
 
-    public function save($id, Request $request) {
+    public function save(Request $request) {
         try {
             DB::beginTransaction();
           
             $galleryData = $request->all();
-            
-            $galleryData['company_id'] = $id; 
             $gallery =  $this->galleryRepository->createGallery($galleryData);
 
             DB::commit();
@@ -46,11 +44,11 @@ class CompanyGalleryController extends Controller
         }
     }
 
-    public function list($id)
+    public function list()
     {
         try {
             $perPage = request()->get('per_page', 15); // Get 'per_page' from the request or use 15 as default
-            $galleries = $this->galleryRepository->getAllGalleriesByCompanyId($id, $perPage);
+            $galleries = $this->galleryRepository->getAllGalleriesByCompanyId($perPage);
     
             return $this->successresponse($galleries);
         } catch (\Exception $e) {
@@ -69,11 +67,10 @@ class CompanyGalleryController extends Controller
         }
     }
 
-    public function update($company, $id, Request $request) {
+    public function update($id, Request $request) {
         try {
 
             $galleryData = $request->all();
-            $galleryData['company_id'] = $company;
 
             $gallery = $this->galleryRepository->updateGallery($id, $galleryData);
     
@@ -83,7 +80,7 @@ class CompanyGalleryController extends Controller
         }
     }
 
-    public function destroy($company, $gallery)
+    public function destroy($gallery)
     {
         try {
 
@@ -98,14 +95,13 @@ class CompanyGalleryController extends Controller
     public function search(Request $request)
     {
         try {
-            $companyId = $request->route('company_id');
             $keyword = $request->get('keyword');
             $startDate = $request->get('start_date');
             $endDate = $request->get('end_date');
             $type = $request->get('type'); // Added type parameter
-            $perPage = $request->get('per_page', 15);
-
-            $galleries = $this->galleryRepository->searchGalleries($companyId, $keyword, $startDate, $endDate, $type, $perPage);
+            $perPage = $request->get('per_page', 15);   
+           
+            $galleries = $this->galleryRepository->searchGalleries($keyword, $startDate, $endDate, $type, $perPage);
 
             return $this->successresponse($galleries);
         } catch (\Exception $e) {

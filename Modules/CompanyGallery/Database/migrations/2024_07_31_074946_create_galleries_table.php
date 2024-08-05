@@ -13,16 +13,16 @@ return new class extends Migration
     {
         Schema::create('galleries', function (Blueprint $table) {
             $table->id();
-            $table->string('property_id', 191); // Adjust length if needed
-            $table->string('assigned_to', 191);  // Adjust length if needed
-            $table->string('maintained_by', 191); // Adjust length if needed
+            $table->unsignedBigInteger('property_id', 191); // Adjust length if needed
+            $table->unsignedBigInteger('assigned_to', 191);  // Adjust length if needed
+            $table->unsignedBigInteger('maintained_by', 191); // Adjust length if needed
             $table->unsignedBigInteger('company_id'); // Ensure this matches the `id` type in `companies`
 
             // Define foreign keys
-            $table->foreign('assigned_to')->references('og_code')->on('users')->onDelete('cascade');
-            $table->foreign('maintained_by')->references('og_code')->on('users')->onDelete('cascade');
-            $table->foreign('property_id')->references('og_code')->on('company_properties')->onDelete('cascade');
-            $table->foreign('company_id')->references('id')->on('companies')->onDelete('cascade');
+            $table->foreign('assigned_to')->references('id')->on('users')->onDelete('cascade')->onUpdate('cascade');
+            $table->foreign('maintained_by')->references('id')->on('users')->onDelete('cascade')->onUpdate('cascade');
+            $table->foreign('property_id')->references('id')->on('company_properties')->onDelete('cascade')->onUpdate('cascade');
+            $table->foreign('company_id')->references('id')->on('companies')->onDelete('cascade')->onUpdate('cascade');
             
             $table->timestamps();
         });

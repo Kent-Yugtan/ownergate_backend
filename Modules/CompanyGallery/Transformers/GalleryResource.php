@@ -14,9 +14,15 @@ class GalleryResource extends JsonResource
         return [
             'id' => $this->id,
             'property_id' => $this->property_id,
-            'assigned_to' => $this->assigned_to,
-            'maintained_by' => $this->maintained_by,
+            'property_name' => $this->companyProperty?->name,
+            'type' => $this->companyProperty?->propertyType?->name, // Null-safe access to nested property
+            'assigned_to' => $this->getAssignTo?->og_code,
+            'maintained_by' => $this->getMaintainBy?->og_code,
+            'assigned_to_id' => $this->getAssignTo?->id,
+            'maintained_by_id' => $this->getMaintainBy?->id,
             'company_id' => $this->company_id,
         ];
+        
+        
     } 
 }
