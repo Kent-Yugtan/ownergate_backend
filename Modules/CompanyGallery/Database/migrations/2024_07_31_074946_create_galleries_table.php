@@ -13,9 +13,9 @@ return new class extends Migration
     {
         Schema::create('galleries', function (Blueprint $table) {
             $table->id();
-            $table->unsignedBigInteger('property_id', 191); // Adjust length if needed
-            $table->unsignedBigInteger('assigned_to', 191);  // Adjust length if needed
-            $table->unsignedBigInteger('maintained_by', 191); // Adjust length if needed
+            $table->unsignedBigInteger('property_id'); // Adjust length if needed
+            $table->unsignedBigInteger('assigned_to');  // Adjust length if needed
+            $table->unsignedBigInteger('maintained_by'); // Adjust length if needed
             $table->unsignedBigInteger('company_id'); // Ensure this matches the `id` type in `companies`
 
             // Define foreign keys
