@@ -6,7 +6,7 @@ namespace Modules\CompanyGallery\Repositories;
 use Modules\CompanyGallery\Repositories\Interfaces\GalleryRepositoryInterface;
 use Modules\CompanyGallery\App\Models\Gallery;
 use Modules\CompanyGallery\Transformers\GalleryResource;
-use Modules\CompanyGallery\Transformers\ListingResource;
+use Modules\CompanyGallery\Transformers\PropertyResource;
 use Modules\CompanyGallery\Transformers\EmployeeResource;
 use Auth;
 
@@ -178,7 +178,7 @@ class EloquentGalleryRepository implements GalleryRepositoryInterface
         if (!$galleryLisitng) {
             return [];
         }
-        $listing = new ListingResource($galleryLisitng);
+        $listing = new PropertyResource($galleryLisitng);
         return $listing->toArray(request());
     }
     public function getCompanyUsers(): array

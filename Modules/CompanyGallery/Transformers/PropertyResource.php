@@ -4,7 +4,7 @@ namespace Modules\CompanyGallery\Transformers;
 
 use Illuminate\Http\Resources\Json\JsonResource;
 
-class ListingResource extends JsonResource
+class PropertyResource extends JsonResource
 {
     /**
      * Transform the resource into an array.
