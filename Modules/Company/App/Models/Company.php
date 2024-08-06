@@ -15,6 +15,7 @@ use Modules\Company\App\Models\CompanyManagement;
 use Modules\CompanyPrivacy\App\Models\CompanyPrivacy;
 use Modules\CompanyRequest\App\Models\CompanyRequest;
 use Modules\CompanyProperty\App\Models\CompanyProperty;
+use Modules\CompanyEmployee\App\Models\CompanyEmployee;
 use Modules\CompanyProperty\App\Models\Group;
 use Modules\CompanyGallery\App\Models\Gallery;
 class Company extends Model
@@ -148,6 +149,11 @@ class Company extends Model
     public function galleries()
     {
         return $this->hasMany(Gallery::class, 'company_id');
+    }
+
+    public function CompanyEmployee() 
+    {
+        return $this->hasMany(CompanyEmployee::class, 'company_id');
     }
 }
   

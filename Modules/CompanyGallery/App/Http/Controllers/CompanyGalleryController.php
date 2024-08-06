@@ -47,7 +47,7 @@ class CompanyGalleryController extends Controller
     public function list()
     {
         try {
-            $perPage = request()->get('per_page', 15); // Get 'per_page' from the request or use 15 as default
+            $perPage = request()->get('perPage', 10); // Get 'perPage' from the request or use 15 as default
             $galleries = $this->galleryRepository->getAllGalleriesByCompanyId($perPage);
     
             return $this->successresponse($galleries);
@@ -99,11 +99,33 @@ class CompanyGalleryController extends Controller
             $startDate = $request->get('start_date');
             $endDate = $request->get('end_date');
             $type = $request->get('type'); // Added type parameter
-            $perPage = $request->get('per_page', 15);   
+            $perPage = $request->get('perPage', 10);   
            
             $galleries = $this->galleryRepository->searchGalleries($keyword, $startDate, $endDate, $type, $perPage);
 
             return $this->successresponse($galleries);
+        } catch (\Exception $e) {
+            return $this->errorResponse(null, $e->getMessage());
+        }
+    }
+
+    public function getPartnerListing(Request $request) {
+        try {
+
+            $listing = $this->galleryRepository->getListing($request->all());    
+            
+            return $this->successresponse($listing);
+        } catch (\Exception $e) {
+            return $this->errorResponse(null, $e->getMessage());
+        }
+    }
+
+    public function getAllUsers() {
+        try {
+
+            $users = $this->galleryRepository->getCompanyUsers();    
+            
+            return $this->successresponse($users);
         } catch (\Exception $e) {
             return $this->errorResponse(null, $e->getMessage());
         }

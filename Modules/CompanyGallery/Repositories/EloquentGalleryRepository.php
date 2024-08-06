@@ -6,11 +6,13 @@ namespace Modules\CompanyGallery\Repositories;
 use Modules\CompanyGallery\Repositories\Interfaces\GalleryRepositoryInterface;
 use Modules\CompanyGallery\App\Models\Gallery;
 use Modules\CompanyGallery\Transformers\GalleryResource;
+use Modules\CompanyGallery\Transformers\ListingResource;
+use Modules\CompanyGallery\Transformers\EmployeeResource;
 use Auth;
 
 class EloquentGalleryRepository implements GalleryRepositoryInterface
 {
-    public function getAllGalleriesByCompanyId(int $perPage = 15): \Illuminate\Pagination\LengthAwarePaginator
+    public function getAllGalleriesByCompanyId(int $perPage = 10): \Illuminate\Pagination\LengthAwarePaginator
     {
         $user = auth()->user();
 
@@ -162,5 +164,34 @@ class EloquentGalleryRepository implements GalleryRepositoryInterface
         });
 
         return $galleries;
+    }
+
+    public function getListing(array $data): array
+    {
+        $user = Auth::user();
+        $galleryLisitng = $user->company->properties()->where('og_code', $data['og_code'])->first();
+
+        if (!$galleryLisitng) {
+            return [];
+        }
+        $listing = new ListingResource($galleryLisitng);
+        return $listing->toArray(request());
+    }
+    public function getCompanyUsers(): array
+    {
+        $user = Auth::user();
+        $employees = $user->company->CompanyEmployee;
+    
+        if ($employees->isEmpty()) {
+            return []; // Return an empty array if no employees are found
+        }
+    
+        // Transform the employee collection using EmployeeResource
+        $employeeResources = $employees->map(function ($employee) {
+            return new EmployeeResource($employee);
+        });
+    
+        // Convert the collection of resources to an array
+        return $employeeResources->toArray();
     }
 }

@@ -26,6 +26,8 @@ Route::prefix('admin')->middleware(['auth:api'])->group(function () {
         Route::delete('gallery/delete/{id}', [CompanyGalleryController::class, 'destroy']);
 
         Route::post('gallery/search', [CompanyGalleryController::class, 'search']);
+        Route::post('gallery/partner/listing', [CompanyGalleryController::class, 'getPartnerListing']);
 
+        Route::get('gallery/all-users', [CompanyGalleryController::class, 'getAllUsers']);
     });
 });
