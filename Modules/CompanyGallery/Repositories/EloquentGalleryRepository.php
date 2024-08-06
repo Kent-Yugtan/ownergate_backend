@@ -103,21 +103,29 @@ class EloquentGalleryRepository implements GalleryRepositoryInterface
         $query = $user->company->galleries()
             ->where('company_id', $user->company->id);
         // Apply keyword search if provided
+        
         if ($keyword) {
             $query->where(function ($query) use ($keyword) {
-                $query->whereHas('getAssignTo', function ($query) use ($keyword) {
-                    $query->where('og_code', 'like', "%{$keyword}%");
-                    $query->where('name', 'like', "%{$keyword}%");
-                    $query->where('username', 'like', "%{$keyword}%");
-
-
-                })
-                    ->orWhereHas('getMaintainBy', function ($query) use ($keyword) {
-                        $query->where('og_code', 'like', "%{$keyword}%");
-                        $query->where('name', 'like', "%{$keyword}%");
-                        $query->where('username', 'like', "%{$keyword}%");
-
-                    });
+                // Search within the 'getAssignTo' relationship
+                $query->orWhereHas('getAssignTo', function ($query) use ($keyword) {
+                    $query->where('og_code', 'like', "%{$keyword}%")
+                          ->orWhere('name', 'like', "%{$keyword}%")
+                          ->orWhere('username', 'like', "%{$keyword}%");
+                });
+            
+                // Search within the 'getMaintainBy' relationship
+                $query->orWhereHas('getMaintainBy', function ($query) use ($keyword) {
+                    $query->where('og_code', 'like', "%{$keyword}%")
+                          ->orWhere('name', 'like', "%{$keyword}%")
+                          ->orWhere('username', 'like', "%{$keyword}%");
+                });
+            
+                // Search within the 'companyProperty' relationship
+                $query->orWhereHas('companyProperty', function ($query) use ($keyword) {
+                    $query->where('name', 'like', "%{$keyword}%")
+                          ->orWhere('og_code', 'like', "%{$keyword}%");
+                });
+            
             });
         }
 
@@ -146,13 +154,9 @@ class EloquentGalleryRepository implements GalleryRepositoryInterface
                     });
                 } elseif ($type === 'property_name') {
                     $query->whereHas('companyProperty', function ($query) use ($keyword) {
-                        $query->where('name', 'like', "%{$keyword}%");
-                    });
-                } elseif ($type === 'property_type') {
-                    $query->whereHas('companyProperty.propertyType', function ($query) use ($keyword) {
-                        $query->where('name', 'like', "%{$keyword}%");
-                    });
-                }
+                        $query->where('name', 'like', "%{$keyword}%")
+                        ->orWhere('og_code', 'like', "%{$keyword}%");                    });
+                } 
             });
         }
 
