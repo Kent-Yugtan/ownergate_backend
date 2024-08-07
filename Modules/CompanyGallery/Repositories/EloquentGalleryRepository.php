@@ -7,7 +7,8 @@ use Modules\CompanyGallery\Repositories\Interfaces\GalleryRepositoryInterface;
 use Modules\CompanyGallery\App\Models\Gallery;
 use Modules\CompanyGallery\Transformers\GalleryResource;
 use Modules\CompanyProperty\Transformers\PropertyResource;
-use Modules\Auth\Transformers\UserProfileResource;
+use Modules\CompanyGallery\Transformers\EmployeeResource;
+use Modules\Auth\Transformers\UserResource;
 use Auth;
 
 class EloquentGalleryRepository implements GalleryRepositoryInterface
@@ -184,7 +185,7 @@ class EloquentGalleryRepository implements GalleryRepositoryInterface
     public function getCompanyUsers(): array
     {
         $user = Auth::user();
-        $employees = $user->company->CompanyEmployee;
+        $employees = $user->company->CompanyEmployee->where('status', 'active');
         
         if ($employees->isEmpty()) {
             return []; // Return an empty array if no employees are found
@@ -192,7 +193,7 @@ class EloquentGalleryRepository implements GalleryRepositoryInterface
     
         // Transform the employee collection using EmployeeResource
         $employeeResources = $employees->map(function ($employee) {
-            return new UserProfileResource($employee);
+            return new EmployeeResource($employee);
         });
     
         // Convert the collection of resources to an array
