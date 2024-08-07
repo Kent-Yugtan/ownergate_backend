@@ -7,6 +7,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Modules\CompanyGallery\Database\factories\GalleryFactory;
 use Modules\CompanyProperty\App\Models\CompanyProperty;
 use Modules\Auth\Entities\UserProfile;
+use App\Models\User;
 
 class Gallery extends Model
 {
@@ -35,5 +36,16 @@ class Gallery extends Model
     public function getMaintainBy()
     {
         return $this->belongsTo(UserProfile::class, 'maintained_by', 'user_id');
+    }
+
+    
+    public function getSearchAssignTo()
+    {
+        return $this->belongsTo(User::class, 'assigned_to', 'id');
+    }
+
+    public function getSearchMaintainBy()
+    {
+        return $this->belongsTo(User::class, 'maintained_by', 'id');
     }
 }

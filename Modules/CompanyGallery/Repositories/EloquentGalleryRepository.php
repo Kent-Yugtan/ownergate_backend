@@ -109,14 +109,14 @@ class EloquentGalleryRepository implements GalleryRepositoryInterface
         if ($keyword) {
             $query->where(function ($query) use ($keyword) {
                 // Search within the 'getAssignTo' relationship
-                $query->orWhereHas('getAssignTo', function ($query) use ($keyword) {
+                $query->orWhereHas('getSearchAssignTo', function ($query) use ($keyword) {
                     $query->where('og_code', 'like', "%{$keyword}%")
                           ->orWhere('name', 'like', "%{$keyword}%")
                           ->orWhere('username', 'like', "%{$keyword}%");
                 });
             
                 // Search within the 'getMaintainBy' relationship
-                $query->orWhereHas('getMaintainBy', function ($query) use ($keyword) {
+                $query->orWhereHas('getSearchMaintainBy', function ($query) use ($keyword) {
                     $query->where('og_code', 'like', "%{$keyword}%")
                           ->orWhere('name', 'like', "%{$keyword}%")
                           ->orWhere('username', 'like', "%{$keyword}%");
@@ -141,14 +141,14 @@ class EloquentGalleryRepository implements GalleryRepositoryInterface
         if ($type) {
             $query->where(function ($query) use ($type, $keyword) {
                 if ($type === 'assigned_to') {
-                    $query->whereHas('getAssignTo', function ($query) use ($keyword) {
+                    $query->whereHas('getSearchAssignTo', function ($query) use ($keyword) {
                         $query->where('og_code', 'like', "%{$keyword}%");
                         $query->where('name', 'like', "%{$keyword}%");
                         $query->where('username', 'like', "%{$keyword}%");
 
                     });
                 } elseif ($type === 'maintained_by') {
-                    $query->whereHas('getMaintainBy', function ($query) use ($keyword) {
+                    $query->whereHas('getSearchMaintainBy', function ($query) use ($keyword) {
                         $query->where('og_code', 'like', "%{$keyword}%");
                         $query->where('name', 'like', "%{$keyword}%");
                         $query->where('username', 'like', "%{$keyword}%");
@@ -162,7 +162,7 @@ class EloquentGalleryRepository implements GalleryRepositoryInterface
             });
         }
 
-        $galleries = $query->with(['companyProperty.propertyType', 'getAssignTo', 'getMaintainBy'])->paginate($perPage);
+        $galleries = $query->with(['companyProperty.propertyType', 'getSearchAssignTo', 'getSearchAssignTo'])->paginate($perPage);
 
         // Transform the results to include fields from related models
         $galleries->getCollection()->transform(function ($gallery) {
