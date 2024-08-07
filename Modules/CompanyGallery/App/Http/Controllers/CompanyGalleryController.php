@@ -120,10 +120,10 @@ class CompanyGalleryController extends Controller
         }
     }
 
-    public function getAllUsers() {
+    public function getAllUsers($type) {
         try {
 
-            $users = $this->galleryRepository->getCompanyUsers();    
+            $users = $this->galleryRepository->getCompanyUsers($type);    
             
             return $this->successresponse($users);
         } catch (\Exception $e) {

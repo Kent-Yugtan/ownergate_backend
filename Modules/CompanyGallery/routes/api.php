@@ -28,6 +28,6 @@ Route::prefix('admin')->middleware(['auth:api'])->group(function () {
         Route::post('gallery/search', [CompanyGalleryController::class, 'search']);
         Route::post('gallery/partner/listing', [CompanyGalleryController::class, 'getPartnerListing']);
 
-        Route::get('gallery/all-users', [CompanyGalleryController::class, 'getAllUsers']);
+        Route::get('gallery/all-users/{type}', [CompanyGalleryController::class, 'getAllUsers']);
     });
 });

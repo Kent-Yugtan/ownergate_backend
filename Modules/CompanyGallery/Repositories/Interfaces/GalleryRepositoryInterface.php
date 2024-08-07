@@ -11,5 +11,5 @@ interface GalleryRepositoryInterface
     public function deleteGallery(int $id): bool;
     public function searchGalleries(string $keyword = null, ?string $startDate = null, ?string $endDate = null, ?string $type = null, int $perPage = 10): LengthAwarePaginator;
     public function getListing(array $data): array;
-    public function getCompanyUsers(): array;
+    public function getCompanyUsers(string $type): array;
 }

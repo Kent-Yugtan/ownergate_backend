@@ -3,6 +3,7 @@
 namespace Modules\CompanyGallery\Transformers;
 
 use Illuminate\Http\Resources\Json\JsonResource;
+use Modules\CompanyProperty\Transformers\PropertyResource;
 
 class GalleryResource extends JsonResource
 {
@@ -13,14 +14,11 @@ class GalleryResource extends JsonResource
     {
         return [
             'id' => $this->id,
-            'property_id' => $this->property_id,
-            'property_name' => $this->companyProperty?->name,
-            'type' => $this->companyProperty?->propertyType?->name, // Null-safe access to nested property
-            'assigned_to' => $this->getAssignTo?->og_code,
-            'maintained_by' => $this->getMaintainBy?->og_code,
-            'assigned_to_id' => $this->getAssignTo?->id,
-            'maintained_by_id' => $this->getMaintainBy?->id,
+            'assigned_to' => $this->getAssignTo,
+            'maintained_by' => $this->getMaintainBy,
             'company_id' => $this->company_id,
+            'property' => $this->companyProperty ? new PropertyResource($this->companyProperty) : null,
+
         ];
         
         

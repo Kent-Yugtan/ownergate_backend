@@ -6,7 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Modules\CompanyGallery\Database\factories\GalleryFactory;
 use Modules\CompanyProperty\App\Models\CompanyProperty;
-use App\Models\User;
+use Modules\Auth\Entities\UserProfile;
 
 class Gallery extends Model
 {
@@ -29,11 +29,11 @@ class Gallery extends Model
 
     public function getAssignTo()
     {
-        return $this->belongsTo(User::class, 'assigned_to', 'id');
+        return $this->belongsTo(UserProfile::class, 'assigned_to', 'user_id');
     }
 
     public function getMaintainBy()
     {
-        return $this->belongsTo(User::class, 'maintained_by', 'id');
+        return $this->belongsTo(UserProfile::class, 'maintained_by', 'user_id');
     }
 }

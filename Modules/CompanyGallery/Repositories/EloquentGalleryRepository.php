@@ -9,6 +9,7 @@ use Modules\CompanyGallery\Transformers\GalleryResource;
 use Modules\CompanyProperty\Transformers\PropertyResource;
 use Modules\CompanyGallery\Transformers\EmployeeResource;
 use Modules\Auth\Transformers\UserResource;
+use DB;
 use Auth;
 
 class EloquentGalleryRepository implements GalleryRepositoryInterface
@@ -182,11 +183,25 @@ class EloquentGalleryRepository implements GalleryRepositoryInterface
         $listing = new PropertyResource($galleryLisitng);
         return $listing->toArray(request());
     }
-    public function getCompanyUsers(): array
+    public function getCompanyUsers($type): array
     {
         $user = Auth::user();
         $employees = $user->company->CompanyEmployee->where('status', 'active');
         
+        if($type == "assigned-to") {
+            $assignedTo = DB::table('galleries')->pluck('assigned_to')->toArray();
+            $employees = $employees->filter(function ($employee) use ($assignedTo) {
+                return !in_array($employee->user_id, $assignedTo);
+            });
+        }
+
+        if($type == "maintained-by") {
+            $maintainBy = DB::table('galleries')->pluck('maintained_by')->toArray();
+            $employees = $employees->filter(function ($employee) use ($maintainBy) {
+                return !in_array($employee->user_id, $maintainBy);
+            });
+        }
+
         if ($employees->isEmpty()) {
             return []; // Return an empty array if no employees are found
         }
