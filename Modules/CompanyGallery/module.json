@@ -1,0 +1,11 @@
+{
+    "name": "CompanyGallery",
+    "alias": "companygallery",
+    "description": "",
+    "keywords": [],
+    "priority": 0,
+    "providers": [
+        "Modules\\CompanyGallery\\App\\Providers\\CompanyGalleryServiceProvider"
+    ],
+    "files": []
+}

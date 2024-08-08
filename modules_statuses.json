@@ -14,5 +14,6 @@
     "PropertyPrivacy": true,
     "MainScreenPrivacy": true,
     "MainScreenAds": true,
+    "CompanyGallery": true,
     "CompanyRequest": true
 }
